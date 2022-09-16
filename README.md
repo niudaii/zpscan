@@ -5,19 +5,20 @@
 <h4 align="center">命令行信息收集工具</h4>
 
 <p align="center">
+  <a href="https://goreportcard.com/report/github.com/niudaii/zpscan">
+    <img src="https://goreportcard.com/badge/github.com/niudaii/zpscan">	
+  </a>
   <a href="https://opensource.org/licenses/MIT">
     <img src="https://img.shields.io/badge/license-MIT-_red.svg">
   </a>
-  <a href="https://goreportcard.com/report/github.com/niudaii/zpscan">
-    <img src="https://goreportcard.com/badge/github.com/niudaii/zpscan?style=flat-square">		
-  </a>
   <a href="https://github.com/niudaii/zpscan/actions">
-    <img src="https://img.shields.io/github/workflow/status/niudaii/zpscan/Release?style=flat-square" alt="Github Actions">
+    <img src="https://img.shields.io/github/workflow/status/niudaii/zpscan/Release" alt="Github Actions">
   </a>
   <a href="https://github.com/niudaii/zpscan/releases">
   	<img src="https://img.shields.io/github/downloads/niudaii/zpscan/total">
   </a>
 </p>
+
 
 
 
@@ -99,7 +100,15 @@ Global Flags:
 
 ## 截图
 
-![image-20220916105139027](https://nnotes.oss-cn-hangzhou.aliyuncs.com/notes/image-20220916105139027.png)
+
+
+webscan
+
+![image-20220916134330575](https://nnotes.oss-cn-hangzhou.aliyuncs.com/notes/image-20220916134330575.png)
+
+Crack
+
+![image-20220916134433908](https://nnotes.oss-cn-hangzhou.aliyuncs.com/notes/image-20220916134433908.png)
 
 ## 说明
 
