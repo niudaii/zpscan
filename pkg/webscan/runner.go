@@ -72,7 +72,7 @@ func (r *Runner) Run(urls []string) (results Results) {
 			for task := range taskChan {
 				resp, err := r.Webinfo(task)
 				if err != nil {
-					gologger.Error().Msgf("%v", err)
+					gologger.Debug().Msgf("%v", err)
 				} else {
 					// 判断蜜罐匹配大量指纹的情况
 					if len(resp.Fingers) > 5 {

@@ -93,7 +93,7 @@ func (r *Runner) Dirscan(url string, dirData []string) (results Results) {
 			for task := range taskChan {
 				resp, err := r.Req(task)
 				if err != nil {
-					gologger.Error().Msgf("%v", err)
+					gologger.Debug().Msgf("%v", err)
 				} else {
 					if resp.ContentLength != 0 && utils.IsExclude(r.options.MatchStatus, resp.StatusCode) {
 						mutex.Lock()
