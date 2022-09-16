@@ -51,7 +51,7 @@ func TestFtpCrack(t *testing.T) {
 	}
 	for name, tc := range tests {
 		t.Run(name, func(t *testing.T) {
-			got := FtpCrack(&tc)
+			got, _ := FtpCrack(&tc)
 			t.Logf("%v %v:%v", RespMap[got], tc.User, tc.Pass)
 			if name != RespMap[got] {
 				t.Error("sth wrong")
@@ -101,7 +101,7 @@ func TestSshCrack(t *testing.T) {
 	}
 	for name, tc := range tests {
 		t.Run(name, func(t *testing.T) {
-			got := SshCrack(&tc)
+			got, _ := SshCrack(&tc)
 			t.Logf("%v %v:%v", RespMap[got], tc.User, tc.Pass)
 			if name != RespMap[got] {
 				t.Error("sth wrong")
@@ -151,7 +151,7 @@ func TestWmiCrack(t *testing.T) {
 	}
 	for name, tc := range tests {
 		t.Run(name, func(t *testing.T) {
-			got := WmiCrack(&tc)
+			got, _ := WmiCrack(&tc)
 			t.Logf("%v %v:%v", RespMap[got], tc.User, tc.Pass)
 			if name != RespMap[got] {
 				t.Error("sth wrong")
@@ -201,7 +201,7 @@ func TestWmiHashCrack(t *testing.T) {
 	}
 	for name, tc := range tests {
 		t.Run(name, func(t *testing.T) {
-			got := WmiHashCrack(&tc)
+			got, _ := WmiHashCrack(&tc)
 			t.Logf("%v %v:%v", RespMap[got], tc.User, tc.Pass)
 			if name != RespMap[got] {
 				t.Error("sth wrong")
@@ -251,7 +251,7 @@ func TestSmbCrack(t *testing.T) {
 	}
 	for name, tc := range tests {
 		t.Run(name, func(t *testing.T) {
-			got := SmbCrack(&tc)
+			got, _ := SmbCrack(&tc)
 			t.Logf("%v %v:%v", RespMap[got], tc.User, tc.Pass)
 			if name != RespMap[got] {
 				t.Error("sth wrong")
@@ -301,7 +301,7 @@ func TestMssqlCrack(t *testing.T) {
 	}
 	for name, tc := range tests {
 		t.Run(name, func(t *testing.T) {
-			got := MssqlCrack(&tc)
+			got, _ := MssqlCrack(&tc)
 			t.Logf("%v %v:%v", RespMap[got], tc.User, tc.Pass)
 			if name != RespMap[got] {
 				t.Error("sth wrong")
@@ -353,7 +353,7 @@ func TestOracleCrack(t *testing.T) {
 	}
 	for name, tc := range tests {
 		t.Run(name, func(t *testing.T) {
-			got := OracleCrack(&tc)
+			got, _ := OracleCrack(&tc)
 			t.Logf("%v %v:%v", RespMap[got], tc.User, tc.Pass)
 			if name != RespMap[got] {
 				t.Error("sth wrong")
@@ -405,7 +405,7 @@ func TestMysqlCrack(t *testing.T) {
 	}
 	for name, tc := range tests {
 		t.Run(name, func(t *testing.T) {
-			got := MysqlCrack(&tc)
+			got, _ := MysqlCrack(&tc)
 			t.Logf("%v %v:%v", RespMap[got], tc.User, tc.Pass)
 			if name != RespMap[got] {
 				t.Error("sth wrong")
@@ -455,7 +455,7 @@ func TestRdpCrack(t *testing.T) {
 	}
 	for name, tc := range tests {
 		t.Run(name, func(t *testing.T) {
-			got := RdpCrack(&tc)
+			got, _ := RdpCrack(&tc)
 			t.Logf("%v %v:%v", RespMap[got], tc.User, tc.Pass)
 			if name != RespMap[got] {
 				t.Error("sth wrong")
@@ -505,7 +505,7 @@ func TestPostgresCrack(t *testing.T) {
 	}
 	for name, tc := range tests {
 		t.Run(name, func(t *testing.T) {
-			got := PostgresCrack(&tc)
+			got, _ := PostgresCrack(&tc)
 			t.Logf("%v %v:%v", RespMap[got], tc.User, tc.Pass)
 			if name != RespMap[got] {
 				t.Error("sth wrong")
@@ -555,7 +555,7 @@ func TestRedisCrack(t *testing.T) {
 	}
 	for name, tc := range tests {
 		t.Run(name, func(t *testing.T) {
-			got := RedisCrack(&tc)
+			got, _ := RedisCrack(&tc)
 			t.Logf("%v %v:%v", RespMap[got], tc.User, tc.Pass)
 			if name != RespMap[got] {
 				t.Error("sth wrong")
@@ -597,7 +597,7 @@ func TestMemcachedCrack(t *testing.T) {
 	}
 	for name, tc := range tests {
 		t.Run(name, func(t *testing.T) {
-			got := MemcachedCrack(&tc)
+			got, _ := MemcachedCrack(&tc)
 			t.Logf("%v %v:%v", RespMap[got], tc.User, tc.Pass)
 			if name != RespMap[got] {
 				t.Error("sth wrong")
@@ -665,7 +665,7 @@ func TestMongodbCrack(t *testing.T) {
 	}
 	for name, tc := range tests {
 		t.Run(name, func(t *testing.T) {
-			got := MongodbCrack(&tc)
+			got, _ := MongodbCrack(&tc)
 			t.Logf("%v %v:%v", RespMap[got], tc.User, tc.Pass)
 			if name != RespMap[got] {
 				t.Error("sth wrong")

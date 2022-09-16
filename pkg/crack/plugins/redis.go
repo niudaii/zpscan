@@ -8,7 +8,7 @@ import (
 	"github.com/go-redis/redis"
 )
 
-func RedisCrack(serv *Service) int {
+func RedisCrack(serv *Service) (int, error) {
 	addr := fmt.Sprintf("%v:%v", serv.Ip, serv.Port)
 	opt := redis.Options{
 		Addr:        addr,
@@ -21,9 +21,9 @@ func RedisCrack(serv *Service) int {
 	_, err := client.Ping().Result()
 	if err != nil {
 		if strings.Contains(err.Error(), "timeout") {
-			return CrackError
+			return CrackError, err
 		}
-		return CrackFail
+		return CrackFail, nil
 	}
-	return CrackSuccess
+	return CrackSuccess, nil
 }

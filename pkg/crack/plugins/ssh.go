@@ -9,7 +9,7 @@ import (
 	"golang.org/x/crypto/ssh"
 )
 
-func SshCrack(serv *Service) int {
+func SshCrack(serv *Service) (int, error) {
 	config := &ssh.ClientConfig{
 		User: serv.User,
 		Auth: []ssh.AuthMethod{
@@ -23,16 +23,16 @@ func SshCrack(serv *Service) int {
 	client, err := ssh.Dial("tcp", fmt.Sprintf("%v:%v", serv.Ip, serv.Port), config)
 	if err != nil {
 		if strings.Contains(err.Error(), "timeout") {
-			return CrackError
+			return CrackError, err
 		}
-		return CrackFail
+		return CrackFail, nil
 	}
 	defer client.Close()
 	session, err := client.NewSession()
 	errRet := session.Run("echo zp857")
 	if err != nil || errRet != nil {
-		return CrackFail
+		return CrackFail, nil
 	}
 	defer session.Close()
-	return CrackSuccess
+	return CrackSuccess, nil
 }

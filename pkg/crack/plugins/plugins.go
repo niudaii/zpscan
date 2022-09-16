@@ -15,7 +15,7 @@ const (
 	CrackSuccess
 )
 
-type ScanFunc func(serv *Service) int
+type ScanFunc func(serv *Service) (int, error)
 
 var (
 	ScanFuncMap map[string]ScanFunc

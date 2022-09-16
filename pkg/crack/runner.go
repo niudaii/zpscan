@@ -117,7 +117,7 @@ func (r *Runner) Crack(addr *IpAddr, userDict []string, passDict []string) (resu
 				mutex.Unlock()
 				gologger.Debug().Msgf("[trying] %v", userPass)
 				scanFunc := plugins.ScanFuncMap[task.Protocol]
-				resp := scanFunc(&task)
+				resp, err := scanFunc(&task)
 				switch resp {
 				case plugins.CrackSuccess:
 					if !r.options.CrackAll {
@@ -135,6 +135,7 @@ func (r *Runner) Crack(addr *IpAddr, userDict []string, passDict []string) (resu
 					mutex.Lock()
 					stopHashMap[addrHash] = true
 					mutex.Unlock()
+					gologger.Debug().Msgf("crack err, %v", err)
 				case plugins.CrackFail:
 				}
 				if r.options.Delay > 0 {

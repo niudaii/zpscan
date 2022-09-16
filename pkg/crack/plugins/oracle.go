@@ -17,19 +17,19 @@ var services = []string{
 	"oracle",
 }
 
-func OracleCrack(serv *Service) int {
+func OracleCrack(serv *Service) (int, error) {
 	for _, service := range services {
 		conn, err := Conn(serv, service)
 		if err != nil {
 			if strings.Contains(err.Error(), "timeout") {
-				return CrackError
+				return CrackError, err
 			}
 		}
 		if conn {
-			return CrackSuccess
+			return CrackSuccess, nil
 		}
 	}
-	return CrackFail
+	return CrackFail, nil
 }
 
 func Conn(serv *Service, service string) (conn bool, err error) {
