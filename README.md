@@ -25,20 +25,21 @@
 ## 功能
 
 - domainscan
-  - 调用subfinder被动收集，调用ksubdoamin进行dns验证
-  - 获取 domain 相关的 web（host:port）
+  - 调用 subfinder 被动收集，调用 ksubdoamin 进行 dns 验证
+  - 获取 domain 相关的 web（host:port）资产，使用 webscan 扫描。
 - webscan
   - 获取 statusCode、contentLength、favicon、iconHash、title、wappalyzer、finger
-  - title自动解码
-  - js静态分析跳转
+  - title 自动解码
+  - js 静态分析跳转
   - 指纹可自定义 tags 用来过滤和标记，pocTags 与 nuclei 对应
 - ipscan
   - 先端口开放扫描（tcp），使用 nmap 指纹识别协议
 - crack
   - 支持常见服务口令爆破（未授权检测）
+  - 全部测试通过（成功、失败、超时退出）
 - dirscan
   - 字典分类
-  - 结果过滤
+  - 结果过滤（重复结果判断）
 
 ## 使用
 
@@ -99,8 +100,6 @@ Global Flags:
 ```
 
 ## 截图
-
-
 
 webscan
 

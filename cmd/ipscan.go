@@ -4,6 +4,7 @@ import (
 	"encoding/binary"
 	"encoding/json"
 	"fmt"
+	"github.com/niudaii/zpscan/pkg/webscan"
 	"strings"
 
 	"github.com/niudaii/zpscan/config"
@@ -57,11 +58,11 @@ var ipscanCmd = &cobra.Command{
 		}
 
 		if err := initQqwry(); err != nil {
-			gologger.Error().Msgf("initQqwry() err, %v", err)
+			gologger.Fatal().Msgf("initQqwry() err, %v", err)
 		}
 
 		if err := initNmapProbe(); err != nil {
-			gologger.Error().Msgf("initNmapProbe() err, %v", err)
+			gologger.Fatal().Msgf("initNmapProbe() err, %v", err)
 		}
 
 		if err := ipscanOptions.configureOptions(); err != nil {
@@ -222,4 +223,34 @@ func (o *IpscanOptions) run() {
 	gologger.Info().Msgf("web: %v", len(webTargets))
 	gologger.Info().Msgf("service: %v", len(servResults))
 	gologger.Info().Msgf("crack: %v", len(crackTargets))
+	options2 := &webscan.Options{
+		Proxy:       webscanOptions.Proxy,
+		Threads:     webscanOptions.Threads,
+		Timeout:     webscanOptions.Timeout,
+		Headers:     webscanOptions.Headers,
+		NoColor:     commonOptions.NoColor,
+		FingerRules: config.Worker.Webscan.FingerRules,
+	}
+	webscanRunner, err := webscan.NewRunner(options2)
+	if err != nil {
+		gologger.Error().Msgf("webscan.NewRunner() err, %v", err)
+		return
+	}
+	webscanRunner.Run(webTargets)
+	if o.Crack {
+		options3 := &crack.Options{
+			Threads:  crackOptions.Threads,
+			Timeout:  crackOptions.Timeout,
+			Delay:    crackOptions.Delay,
+			CrackAll: crackOptions.CrackAll,
+		}
+		crackRunner, err := crack.NewRunner(options3)
+		if err != nil {
+			gologger.Error().Msgf("crack.NewRunner() err, %v", err)
+			return
+		}
+		addrs := crack.ParseTargets(crackTargets)
+		addrs = crack.FilterModule(addrs, crackOptions.Module)
+		crackRunner.Run(addrs, []string{}, []string{})
+	}
 }
