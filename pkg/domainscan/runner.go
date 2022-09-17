@@ -55,7 +55,9 @@ func (r *Runner) RunEnumeration(domain string) (results []*Result) {
 	// 加入本身这个域名
 	domains = append(domains, domain)
 	// 判断泛解析
+	var isWildcard bool
 	if CheckWildcard(domain) {
+		isWildcard = true
 		gologger.Info().Msgf("存在泛解析: %v", domain)
 	} else {
 		for _, sub := range r.options.SubdomainData {
@@ -79,14 +81,32 @@ func (r *Runner) RunEnumeration(domain string) (results []*Result) {
 		gologger.Error().Msgf("ksubdomain.Run() err, %v", err)
 		return
 	}
-	for _, res := range result {
-		tmpRes := Result{
-			Domain: res.Host,
-			Ip:     res.IP,
+	domainMap := map[string]bool{}
+	gologger.Info().Msgf("ksubdomain: %v", len(result))
+	if isWildcard {
+		for _, res := range result {
+			if domainMap[res.IP] {
+				continue
+			}
+			domainMap[res.IP] = true
+			tmpRes := Result{
+				Domain: res.Host,
+				Ip:     res.IP,
+			}
+			tmpRes.Cdn = r.CheckCDN(res.IP)
+			results = append(results, &tmpRes)
+			gologger.Silent().Msgf(fmt.Sprintf("%v => %v => %v", tmpRes.Domain, tmpRes.Ip, tmpRes.Cdn))
 		}
-		tmpRes.Cdn = r.CheckCDN(res.IP)
-		results = append(results, &tmpRes)
-		gologger.Silent().Msgf(fmt.Sprintf("%v => %v => %v", tmpRes.Domain, tmpRes.Ip, tmpRes.Cdn))
+	} else {
+		for _, res := range result {
+			tmpRes := Result{
+				Domain: res.Host,
+				Ip:     res.IP,
+			}
+			tmpRes.Cdn = r.CheckCDN(res.IP)
+			results = append(results, &tmpRes)
+			gologger.Silent().Msgf(fmt.Sprintf("%v => %v => %v", tmpRes.Domain, tmpRes.Ip, tmpRes.Cdn))
+		}
 	}
 
 	gologger.Info().Msgf("扫描结束")
