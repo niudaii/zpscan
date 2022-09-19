@@ -160,7 +160,7 @@ func (o *IpscanOptions) run() {
 		}
 		// 获取地理位置
 		if ipResult.Country, ipResult.Area, err = ipscanRunner.GetIpAddr(ip); err != nil {
-			gologger.Error().Msgf("ipscanRunner.GetAddr() err, %v", err)
+			gologger.Error().Msgf("ipscanRunner.GetIpAddr() err, %v", err)
 			return
 		}
 		// 操作系统识别

@@ -8,8 +8,8 @@ import (
 	"time"
 
 	"github.com/cheggaaa/pb/v3"
-	"github.com/niudaii/ipscan/pkg/ipscan/portscan/privileges"
-	"github.com/niudaii/ipscan/pkg/ipscan/portscan/scan"
+	"github.com/niudaii/zpscan/pkg/ipscan/portscan/privileges"
+	"github.com/niudaii/zpscan/pkg/ipscan/portscan/scan"
 	"github.com/projectdiscovery/blackrock"
 	"github.com/projectdiscovery/dnsx/libs/dnsx"
 	"github.com/projectdiscovery/gologger"

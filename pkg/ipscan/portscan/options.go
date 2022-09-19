@@ -1,7 +1,7 @@
 package portscan
 
 import (
-	"github.com/niudaii/ipscan/pkg/ipscan/portscan/privileges"
+	"github.com/niudaii/zpscan/pkg/ipscan/portscan/privileges"
 	"github.com/projectdiscovery/gologger"
 )
 

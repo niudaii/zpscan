@@ -4,7 +4,6 @@ import (
 	"github.com/niudaii/zpscan/pkg/ipscan/portfinger"
 	"github.com/niudaii/zpscan/pkg/ipscan/portscan"
 	"github.com/niudaii/zpscan/pkg/ipscan/qqwry"
-
 	"github.com/projectdiscovery/gologger"
 )
 

@@ -2,7 +2,6 @@ package ksubdomain
 
 import (
 	"context"
-
 	"github.com/boy-hack/ksubdomain/core/options"
 	"github.com/boy-hack/ksubdomain/runner"
 	"github.com/boy-hack/ksubdomain/runner/outputter"
@@ -13,7 +12,7 @@ type Result struct {
 	IP   string
 }
 
-func Run(domains []string) (results []*Result, err error) {
+func Run(domains []string, rate string) (results []*Result, err error) {
 	buffPrinter, _ := NewBuffOutput()
 	domainChanel := make(chan string)
 	go func() {
@@ -23,7 +22,7 @@ func Run(domains []string) (results []*Result, err error) {
 		close(domainChanel)
 	}()
 	opt := &options.Options{
-		Rate:        options.Band2Rate("700000k"),
+		Rate:        options.Band2Rate(rate),
 		Domain:      domainChanel,
 		DomainTotal: len(domains),
 		Resolvers:   options.GetResolvers(""),

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/niudaii/ipscan/pkg/ipscan/portscan/scan"
+	"github.com/niudaii/zpscan/pkg/ipscan/portscan/scan"
 	"github.com/projectdiscovery/gologger"
 	"github.com/projectdiscovery/ipranger"
 	"github.com/projectdiscovery/iputil"

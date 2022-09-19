@@ -2,17 +2,16 @@ package domainscan
 
 import (
 	"fmt"
-
 	"github.com/niudaii/zpscan/internal/utils"
-
-	"github.com/niudaii/domainscan/pkg/domainscan/ksubdomain"
-	"github.com/niudaii/domainscan/pkg/domainscan/subfinder"
+	"github.com/niudaii/zpscan/pkg/domainscan/ksubdomain"
+	"github.com/niudaii/zpscan/pkg/domainscan/subfinder"
 	"github.com/projectdiscovery/gologger"
 	"github.com/projectdiscovery/subfinder/v2/pkg/runner"
 )
 
 type Options struct {
 	Layer         int
+	Rate          string
 	SubdomainData []string
 	SubnextData   []string
 	CdnCnameData  []string
@@ -76,7 +75,7 @@ func (r *Runner) RunEnumeration(domain string) (results []*Result) {
 	// 调用ksubdomain进行dns解析
 	domains = utils.RemoveDuplicate(domains)
 	gologger.Info().Msgf("开始DNS解析: %v", len(domains))
-	result, err := ksubdomain.Run(domains)
+	result, err := ksubdomain.Run(domains, r.options.Rate)
 	if err != nil {
 		gologger.Error().Msgf("ksubdomain.Run() err, %v", err)
 		return

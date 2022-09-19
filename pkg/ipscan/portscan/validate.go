@@ -3,9 +3,9 @@ package portscan
 import (
 	"flag"
 	"fmt"
+	"github.com/niudaii/zpscan/pkg/ipscan/portscan/privileges"
 	"net"
 
-	"github.com/niudaii/ipscan/pkg/ipscan/portscan/privileges"
 	"github.com/pkg/errors"
 )
 

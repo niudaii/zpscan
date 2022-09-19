@@ -21,12 +21,14 @@ type DomainscanOptions struct {
 	SubnextFile   string
 
 	Layer int
+	Rate  string
 }
 
 var domainscanOptions DomainscanOptions
 
 func init() {
 	domainscanCmd.Flags().IntVarP(&domainscanOptions.Layer, "layer", "l", 1, "number of domain layer(1|2)")
+	domainscanCmd.Flags().StringVar(&domainscanOptions.Rate, "rate", "500000k", "ksubdomain rate")
 	domainscanCmd.Flags().StringVar(&domainscanOptions.ProviderFile, "provider-file", "", "subfinder provider config file(example: --provider-config 'xxx.yaml')")
 	domainscanCmd.Flags().StringVar(&domainscanOptions.SubdomainFile, "subdomain-file", "", "subdomain file(example: --subdomain-file 'xxx.txt')")
 	domainscanCmd.Flags().StringVar(&domainscanOptions.SubnextFile, "subnext-file", "", "subnext file(example: --subnext-file 'xxx.txt')")
@@ -119,6 +121,7 @@ func (o *DomainscanOptions) run() {
 	// 子域名收集
 	options := &domainscan.Options{
 		Layer:         o.Layer,
+		Rate:          o.Rate,
 		SubdomainData: config.Worker.Domainscan.SubdomainData,
 		SubnextData:   config.Worker.Domainscan.SubnextData,
 		CdnCnameData:  config.Worker.Domainscan.CdnCnameData,

@@ -9,7 +9,7 @@ import (
 
 	"github.com/google/gopacket"
 	"github.com/google/gopacket/layers"
-	"github.com/niudaii/ipscan/pkg/ipscan/portscan/privileges"
+	"github.com/niudaii/zpscan/pkg/ipscan/portscan/privileges"
 	"github.com/phayes/freeport"
 	"github.com/projectdiscovery/gologger"
 	"github.com/projectdiscovery/ipranger"
