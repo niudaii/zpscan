@@ -12,16 +12,16 @@ import (
 // CheckAlive 存活检测
 func (r *Runner) CheckAlive(addrs []*IpAddr) (results []*IpAddr) {
 	// RunTask
-	mutex := &sync.Mutex{}
+	rwMutex := &sync.RWMutex{}
 	wg := &sync.WaitGroup{}
 	taskChan := make(chan *IpAddr, r.options.Threads)
 	for i := 0; i < r.options.Threads; i++ {
 		go func() {
 			for task := range taskChan {
 				if r.conn(task) {
-					mutex.Lock()
+					rwMutex.Lock()
 					results = append(results, task)
-					mutex.Unlock()
+					rwMutex.Unlock()
 				}
 				wg.Done()
 			}
