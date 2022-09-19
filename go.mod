@@ -18,10 +18,12 @@ require (
 	github.com/logrusorgru/aurora v2.0.3+incompatible
 	github.com/niudaii/domainscan v0.0.0-20220909080912-aeed52eccff3
 	github.com/niudaii/ipscan v0.0.0-20220909081128-4449cd88ee45
+	github.com/orcaman/concurrent-map/v2 v2.0.0
 	github.com/phayes/freeport v0.0.0-20220201140144-74d24b5ae9f5
 	github.com/pkg/errors v0.9.1
 	github.com/projectdiscovery/blackrock v0.0.0-20220628111055-35616c71b2dc
 	github.com/projectdiscovery/dnsx v1.1.0
+	github.com/projectdiscovery/fdmax v0.0.3
 	github.com/projectdiscovery/gologger v1.1.4
 	github.com/projectdiscovery/ipranger v0.0.3-0.20210831161617-ac80efae0961
 	github.com/projectdiscovery/iputil v0.0.0-20220712175312-b9406f31cdd8

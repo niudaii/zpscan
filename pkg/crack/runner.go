@@ -2,6 +2,7 @@ package crack
 
 import (
 	"fmt"
+	cmap "github.com/orcaman/concurrent-map/v2"
 	"strings"
 	"sync"
 	"time"
@@ -97,8 +98,8 @@ func (r *Runner) Crack(addr *IpAddr, userDict []string, passDict []string) (resu
 		}
 	}
 	// RunTask
-	stopHashMap := map[string]bool{}
-	mutex := &sync.Mutex{}
+	stopMap := cmap.New[string]()
+	rwMutex := &sync.Mutex{}
 	wg := &sync.WaitGroup{}
 	taskChan := make(chan plugins.Service, r.options.Threads)
 	for i := 0; i < r.options.Threads; i++ {
@@ -108,33 +109,28 @@ func (r *Runner) Crack(addr *IpAddr, userDict []string, passDict []string) (resu
 				userPass := fmt.Sprintf("%v:%v", task.User, task.Pass)
 				addrHash := utils.Md5(addrStr)
 				// 判断是否已经停止爆破
-				mutex.Lock()
-				if stopHashMap[addrHash] {
-					mutex.Unlock()
+				if stopMap.Has(addrHash) {
 					wg.Done()
 					continue
 				}
-				mutex.Unlock()
 				gologger.Debug().Msgf("[trying] %v", userPass)
 				scanFunc := plugins.ScanFuncMap[task.Protocol]
 				resp, err := scanFunc(&task)
 				switch resp {
 				case plugins.CrackSuccess:
 					if !r.options.CrackAll {
-						mutex.Lock()
-						stopHashMap[addrHash] = true
-						mutex.Unlock()
+						stopMap.Set(addrHash, "ok")
 					}
 					gologger.Silent().Msgf("%v -> %v %v", addr.Protocol, addrStr, userPass)
+					rwMutex.Lock()
 					results = append(results, &Result{
 						Addr:     addrStr,
 						Protocol: addr.Protocol,
 						UserPass: userPass,
 					})
+					rwMutex.Unlock()
 				case plugins.CrackError:
-					mutex.Lock()
-					stopHashMap[addrHash] = true
-					mutex.Unlock()
+					stopMap.Set(addrHash, "ok")
 					gologger.Debug().Msgf("crack err, %v", err)
 				case plugins.CrackFail:
 				}

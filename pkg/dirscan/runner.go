@@ -1,7 +1,6 @@
 package dirscan
 
 import (
-	"fmt"
 	"strings"
 	"sync"
 	"time"
@@ -98,8 +97,8 @@ func (r *Runner) Dirscan(url string, dirData []string) (results Results) {
 					if resp.ContentLength != 0 && utils.IsExclude(r.options.MatchStatus, resp.StatusCode) {
 						mutex.Lock()
 						respMap[resp.StatusCode] += 1
-						mutex.Unlock()
 						tmpResults = append(tmpResults, resp)
+						mutex.Unlock()
 						gologger.Silent().Msgf("%v [%v] [%v]", resp.Url, resp.StatusCode, resp.ContentLength)
 					}
 				}
@@ -115,7 +114,6 @@ func (r *Runner) Dirscan(url string, dirData []string) (results Results) {
 	close(taskChan)
 	wg.Wait()
 
-	fmt.Println(respMap)
 	for _, result := range tmpResults {
 		if respMap[result.ContentLength] < r.options.MaxMatched {
 			results = append(results, &Result{

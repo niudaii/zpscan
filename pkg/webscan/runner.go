@@ -66,6 +66,7 @@ func NewReqClient(proxy string, timeout int, headers []string) *req.Client {
 func (r *Runner) Run(urls []string) (results Results) {
 	// RunTask
 	wg := &sync.WaitGroup{}
+	rwMutex := sync.RWMutex{}
 	taskChan := make(chan string, r.options.Threads)
 	for i := 0; i < r.options.Threads; i++ {
 		go func() {
@@ -79,7 +80,9 @@ func (r *Runner) Run(urls []string) (results Results) {
 						gologger.Warning().Msgf("%v 可能为蜜罐", resp.Url)
 					} else {
 						gologger.Silent().Msgf(FmtResult(resp, r.options.NoColor))
+						rwMutex.Lock()
 						results = append(results, resp)
+						rwMutex.Unlock()
 					}
 				}
 				wg.Done()
