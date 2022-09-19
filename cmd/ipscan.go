@@ -154,7 +154,7 @@ func (o *IpscanOptions) run() {
 	}
 	var ipResults []*Ip
 	var servResults []*Service
-	for _, ip := range targets {
+	for _, ip := range hosts {
 		ipResult := &Ip{
 			Ip: ip,
 		}
