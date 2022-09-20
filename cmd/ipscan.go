@@ -112,6 +112,7 @@ func initNmapProbe() error {
 	if err = config.Worker.Ipscan.NmapProbe.Init(nmapData); err != nil {
 		return err
 	}
+	gologger.Info().Msgf("nmap指纹数量: %v个探针,%v条正则", len(config.Worker.Ipscan.NmapProbe.Probes), config.Worker.Ipscan.NmapProbe.Count())
 	return nil
 }
 

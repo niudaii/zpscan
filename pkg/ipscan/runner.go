@@ -42,7 +42,6 @@ func NewRunner(options *Options) (*Runner, error) {
 	if err != nil {
 		return nil, err
 	}
-	gologger.Info().Msgf("nmap指纹数量: %v个探针,%v条正则", len(portFingerEngine.Scanner.Probes), portFingerEngine.Scanner.Count())
 	return &Runner{
 		options:          options,
 		synscanRunner:    synscanRunner,

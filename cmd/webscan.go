@@ -112,6 +112,8 @@ func initFinger() error {
 		return err
 	}
 
+	gologger.Info().Msgf("指纹数量: %v", len(config.Worker.Webscan.FingerRules))
+
 	return nil
 }
 
