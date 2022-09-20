@@ -137,6 +137,14 @@ Dirscan
 
 ## 更新
 
+## Q&A
+
+#### 1、linux操作系统端口扫描时出现：ping err, socket: permission denied
+
+```
+sudo sysctl -w net.ipv4.ping_group_range="0 2147483647"
+```
+
 
 
 ## 参考
