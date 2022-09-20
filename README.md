@@ -29,6 +29,7 @@
   - 泛解析、CDN 判断
   - 获取 domain 相关的 web（host:port）资产，使用 webscan 扫描。
 - webscan
+  - 支持 http/https scheme 自动判断
   - 获取 statusCode、contentLength、favicon、iconHash、title、wappalyzer、finger
   - title 自动解码
   - js 静态分析跳转
@@ -41,7 +42,8 @@
   - 操作系统识别
   - 联动模块（ipscan -> webscan -> crack）
 - crack
-  - 支持常见服务口令爆破（未授权检测）
+  - 支持默认端口协议和自定义协议（127.0.0.1:3306）（127.0.01:3307|mysql）
+  - 支持常见服务口令爆破、未授权检测
   - 全部模块测试用例（爆破成功、失败、超时）
 - dirscan
   - 字典分类
@@ -75,7 +77,7 @@ Flags:
 Use "zpscan [command] --help" for more information about a command.
 ```
 
-子命令
+子命令（domainscan|ipscan|webscan|crack|dirscan）
 
 ```
 ➜  zpscan git:(main) ./zpscan crack -h                       
@@ -107,17 +109,29 @@ Global Flags:
 
 ## 截图
 
+domainscan
+
+![image-20220920100928722](https://nnotes.oss-cn-hangzhou.aliyuncs.com/notes/image-20220920100928722.png)
+
+ipscan
+
+![image-20220920101122919](https://nnotes.oss-cn-hangzhou.aliyuncs.com/notes/image-20220920101122919.png)
+
 webscan
 
 ![image-20220916134330575](https://nnotes.oss-cn-hangzhou.aliyuncs.com/notes/image-20220916134330575.png)
 
-Crack
+crack
 
 ![image-20220916134433908](https://nnotes.oss-cn-hangzhou.aliyuncs.com/notes/image-20220916134433908.png)
 
+Dirscan
+
+![image-20220920101308449](https://nnotes.oss-cn-hangzhou.aliyuncs.com/notes/image-20220920101308449.png)
+
 ## 说明
 
-- 下载并放置资源文件到可执行文件的同目录下
+- 下载并放置资源文件（config.yaml、resource/）到可执行文件的同目录下
 
   https://zpscan.oss-cn-hangzhou.aliyuncs.com/resource.zip
 

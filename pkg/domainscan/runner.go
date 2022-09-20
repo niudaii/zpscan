@@ -81,7 +81,7 @@ func (r *Runner) RunEnumeration(domain string) (results []*Result) {
 		return
 	}
 	domainMap := map[string]bool{}
-	gologger.Info().Msgf("ksubdomain: %v", len(result))
+	gologger.Info().Msgf("ksubdomain结果: %v", len(result))
 	if isWildcard {
 		for _, res := range result {
 			if domainMap[res.IP] {
