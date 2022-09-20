@@ -156,4 +156,12 @@ func (o *DirscanOptions) run() {
 	for _, result := range results {
 		gologger.Print().Msgf("%v [%v] [%v]", result.Url, result.StatusCode, result.ContentLength)
 	}
+
+	// 保存 dirscan 结果
+	if commonOptions.ResultFile != "" {
+		err = utils.SaveMarshal(commonOptions.ResultFile, results)
+		if err != nil {
+			gologger.Error().Msgf("utils.SaveMarshal() err, %v", err)
+		}
+	}
 }

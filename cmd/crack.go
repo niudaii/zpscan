@@ -147,4 +147,12 @@ func (o *CrackOptions) run() {
 			gologger.Print().Msgf("%v -> %v %v", result.Protocol, result.Addr, result.UserPass)
 		}
 	}
+
+	// 保存 crack 结果
+	if commonOptions.ResultFile != "" {
+		err = utils.SaveMarshal(commonOptions.ResultFile, results)
+		if err != nil {
+			gologger.Error().Msgf("utils.SaveMarshal() err, %v", err)
+		}
+	}
 }

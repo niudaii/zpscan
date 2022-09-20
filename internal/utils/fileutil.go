@@ -2,6 +2,7 @@ package utils
 
 import (
 	"bufio"
+	"encoding/json"
 	"io/ioutil"
 	"os"
 )
@@ -36,7 +37,7 @@ func ReadFile(filename string) (bytes []byte, err error) {
 }
 
 func WriteFile(filename string, data string) (err error) {
-	file, err := os.OpenFile(filename, os.O_WRONLY|os.O_TRUNC, 0666)
+	file, err := os.OpenFile(filename, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0666)
 	if err != nil {
 		return err
 	}
@@ -44,4 +45,14 @@ func WriteFile(filename string, data string) (err error) {
 	_, _ = writer.WriteString(data)
 	_ = writer.Flush()
 	return nil
+}
+
+func SaveMarshal(filename string, results interface{}) (err error) {
+	var data []byte
+	data, err = json.Marshal(results)
+	if err != nil {
+		return
+	}
+	err = WriteFile(filename, string(data))
+	return
 }

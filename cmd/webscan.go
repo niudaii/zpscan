@@ -162,4 +162,12 @@ func (o *WebscanOptions) run() {
 	gologger.Print().Msgf("%v", res)
 	gologger.Info().Msgf("重点指纹: %v", fingerNum)
 	gologger.Print().Msgf("%v", fingerRes)
+
+	// 保存 webscan 结果
+	if commonOptions.ResultFile != "" {
+		err = utils.SaveMarshal(commonOptions.ResultFile, results)
+		if err != nil {
+			gologger.Error().Msgf("utils.SaveMarshal() err, %v", err)
+		}
+	}
 }

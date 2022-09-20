@@ -165,4 +165,12 @@ func (o *DomainscanOptions) run() {
 		return
 	}
 	webscanRunner.Run(urls)
+
+	// 保存 domainscan 结果
+	if commonOptions.ResultFile != "" {
+		err = utils.SaveMarshal(commonOptions.ResultFile, results)
+		if err != nil {
+			gologger.Error().Msgf("utils.SaveMarshal() err, %v", err)
+		}
+	}
 }

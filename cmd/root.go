@@ -19,6 +19,7 @@ type CommonOptions struct {
 	InputFile string
 
 	OutputFile string
+	ResultFile string
 
 	NoColor bool
 	Debug   bool
@@ -96,7 +97,8 @@ func Execute() {
 	rootCmd.PersistentFlags().StringVarP(&commonOptions.Input, "input", "i", "", "single input(example: -i 'xxx')")
 	rootCmd.PersistentFlags().StringVarP(&commonOptions.InputFile, "input-file", "f", "", "inputs file(example: -f 'xxx.txt')")
 
-	rootCmd.PersistentFlags().StringVarP(&commonOptions.OutputFile, "output", "o", "result.txt", "output file to write found results")
+	rootCmd.PersistentFlags().StringVar(&commonOptions.ResultFile, "result", "", "output file to write found results")
+	rootCmd.PersistentFlags().StringVarP(&commonOptions.OutputFile, "output", "o", "result.txt", "output file to write log and results")
 
 	rootCmd.PersistentFlags().BoolVar(&commonOptions.NoColor, "no-color", false, "disable colors in output")
 	rootCmd.PersistentFlags().BoolVar(&commonOptions.Debug, "debug", false, "show debug output")
