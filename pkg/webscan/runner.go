@@ -11,12 +11,14 @@ import (
 )
 
 type Options struct {
-	Proxy       string
-	Threads     int
-	Timeout     int
-	Headers     []string
-	NoColor     bool
-	FingerRules []*FingerRule
+	Proxy        string
+	Threads      int
+	Timeout      int
+	Headers      []string
+	NoColor      bool
+	NoIconhash   bool
+	NoWappalyzer bool
+	FingerRules  []*FingerRule
 }
 
 type Runner struct {
@@ -25,16 +27,18 @@ type Runner struct {
 	wappalyzerClient *wappalyzer.Wappalyze
 }
 
-func NewRunner(options *Options) (*Runner, error) {
-	wappalyzerClient, err := wappalyzer.New()
-	if err != nil {
-		return nil, err
+func NewRunner(options *Options) (runner *Runner, err error) {
+	runner = &Runner{
+		options:   options,
+		reqClient: NewReqClient(options.Proxy, options.Timeout, options.Headers),
 	}
-	return &Runner{
-		options:          options,
-		reqClient:        NewReqClient(options.Proxy, options.Timeout, options.Headers),
-		wappalyzerClient: wappalyzerClient,
-	}, nil
+	if !options.NoWappalyzer {
+		runner.wappalyzerClient, err = wappalyzer.New()
+		if err != nil {
+			return nil, err
+		}
+	}
+	return runner, nil
 }
 
 func NewReqClient(proxy string, timeout int, headers []string) *req.Client {
@@ -125,8 +129,12 @@ func (r *Runner) Webinfo(url string) (result *Result, err error) {
 		Title:         getTitle(resp),
 		Fingers:       r.getFinger(resp),
 	}
-	result.Favicon, result.IconHash = r.getFavicon(resp)
-	result.Wappalyzer = r.wappalyzerClient.Fingerprint(resp.Header, resp.Bytes())
+	if !r.options.NoIconhash {
+		result.Favicon, result.IconHash = r.getFavicon(resp)
+	}
+	if !r.options.NoWappalyzer {
+		result.Wappalyzer = r.wappalyzerClient.Fingerprint(resp.Header, resp.Bytes())
+	}
 	return
 }
 

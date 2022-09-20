@@ -16,10 +16,12 @@ import (
 )
 
 type WebscanOptions struct {
-	Threads int
-	Timeout int
-	Proxy   string
-	Headers []string
+	Threads      int
+	Timeout      int
+	Proxy        string
+	Headers      []string
+	NoIconhash   bool
+	NoWappalyzer bool
 
 	FilterTags []string
 	FingerFile string
@@ -35,6 +37,8 @@ func init() {
 	webscanCmd.Flags().StringVarP(&webscanOptions.Proxy, "proxy", "p", "", "proxy(example: -p 'http://127.0.0.1:8080')")
 	webscanCmd.Flags().StringSliceVar(&webscanOptions.Headers, "headers", []string{}, "add custom headers(example: --headers 'User-Agent: xxx,Cookie: xxx')")
 
+	webscanCmd.Flags().BoolVar(&webscanOptions.NoIconhash, "no-iconhash", false, "not scan iconhash")
+	webscanCmd.Flags().BoolVar(&webscanOptions.NoWappalyzer, "no-wappalyzer", false, "not scan wappalyzer")
 	webscanCmd.Flags().StringVar(&webscanOptions.FingerFile, "finger-file", "", "use your finger file(example: --finger-file 'fingers.json')")
 
 	webscanCmd.Flags().StringSliceVar(&webscanOptions.FilterTags, "filter-tags", []string{"非重要"}, "filter tags(example: --filter-tags '非重要')")
@@ -119,12 +123,14 @@ func initFinger() error {
 
 func (o *WebscanOptions) run() {
 	options := &webscan.Options{
-		Proxy:       o.Proxy,
-		Threads:     o.Threads,
-		Timeout:     o.Timeout,
-		Headers:     o.Headers,
-		NoColor:     commonOptions.NoColor,
-		FingerRules: config.Worker.Webscan.FingerRules,
+		Proxy:        o.Proxy,
+		Threads:      o.Threads,
+		Timeout:      o.Timeout,
+		Headers:      o.Headers,
+		NoColor:      commonOptions.NoColor,
+		NoIconhash:   o.NoIconhash,
+		NoWappalyzer: o.NoWappalyzer,
+		FingerRules:  config.Worker.Webscan.FingerRules,
 	}
 	webRunner, err := webscan.NewRunner(options)
 	if err != nil {
