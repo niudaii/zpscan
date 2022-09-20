@@ -125,7 +125,7 @@ crack
 
 ![image-20220916134433908](https://nnotes.oss-cn-hangzhou.aliyuncs.com/notes/image-20220916134433908.png)
 
-Dirscan
+dirscan
 
 ![image-20220920101308449](https://nnotes.oss-cn-hangzhou.aliyuncs.com/notes/image-20220920101308449.png)
 
