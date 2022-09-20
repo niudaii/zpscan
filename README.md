@@ -26,20 +26,26 @@
 
 - domainscan
   - 调用 subfinder 被动收集，调用 ksubdoamin 进行 dns 验证
+  - 泛解析、CDN 判断
   - 获取 domain 相关的 web（host:port）资产，使用 webscan 扫描。
 - webscan
   - 获取 statusCode、contentLength、favicon、iconHash、title、wappalyzer、finger
   - title 自动解码
   - js 静态分析跳转
-  - 指纹可自定义 tags 用来过滤和标记，pocTags 与 nuclei 对应
+  - favicon 自动分析获取 iconhash
+  - 指纹自定义 tags 用来过滤和标记，pocTags 与 nuclei 对应
 - ipscan
+  - 支持多种输入格式（192.168.1.1-128）（192.168.1.0/24）
   - 先端口开放扫描（tcp），使用 nmap 指纹识别协议
+  - 获取地理位置
+  - 操作系统识别
+  - 联动模块（ipscan -> webscan -> crack）
 - crack
   - 支持常见服务口令爆破（未授权检测）
-  - 全部测试通过（成功、失败、超时退出）
+  - 全部模块测试用例（爆破成功、失败、超时）
 - dirscan
   - 字典分类
-  - 结果过滤（重复结果判断）
+  - 结果过滤（重复 contentLength 判断）
 
 ## 使用
 
