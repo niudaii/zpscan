@@ -96,7 +96,7 @@ func (r *Runner) Dirscan(url string, dirData []string) (results Results) {
 				} else {
 					if resp.ContentLength != 0 && utils.IsExclude(r.options.MatchStatus, resp.StatusCode) {
 						mutex.Lock()
-						respMap[resp.StatusCode] += 1
+						respMap[resp.ContentLength] += 1
 						tmpResults = append(tmpResults, resp)
 						mutex.Unlock()
 						gologger.Silent().Msgf("%v [%v] [%v]", resp.Url, resp.StatusCode, resp.ContentLength)
