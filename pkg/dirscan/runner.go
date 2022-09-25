@@ -1,6 +1,7 @@
 package dirscan
 
 import (
+	"github.com/niudaii/zpscan/pkg/webscan"
 	"strings"
 	"sync"
 	"time"
@@ -66,11 +67,12 @@ func (r *Runner) Run(urls []string, dirData []string) (results Results) {
 func (r *Runner) Dirscan(url string, dirData []string) (results Results) {
 	gologger.Info().Msgf("开始扫描: %v", url)
 	// 存活检测
-	_, err := r.reqClient.R().Get(url)
+	resp, err := webscan.FirstGet(r.reqClient.R(), url)
 	if err != nil {
 		gologger.Error().Msgf("%v", err)
 		return
 	}
+	url = resp.Request.URL.String()
 	tasks := make([]string, 0)
 	if strings.HasSuffix(url, "/") {
 		url = url[:len(url)-1]
