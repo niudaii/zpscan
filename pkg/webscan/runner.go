@@ -111,8 +111,8 @@ func (r *Runner) Webinfo(url string) (result *Result, err error) {
 	if err != nil {
 		return
 	}
-	// 处理js跳转, 上限5次
-	for i := 0; i < 5; i++ {
+	// 处理js跳转, 上限3次
+	for i := 0; i < 3; i++ {
 		jumpurl := Jsjump(resp)
 		if jumpurl == "" {
 			break

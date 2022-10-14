@@ -160,8 +160,10 @@ func (o *WebscanOptions) run() {
 	}
 	gologger.Info().Msgf("存活数量: %v", len(results))
 	gologger.Print().Msgf("%v", res)
-	gologger.Info().Msgf("重点指纹: %v", fingerNum)
-	gologger.Print().Msgf("%v", fingerRes)
+	if fingerNum > 0 {
+		gologger.Info().Msgf("重点指纹: %v", fingerNum)
+		gologger.Print().Msgf("%v", fingerRes)
+	}
 
 	// 保存 webscan 结果
 	if commonOptions.ResultFile != "" {

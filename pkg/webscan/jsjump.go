@@ -32,7 +32,7 @@ var (
 			location.href = "./ui/";
 		</script>
 	*/
-	reg2 = regexp.MustCompile(`(?i)location\.href.*?=.*?"(.*?)"`)
+	reg2 = regexp.MustCompile(`(?i)location\.href.*?=.*?["'](.*?)["']`)
 )
 
 func Jsjump(resp *req.Response) (jumpurl string) {
@@ -52,7 +52,8 @@ func Jsjump(resp *req.Response) (jumpurl string) {
 			jumpurl = baseUrl + res
 		} else {
 			// 前缀不存在 / 时获取重定向之后的请求url
-			baseUrl = resp.Response.Request.URL.String()
+			//baseUrl = resp.Response.Request.URL.String()
+			baseUrl = resp.Request.URL.Scheme + "://" + resp.Request.URL.Host
 			if !strings.HasSuffix(baseUrl, "/") {
 				baseUrl = baseUrl + "/"
 			}
@@ -72,6 +73,11 @@ func regexJsjump(resp *req.Response) string {
 	}
 	if len(resp.String()) < 400 {
 		matches = reg2.FindAllStringSubmatch(resp.String(), -1)
+		if len(matches) > 0 {
+			return matches[0][1]
+		}
+	} else {
+		matches = reg2.FindAllStringSubmatch(resp.String()[:400], -1)
 		if len(matches) > 0 {
 			return matches[0][1]
 		}
