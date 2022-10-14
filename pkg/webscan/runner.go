@@ -140,28 +140,37 @@ func (r *Runner) Webinfo(url string) (result *Result, err error) {
 
 func FirstGet(r *req.Request, url string) (resp *req.Response, err error) {
 	var scheme string
+	var flag bool
 	if !strings.HasPrefix(url, "http") {
 		scheme = "http://"
 		resp, err = r.Get(scheme + url)
 		if err != nil {
+			gologger.Debug().Msgf("r.Get() err, %v", err)
 			scheme = "https://"
+			flag = true
 		} else {
 			if strings.Contains(resp.String(), "sent to HTTPS port") || strings.Contains(resp.String(), "This combination of host and port requires TLS") || strings.Contains(resp.String(), "Instead use the HTTPS scheme to") {
 				scheme = "https://"
+				flag = true
 			}
 		}
 	} else if strings.HasPrefix(url, "http://") {
 		resp, err = r.Get(url)
 		if err != nil {
+			gologger.Debug().Msgf("r.Get() err, %v", err)
 			scheme = "https://"
 			url = url[7:]
+			flag = true
 		} else {
 			if strings.Contains(resp.String(), "sent to HTTPS port") || strings.Contains(resp.String(), "This combination of host and port requires TLS") || strings.Contains(resp.String(), "Instead use the HTTPS scheme to") {
 				scheme = "https://"
 				url = url[7:]
+				flag = true
 			}
 		}
 	}
-	resp, err = r.Get(scheme + url)
+	if flag {
+		resp, err = r.Get(scheme + url)
+	}
 	return
 }

@@ -1,6 +1,7 @@
 package webscan
 
 import (
+	"github.com/projectdiscovery/gologger"
 	"regexp"
 	"strings"
 
@@ -36,6 +37,7 @@ var (
 
 func Jsjump(resp *req.Response) (jumpurl string) {
 	res := regexJsjump(resp)
+	gologger.Debug().Msgf("regexJsjump(), %v", res)
 	if res != "" {
 		res = strings.TrimSpace(res)
 		res = strings.ReplaceAll(res, "\"", "")
@@ -68,7 +70,7 @@ func regexJsjump(resp *req.Response) string {
 			return matches[0][1]
 		}
 	}
-	if len(resp.String()) < 300 {
+	if len(resp.String()) < 400 {
 		matches = reg2.FindAllStringSubmatch(resp.String(), -1)
 		if len(matches) > 0 {
 			return matches[0][1]
