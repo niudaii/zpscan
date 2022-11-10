@@ -1,13 +1,12 @@
 package webscan
 
 import (
-	"strings"
-	"sync"
-	"time"
-
 	"github.com/imroc/req/v3"
+	"github.com/niudaii/zpscan/internal/utils"
 	"github.com/projectdiscovery/gologger"
 	wappalyzer "github.com/projectdiscovery/wappalyzergo"
+	"strings"
+	"sync"
 )
 
 type Options struct {
@@ -30,8 +29,9 @@ type Runner struct {
 func NewRunner(options *Options) (runner *Runner, err error) {
 	runner = &Runner{
 		options:   options,
-		reqClient: NewReqClient(options.Proxy, options.Timeout, options.Headers),
+		reqClient: utils.NewReqClient(options.Proxy, options.Timeout, options.Headers),
 	}
+	runner.reqClient.SetCommonHeader("Cookie", "rememberMe=1") // check shiro
 	if !options.NoWappalyzer {
 		runner.wappalyzerClient, err = wappalyzer.New()
 		if err != nil {
@@ -41,35 +41,10 @@ func NewRunner(options *Options) (runner *Runner, err error) {
 	return runner, nil
 }
 
-func NewReqClient(proxy string, timeout int, headers []string) *req.Client {
-	reqClient := req.C()
-	reqClient.GetTLSClientConfig().InsecureSkipVerify = true
-	reqClient.SetCommonHeaders(map[string]string{
-		"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36",
-		"Cookie":     "rememberMe=1", // check shiro
-	})
-	reqClient.SetRedirectPolicy(req.AlwaysCopyHeaderRedirectPolicy("Cookie"))
-	if proxy != "" {
-		reqClient.SetProxyURL(proxy)
-	}
-	var key, value string
-	for _, header := range headers {
-		tokens := strings.SplitN(header, ":", 2)
-		if len(tokens) < 2 {
-			continue
-		}
-		key = strings.TrimSpace(tokens[0])
-		value = strings.TrimSpace(tokens[1])
-		reqClient.SetCommonHeader(key, value)
-	}
-	reqClient.SetTimeout(time.Duration(timeout) * time.Second)
-	return reqClient
-}
-
 func (r *Runner) Run(urls []string) (results Results) {
 	// RunTask
 	wg := &sync.WaitGroup{}
-	rwMutex := sync.RWMutex{}
+	mutex := sync.Mutex{}
 	taskChan := make(chan string, r.options.Threads)
 	for i := 0; i < r.options.Threads; i++ {
 		go func() {
@@ -83,9 +58,9 @@ func (r *Runner) Run(urls []string) (results Results) {
 						gologger.Warning().Msgf("%v 可能为蜜罐", resp.Url)
 					} else {
 						gologger.Silent().Msgf(FmtResult(resp, r.options.NoColor))
-						rwMutex.Lock()
+						mutex.Lock()
 						results = append(results, resp)
-						rwMutex.Unlock()
+						mutex.Unlock()
 					}
 				}
 				wg.Done()

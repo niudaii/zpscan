@@ -99,7 +99,7 @@ func (r *Runner) Crack(addr *IpAddr, userDict []string, passDict []string) (resu
 	}
 	// RunTask
 	stopMap := cmap.New[string]()
-	rwMutex := &sync.Mutex{}
+	mutex := &sync.Mutex{}
 	wg := &sync.WaitGroup{}
 	taskChan := make(chan plugins.Service, r.options.Threads)
 	for i := 0; i < r.options.Threads; i++ {
@@ -122,13 +122,13 @@ func (r *Runner) Crack(addr *IpAddr, userDict []string, passDict []string) (resu
 						stopMap.Set(addrHash, "ok")
 					}
 					gologger.Silent().Msgf("%v -> %v %v", addr.Protocol, addrStr, userPass)
-					rwMutex.Lock()
+					mutex.Lock()
 					results = append(results, &Result{
 						Addr:     addrStr,
 						Protocol: addr.Protocol,
 						UserPass: userPass,
 					})
-					rwMutex.Unlock()
+					mutex.Unlock()
 				case plugins.CrackError:
 					stopMap.Set(addrHash, "ok")
 					gologger.Debug().Msgf("crack err, %v", err)

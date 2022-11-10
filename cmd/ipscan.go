@@ -254,7 +254,6 @@ func (o *IpscanOptions) run() {
 		addrs = crack.FilterModule(addrs, crackOptions.Module)
 		crackRunner.Run(addrs, []string{}, []string{})
 	}
-
 	// 保存 ipscan 结果
 	if commonOptions.ResultFile != "" {
 		err = utils.SaveMarshal(commonOptions.ResultFile, ipResults)

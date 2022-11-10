@@ -2,39 +2,17 @@ package webscan
 
 import (
 	"fmt"
+	"github.com/niudaii/zpscan/internal/utils"
 	"strings"
 
 	"github.com/imroc/req/v3"
 	"github.com/projectdiscovery/gologger"
 )
 
-func getHeaderString(resp *req.Response) (headerString string) {
-	headerMap := map[string]string{}
-	for k := range resp.Header {
-		if k != "Set-Cookie" {
-			headerMap[k] = resp.Header.Get(k)
-		}
-	}
-	for _, ck := range resp.Cookies() {
-		headerMap["Set-Cookie"] += ck.String() + ";"
-	}
-	for k, v := range headerMap {
-		headerString += k + ": " + v + "\n"
-	}
-	return headerString
-}
-
-func getCert(resp *req.Response) (cert string) {
-	if resp.TLS != nil {
-		cert = resp.TLS.PeerCertificates[0].Subject.String()
-	}
-	return cert
-}
-
 func (r *Runner) getFinger(resp *req.Response) (results []*FingerRule) {
 	bodyString := resp.String()
-	headerString := getHeaderString(resp)
-	certString := getCert(resp)
+	headerString := utils.GetHeaderString(resp)
+	certString := utils.GetCert(resp)
 	iconMap := map[string]string{}
 	var toMatch string
 	var rules string

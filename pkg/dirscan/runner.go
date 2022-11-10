@@ -1,12 +1,10 @@
 package dirscan
 
 import (
+	"github.com/niudaii/zpscan/internal/utils"
 	"github.com/niudaii/zpscan/pkg/webscan"
 	"strings"
 	"sync"
-	"time"
-
-	"github.com/niudaii/zpscan/internal/utils"
 
 	"github.com/imroc/req/v3"
 	"github.com/projectdiscovery/gologger"
@@ -30,31 +28,8 @@ type Runner struct {
 func NewRunner(options *Options) (*Runner, error) {
 	return &Runner{
 		options:   options,
-		reqClient: NewReqClient(options.Proxy, options.Timeout, options.Headers),
+		reqClient: utils.NewReqClient(options.Proxy, options.Timeout, options.Headers),
 	}, nil
-}
-
-func NewReqClient(proxy string, timeout int, headers []string) *req.Client {
-	reqClient := req.C()
-	reqClient.GetTLSClientConfig().InsecureSkipVerify = true
-	reqClient.SetCommonHeaders(map[string]string{
-		"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36",
-	})
-	if proxy != "" {
-		reqClient.SetProxyURL(proxy)
-	}
-	var key, value string
-	for _, header := range headers {
-		tokens := strings.SplitN(header, ":", 2)
-		if len(tokens) < 2 {
-			continue
-		}
-		key = strings.TrimSpace(tokens[0])
-		value = strings.TrimSpace(tokens[1])
-		reqClient.SetCommonHeader(key, value)
-	}
-	reqClient.SetTimeout(time.Duration(timeout) * time.Second)
-	return reqClient
 }
 
 func (r *Runner) Run(urls []string, dirData []string) (results Results) {
@@ -74,9 +49,7 @@ func (r *Runner) Dirscan(url string, dirData []string) (results Results) {
 	}
 	url = resp.Request.URL.String()
 	tasks := make([]string, 0)
-	if strings.HasSuffix(url, "/") {
-		url = url[:len(url)-1]
-	}
+	url = strings.TrimSuffix(url, "/")
 	for _, dir := range dirData {
 		if !strings.HasPrefix(dir, "/") {
 			dir = "/" + dir
@@ -92,16 +65,17 @@ func (r *Runner) Dirscan(url string, dirData []string) (results Results) {
 	for i := 0; i < r.options.Threads; i++ {
 		go func() {
 			for task := range taskChan {
-				resp, err := r.Req(task)
+				var result *Result
+				result, err = r.Req(task)
 				if err != nil {
 					gologger.Debug().Msgf("%v", err)
 				} else {
-					if resp.ContentLength != 0 && utils.IsExclude(r.options.MatchStatus, resp.StatusCode) {
+					if result.ContentLength != 0 && utils.HasInt(r.options.MatchStatus, result.StatusCode) {
+						gologger.Silent().Msgf("%v [%v] [%v]", result.Url, result.StatusCode, result.ContentLength)
 						mutex.Lock()
-						respMap[resp.ContentLength] += 1
-						tmpResults = append(tmpResults, resp)
+						respMap[result.ContentLength] += 1
+						tmpResults = append(tmpResults, result)
 						mutex.Unlock()
-						gologger.Silent().Msgf("%v [%v] [%v]", resp.Url, resp.StatusCode, resp.ContentLength)
 					}
 				}
 				wg.Done()
@@ -127,7 +101,6 @@ func (r *Runner) Dirscan(url string, dirData []string) (results Results) {
 	}
 
 	gologger.Info().Msgf("扫描结束")
-
 	return
 }
 

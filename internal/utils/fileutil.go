@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"os"
+	"path/filepath"
 )
 
 func ReadLines(filename string) (lines []string, err error) {
@@ -54,5 +55,18 @@ func SaveMarshal(filename string, results interface{}) (err error) {
 		return
 	}
 	err = WriteFile(filename, string(data))
+	return
+}
+
+func GetAllFile(dirPath string) (results []string, err error) {
+	err = filepath.Walk(dirPath, func(path string, info os.FileInfo, err error) error {
+		if !info.IsDir() {
+			results = append(results, path)
+		}
+		return nil
+	})
+	if err != nil {
+		return
+	}
 	return
 }

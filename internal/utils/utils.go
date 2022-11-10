@@ -27,9 +27,18 @@ func Md5(s string) string {
 	return hex.EncodeToString(m.Sum(nil))
 }
 
-func IsExclude(m []int, value int) bool {
-	for _, v := range m {
-		if v == value {
+func HasStr(datas []string, to string) bool {
+	for _, data := range datas {
+		if to == data {
+			return true
+		}
+	}
+	return false
+}
+
+func HasInt(datas []int, to int) bool {
+	for _, data := range datas {
+		if to == data {
 			return true
 		}
 	}

@@ -1,6 +1,9 @@
 package config
 
 import (
+	"github.com/niudaii/zpscan/pkg/pocscan/goby"
+	"github.com/niudaii/zpscan/pkg/pocscan/nuclei"
+	"github.com/niudaii/zpscan/pkg/pocscan/xray"
 	"log"
 
 	"github.com/niudaii/zpscan/internal/utils"
@@ -19,6 +22,7 @@ type Config struct {
 	Crack      Crack      `yaml:"crack"`
 	Webscan    Webscan    `yaml:"webscan"`
 	Dirscan    Dirscan    `yaml:"dirscan"`
+	Pocscan    Pocscan    `yaml:"pocscan"`
 }
 
 type Domainscan struct {
@@ -68,6 +72,15 @@ type Dirscan struct {
 	VulnFile     string   `yaml:"vuln-file"`
 	CommonFile   string   `yaml:"common-file"`
 	DirMap       map[string][]string
+}
+
+type Pocscan struct {
+	GobyPocDir   string `yaml:"goby-poc-dir"`
+	XrayPocDir   string `yaml:"xray-poc-dir"`
+	NucleiPocDir string `yaml:"nuclei-poc-dir"`
+	GobyPocs     []*goby.Poc
+	XrayPocs     []*xray.Poc
+	NucleiPocs   []*nuclei.Poc
 }
 
 var Worker Config

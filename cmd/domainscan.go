@@ -165,7 +165,6 @@ func (o *DomainscanOptions) run() {
 		return
 	}
 	webscanRunner.Run(urls)
-
 	// 保存 domainscan 结果
 	if commonOptions.ResultFile != "" {
 		err = utils.SaveMarshal(commonOptions.ResultFile, results)
