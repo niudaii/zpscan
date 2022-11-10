@@ -48,6 +48,9 @@
 - dirscan
   - 字典分类
   - 结果过滤（重复 contentLength 判断）
+- pocscan
+  - 支持多种 poc 格式（goby、xray、nuclei）
+  
 
 ## 使用
 

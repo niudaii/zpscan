@@ -15,7 +15,7 @@ import (
 func (r *Runner) RunNucleiPoc(target string, pocTag string) (results []*common.Result) {
 	var pocList []*nuclei.Poc
 	for _, poc := range r.nucleiPocs {
-		// 先判断 Name 和 tags
+		// 判断 ID 和 tags
 		if strings.Contains(strings.ToLower(poc.ID), pocTag) || utils.HasStr(poc.Info.Tags.ToSlice(), pocTag) {
 			pocList = append(pocList, poc)
 		}
