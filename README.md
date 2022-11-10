@@ -50,6 +50,7 @@
   - 结果过滤（重复 contentLength 判断）
 - pocscan
   - 支持多种 poc 格式（goby、xray、nuclei）
+  - 支持指定 tag 加载 poc。
   
 
 ## 使用
@@ -132,6 +133,10 @@ dirscan
 
 ![image-20220920101308449](https://nnotes.oss-cn-hangzhou.aliyuncs.com/notes/image-20220920101308449.png)
 
+pocscan
+
+![image-20221110171539212](https://nnotes.oss-cn-hangzhou.aliyuncs.com/notes/image-20221110171539212.png)
+
 ## 说明
 
 - 下载并放置资源文件（config.yaml、resource/）到可执行文件的同目录下
@@ -148,8 +153,6 @@ dirscan
 sudo sysctl -w net.ipv4.ping_group_range="0 2147483647"
 ```
 
-
-
 ## 参考
 
 https://github.com/projectdiscovery/subfinder
@@ -163,3 +166,7 @@ https://github.com/shadow1ng/fscan
 https://github.com/zu1k/nali
 
 https://github.com/projectdiscovery/naabu
+
+https://github.com/projectdiscovery/nuclei
+
+https://github.com/Ciyfly/woodpecker
