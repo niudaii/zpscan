@@ -19,7 +19,7 @@ func TestRun(t *testing.T) {
 			PocTags: []string{"elasticsearch"},
 		},
 		//"fail": {
-		//	Url:     "http://106.75.26.138:8000/",
+		//	Url:     "http://127.0.0.1:8092",
 		//	PocTags: []string{"11"},
 		//},
 	}

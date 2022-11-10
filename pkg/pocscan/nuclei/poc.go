@@ -2,9 +2,9 @@ package nuclei
 
 import (
 	"context"
-	"fmt"
 	"github.com/logrusorgru/aurora"
 	"github.com/niudaii/zpscan/internal/utils"
+	"github.com/niudaii/zpscan/pkg/pocscan/common"
 	"github.com/projectdiscovery/gologger"
 	"github.com/projectdiscovery/nuclei/v2/pkg/catalog/disk"
 	"github.com/projectdiscovery/nuclei/v2/pkg/core"
@@ -26,8 +26,10 @@ import (
 type Poc = templates.Template
 
 var (
+	Options         *types.Options
 	ExecuterOptions protocols.ExecuterOptions
 	Engine          *core.Engine
+	Results         []*common.Result
 )
 
 // LoadAllPoc 加载全部poc
@@ -66,43 +68,51 @@ func InitNuclei(pocDir string, limiter, timeout int, proxy string) (err error) {
 	defer reportingClient.Close()
 
 	outputWriter := testutils.NewMockOutputWriter()
-	var results []string
 	outputWriter.WriteCallback = func(event *output.ResultEvent) {
-		results = append(results, fmt.Sprintf("%v\n", event))
+		if event.MatcherStatus {
+			gologger.Debug().Msgf("漏洞存在: %v", event.Info.Name)
+			result := &common.Result{
+				Source:  "nuclei",
+				Level:   event.Info.SeverityHolder.Severity.String(),
+				PocName: event.Info.Name,
+			}
+			Results = append(Results, result)
+		}
 	}
 
-	defaultOpts := types.DefaultOptions()
-	defaultOpts.Timeout = timeout
-	defaultOpts.Proxy = []string{proxy}
-	defaultOpts.RateLimit = limiter
+	Options = types.DefaultOptions()
+	Options.ProxyInternal = true
+	Options.Timeout = timeout
+	Options.Proxy = []string{proxy}
+	Options.RateLimit = limiter
+	Options.TemplatesDirectory = pocDir
 
-	_ = protocolstate.Init(defaultOpts)
-	_ = protocolinit.Init(defaultOpts)
-	_ = loadProxyServers(defaultOpts) //
+	_ = protocolstate.Init(Options)
+	_ = protocolinit.Init(Options)
+	_ = loadProxyServers(Options)
 
 	interactOpts := interactsh.NewDefaultOptions(outputWriter, reportingClient, mockProgress)
-	var interactClient *interactsh.Client
-	interactClient, err = interactsh.New(interactOpts)
+	interactClient, err := interactsh.New(interactOpts)
 	if err != nil {
 		return
 	}
 	defer interactClient.Close()
 
 	catalog := disk.NewCatalog(pocDir)
-
 	ExecuterOptions = protocols.ExecuterOptions{
 		Output:          outputWriter,
-		Options:         defaultOpts,
+		Options:         Options,
 		Progress:        mockProgress,
 		Catalog:         catalog,
 		IssuesClient:    reportingClient,
-		RateLimiter:     ratelimit.New(context.Background(), 150, time.Second),
 		Interactsh:      interactClient,
+		RateLimiter:     ratelimit.New(context.Background(), 150, time.Second),
 		HostErrorsCache: cache,
 		Colorizer:       aurora.NewAurora(true),
 		ResumeCfg:       types.NewResumeCfg(),
 	}
-	Engine = core.New(defaultOpts)
+
+	Engine = core.New(Options)
 	Engine.SetExecuterOptions(ExecuterOptions)
 
 	return nil
