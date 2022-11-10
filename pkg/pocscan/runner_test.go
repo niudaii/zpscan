@@ -18,10 +18,10 @@ func TestRun(t *testing.T) {
 			Url:     "http://127.0.0.1:9200",
 			PocTags: []string{"elasticsearch"},
 		},
-		//"fail": {
-		//	Url:     "http://127.0.0.1:8092",
-		//	PocTags: []string{"11"},
-		//},
+		"fail": {
+			Url:     "http://127.0.0.1:8092",
+			PocTags: []string{"11"},
+		},
 	}
 	options := Options{
 		Proxy:   "http://127.0.0.1:8080",
