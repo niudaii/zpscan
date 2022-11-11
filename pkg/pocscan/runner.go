@@ -33,21 +33,26 @@ func NewRunner(options *Options, gobyPocs []*goby.Poc, xrayPocs []*xray.Poc, nuc
 	return runner, nil
 }
 
-func (r *Runner) Run(targets []string, pocTags []string) (results []*common.Result) {
-	for _, target := range targets {
-		results = append(results, r.Pocscan(target, pocTags)...)
+type Input struct {
+	Target  string
+	PocTags []string
+}
+
+func (r *Runner) Run(inputs []*Input) (results []*common.Result) {
+	for _, input := range inputs {
+		results = append(results, r.Pocscan(input)...)
 	}
 	return
 }
 
-func (r *Runner) Pocscan(target string, pocTags []string) (results []*common.Result) {
-	gologger.Info().Msgf("开始poc扫描: %v", target)
+func (r *Runner) Pocscan(input *Input) (results []*common.Result) {
+	gologger.Info().Msgf("开始poc扫描: %v", input.Target)
 
-	for _, pocTag := range pocTags {
+	for _, pocTag := range input.PocTags {
 		gologger.Info().Msgf("pocTag: %v", pocTag)
-		results = append(results, r.RunGobyPoc(target, pocTag)...)
-		results = append(results, r.RunXrayPoc(target, pocTag)...)
-		results = append(results, r.RunNucleiPoc(target, pocTag)...)
+		results = append(results, r.RunGobyPoc(input.Target, pocTag)...)
+		results = append(results, r.RunXrayPoc(input.Target, pocTag)...)
+		results = append(results, r.RunNucleiPoc(input.Target, pocTag)...)
 	}
 	if len(results) == 0 {
 		gologger.Info().Msgf("不存在漏洞")

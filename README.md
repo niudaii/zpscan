@@ -68,6 +68,7 @@ Available Commands:
   domainscan  子域名收集
   help        Help about any command
   ipscan      端口扫描
+ 	pocscan     poc扫描
   webscan     web信息收集
 
 Flags:
@@ -81,7 +82,7 @@ Flags:
 Use "zpscan [command] --help" for more information about a command.
 ```
 
-子命令（domainscan|ipscan|webscan|crack|dirscan）
+子命令（domainscan|ipscan|webscan|crack|dirscan|pocscan）
 
 ```
 ➜  zpscan git:(main) ./zpscan crack -h                       

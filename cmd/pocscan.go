@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/niudaii/zpscan/config"
 	"github.com/niudaii/zpscan/internal/utils"
 	"github.com/niudaii/zpscan/pkg/pocscan"
@@ -17,7 +16,6 @@ type PocscanOptions struct {
 	Timeout int
 	Proxy   string
 	Headers []string
-	PocTags []string
 }
 
 var (
@@ -28,7 +26,6 @@ func init() {
 	pocscanCmd.Flags().IntVar(&pocscanOptions.Timeout, "timeout", 10, "timeout in seconds")
 	pocscanCmd.Flags().StringVarP(&pocscanOptions.Proxy, "proxy", "p", "", "proxy(example: -p 'http://127.0.0.1:8080')")
 	pocscanCmd.Flags().StringSliceVar(&pocscanOptions.Headers, "headers", []string{}, "add custom headers(example: --headers 'User-Agent: xxx,Cookie: xxx')")
-	pocscanCmd.Flags().StringSliceVar(&pocscanOptions.PocTags, "tags", []string{}, "poc tags(example: --filter-tags 'seeyon')")
 	rootCmd.AddCommand(pocscanCmd)
 }
 
@@ -50,9 +47,6 @@ var pocscanCmd = &cobra.Command{
 }
 
 func (o *PocscanOptions) validateOptions() error {
-	if len(o.PocTags) == 0 {
-		return fmt.Errorf("tags can't be empty")
-	}
 
 	return nil
 }
@@ -98,8 +92,13 @@ func (o *PocscanOptions) run() {
 		gologger.Error().Msgf("pocscan.NewRunner() err, %v", err)
 		return
 	}
+	scanInputs, err := pocscan.ParseTargets(targets)
+	if err != nil {
+		gologger.Error().Msgf("pocscan.ParseTargets() err, %v", err)
+		return
+	}
 	// poc扫描
-	results := pocscanRunner.Run(targets, pocscanOptions.PocTags)
+	results := pocscanRunner.Run(scanInputs)
 	if len(results) > 0 {
 		gologger.Info().Msgf("poc验证成功: %v", len(results))
 	}

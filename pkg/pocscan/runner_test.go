@@ -7,19 +7,14 @@ import (
 	"testing"
 )
 
-type Input struct {
-	Url     string
-	PocTags []string
-}
-
 func TestRun(t *testing.T) {
-	tests := map[string]Input{
+	tests := map[string]*Input{
 		"success": {
-			Url:     "http://127.0.0.1:9200",
+			Target:  "http://127.0.0.1:9200",
 			PocTags: []string{"elasticsearch"},
 		},
 		"fail": {
-			Url:     "http://127.0.0.1:8092",
+			Target:  "http://127.0.0.1:8092",
 			PocTags: []string{"11"},
 		},
 	}
@@ -55,7 +50,7 @@ func TestRun(t *testing.T) {
 	}
 	for name, tc := range tests {
 		t.Run(name, func(t *testing.T) {
-			r.Pocscan(tc.Url, tc.PocTags)
+			r.Pocscan(tc)
 		})
 	}
 }
