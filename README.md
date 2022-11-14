@@ -31,10 +31,11 @@
 - webscan
   - 支持 http/https scheme 自动判断
   - 获取 statusCode、contentLength、favicon、iconHash、title、wappalyzer、finger
-  - title 自动解码
+  - title 自动中文解码
   - js 静态分析跳转
   - favicon 自动分析获取 iconhash
   - 指纹自定义 tags 用来过滤和标记，pocTags 与 nuclei 对应
+  - 联动模块（webscan -> pocscan）
 - ipscan
   - 支持多种输入格式（192.168.1.1-128）（192.168.1.0/24）
   - 先端口开放扫描（tcp），使用 nmap 指纹识别协议
@@ -42,7 +43,7 @@
   - 操作系统识别
   - 联动模块（ipscan -> webscan -> crack）
 - crack
-  - 支持默认端口协议和自定义协议（127.0.0.1:3306）（127.0.01:3307|mysql）
+  - 支持默认端口协议和自定义协议爆破（127.0.0.1:3306）（127.0.01:3307|mysql）
   - 支持常见服务口令爆破、未授权检测
   - 全部模块测试用例（爆破成功、失败、超时）
 - dirscan
