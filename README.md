@@ -27,14 +27,14 @@
 - domainscan
   - 调用 subfinder 被动收集，调用 ksubdoamin 进行 dns 验证
   - 泛解析、CDN 判断
-  - 获取 domain 相关的 web（host:port）资产，使用 webscan 扫描。
+  - 获取 domain 相关的 web（host:port）资产，使用 webscan 扫描
 - webscan
   - 支持 http/https scheme 自动判断
   - 获取 statusCode、contentLength、favicon、iconHash、title、wappalyzer、finger
   - title 自动中文解码
   - js 静态分析跳转
   - favicon 自动分析获取 iconhash
-  - 指纹自定义 tags 用来过滤和标记，pocTags 与 nuclei 对应
+  - 指纹自定义 tags 用来过滤和标记，pocTags 与 pocscan 对应
   - 联动模块（webscan -> pocscan）
 - ipscan
   - 支持多种输入格式（192.168.1.1-128）（192.168.1.0/24）
@@ -44,7 +44,7 @@
   - 联动模块（ipscan -> webscan -> crack）
 - crack
   - 支持默认端口协议和自定义协议爆破（127.0.0.1:3306）（127.0.01:3307|mysql）
-  - 支持常见服务口令爆破、未授权检测
+  - 支持常见服务口令爆破、未授权检测（ ftp,ssh,wmi,wmihash,smb,mssql,oracle,mysql,rdp,postgres,redis,memcached,mongodb) 
   - 全部模块测试用例（爆破成功、失败、超时）
 - dirscan
   - 字典分类
