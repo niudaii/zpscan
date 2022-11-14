@@ -33,7 +33,7 @@ var (
 )
 
 func init() {
-	crackCmd.Flags().StringVarP(&crackOptions.Module, "module", "m", "all", "choose one module to crack(ftp,ssh,wmi,mssql,oracle,mysql,rdp,postgres,redis,memcached,mongodb)")
+	crackCmd.Flags().StringVarP(&crackOptions.Module, "module", "m", "all", "choose one module to crack(ftp,ssh,wmi,wmihash,smb,mssql,oracle,mysql,rdp,postgres,redis,memcached,mongodb)")
 	crackCmd.Flags().StringVar(&crackOptions.User, "user", "", "user(example: --user 'admin,root')")
 	crackCmd.Flags().StringVar(&crackOptions.Pass, "pass", "", "pass(example: --pass 'admin,root')")
 	crackCmd.Flags().StringVar(&crackOptions.UserFile, "user-file", "", "user file(example: --user-file 'user.txt')")

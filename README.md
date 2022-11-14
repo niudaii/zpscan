@@ -87,7 +87,7 @@ Use "zpscan [command] --help" for more information about a command.
 
 ```
 ➜  zpscan git:(main) ./zpscan crack -h                       
-常见服务弱口令爆破,支持ftp,ssh,wmi,mssql,oracle,mysql,rdp,postgres,redis,memcached,mongodb
+常见服务弱口令爆破,支持ftp,ssh,wmi,wmihash,smb,mssql,oracle,mysql,rdp,postgres,redis,memcached,mongodb
 
 Usage:
   zpscan crack [flags]
