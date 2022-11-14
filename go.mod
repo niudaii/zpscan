@@ -7,7 +7,6 @@ require (
 	github.com/antchfx/htmlquery v1.2.5
 	github.com/boy-hack/ksubdomain v1.9.5
 	github.com/cheggaaa/pb/v3 v3.1.0
-	github.com/denisenkom/go-mssqldb v0.12.2
 	github.com/go-ping/ping v1.1.0
 	github.com/go-redis/redis v6.15.9+incompatible
 	github.com/go-sql-driver/mysql v1.6.0
@@ -18,12 +17,14 @@ require (
 	github.com/jlaffaye/ftp v0.1.0
 	github.com/lib/pq v1.10.7
 	github.com/logrusorgru/aurora v2.0.3+incompatible
+	github.com/microsoft/go-mssqldb v0.17.0
 	github.com/orcaman/concurrent-map/v2 v2.0.0
 	github.com/phayes/freeport v0.0.0-20220201140144-74d24b5ae9f5
 	github.com/pkg/errors v0.9.1
 	github.com/projectdiscovery/blackrock v0.0.0-20220628111055-35616c71b2dc
 	github.com/projectdiscovery/dnsx v1.1.1
 	github.com/projectdiscovery/fdmax v0.0.3
+	github.com/projectdiscovery/fileutil v0.0.1
 	github.com/projectdiscovery/gologger v1.1.4
 	github.com/projectdiscovery/ipranger v0.0.3
 	github.com/projectdiscovery/iputil v0.0.0-20220712175312-b9406f31cdd8
@@ -152,7 +153,7 @@ require (
 	github.com/mattn/go-runewidth v0.0.13 // indirect
 	github.com/mholt/acmez v1.0.4 // indirect
 	github.com/mholt/archiver v3.1.1+incompatible // indirect
-	github.com/microcosm-cc/bluemonday v1.0.21 // indirect
+	github.com/microcosm-cc/bluemonday v1.0.20 // indirect
 	github.com/miekg/dns v1.1.50 // indirect
 	github.com/mitchellh/go-homedir v1.1.0 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
@@ -170,7 +171,6 @@ require (
 	github.com/projectdiscovery/clistats v0.0.8 // indirect
 	github.com/projectdiscovery/cryptoutil v1.0.0 // indirect
 	github.com/projectdiscovery/fastdialer v0.0.17 // indirect
-	github.com/projectdiscovery/fileutil v0.0.1 // indirect
 	github.com/projectdiscovery/folderutil v0.0.0-20220215113126-add60a1e8e08 // indirect
 	github.com/projectdiscovery/goflags v0.1.1 // indirect
 	github.com/projectdiscovery/hmap v0.0.2 // indirect
@@ -234,5 +234,7 @@ require (
 	moul.io/http2curl v1.0.0 // indirect
 )
 
-replace github.com/tomatome/grdp v0.0.0-20220713105348-9917c8b96a4f => github.com/shadow1ng/grdp v1.0.3
-replace github.com/projectdiscovery/ipranger v0.0.3 => github.com/projectdiscovery/ipranger v0.0.3-0.20210831161617-ac80efae0961
+replace (
+	github.com/projectdiscovery/ipranger v0.0.3 => github.com/projectdiscovery/ipranger v0.0.3-0.20210831161617-ac80efae0961
+	github.com/tomatome/grdp v0.0.0-20220713105348-9917c8b96a4f => github.com/shadow1ng/grdp v1.0.3
+)
