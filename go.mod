@@ -235,5 +235,4 @@ require (
 )
 
 replace github.com/tomatome/grdp v0.0.0-20220713105348-9917c8b96a4f => github.com/shadow1ng/grdp v1.0.3
-
 replace github.com/projectdiscovery/ipranger v0.0.3 => github.com/projectdiscovery/ipranger v0.0.3-0.20210831161617-ac80efae0961

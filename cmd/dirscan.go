@@ -150,7 +150,14 @@ func (o *DirscanOptions) run() {
 		gologger.Error().Msgf("dirscan.NewRunner() err, %v", err)
 		return
 	}
-	results := dirscanRunner.Run(targets, dirData)
+	var input []*dirscan.Input
+	for _, target := range targets {
+		input = append(input, &dirscan.Input{
+			Target: target,
+			Dirs:   dirData,
+		})
+	}
+	results := dirscanRunner.Run(input)
 	sort.Sort(results)
 	gologger.Info().Msgf("结果数量: %v", len(results))
 	for _, result := range results {

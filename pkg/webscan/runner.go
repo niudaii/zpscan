@@ -98,7 +98,7 @@ func (r *Runner) Webinfo(url string) (result *Result, err error) {
 		return
 	}
 	result = &Result{
-		Url:           resp.Request.URL.String(),
+		Url:           resp.Request.URL.Scheme + "://" + resp.Request.URL.Host,
 		StatusCode:    resp.StatusCode,
 		ContentLength: len(resp.String()),
 		Title:         getTitle(resp),

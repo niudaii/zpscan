@@ -3,6 +3,7 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/niudaii/zpscan/pkg/pocscan"
 	"sort"
 	"time"
 
@@ -25,6 +26,8 @@ type WebscanOptions struct {
 
 	FilterTags []string
 	FingerFile string
+
+	Pocscan bool
 }
 
 var (
@@ -43,6 +46,8 @@ func init() {
 
 	webscanCmd.Flags().StringSliceVar(&webscanOptions.FilterTags, "filter-tags", []string{"非重要"}, "filter tags(example: --filter-tags '非重要')")
 
+	webscanCmd.Flags().BoolVar(&webscanOptions.Pocscan, "pocscan", false, "open pocscan")
+
 	rootCmd.AddCommand(webscanCmd)
 }
 
@@ -57,6 +62,10 @@ var webscanCmd = &cobra.Command{
 
 		if err := initFinger(); err != nil {
 			gologger.Error().Msgf("initFinger() err, %v", err)
+		}
+
+		if err := initPoc(); err != nil {
+			gologger.Error().Msgf("initPoc() err, %v", err)
 		}
 
 		if err := webscanOptions.configureOptions(); err != nil {
@@ -169,6 +178,34 @@ func (o *WebscanOptions) run() {
 		err = utils.SaveMarshal(commonOptions.ResultFile, results)
 		if err != nil {
 			gologger.Error().Msgf("utils.SaveMarshal() err, %v", err)
+			return
 		}
+	}
+	// pocscan
+	if o.Pocscan {
+		options2 := &pocscan.Options{
+			Proxy:   o.Proxy,
+			Timeout: o.Timeout,
+			Headers: o.Headers,
+		}
+		pocscanRunner, err := pocscan.NewRunner(options2, config.Worker.Pocscan.GobyPocs, config.Worker.Pocscan.XrayPocs, config.Worker.Pocscan.NucleiPocs)
+		if err != nil {
+			gologger.Error().Msgf("utils.SaveMarshal() err, %v", err)
+			return
+		}
+		var inputs []*pocscan.Input
+		for _, result := range results {
+			if len(result.Fingers) > 0 {
+				var pocTags []string
+				for _, finger := range result.Fingers {
+					pocTags = append(pocTags, finger.PocTags...)
+				}
+				inputs = append(inputs, &pocscan.Input{
+					Target:  result.Url,
+					PocTags: pocTags,
+				})
+			}
+		}
+		pocscanRunner.Run(inputs)
 	}
 }

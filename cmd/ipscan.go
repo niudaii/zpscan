@@ -221,9 +221,17 @@ func (o *IpscanOptions) run() {
 			}
 		}
 	}
+	// 保存 ipscan 结果
+	if commonOptions.ResultFile != "" {
+		err = utils.SaveMarshal(commonOptions.ResultFile, ipResults)
+		if err != nil {
+			gologger.Error().Msgf("utils.SaveMarshal() err, %v", err)
+		}
+	}
 	gologger.Info().Msgf("web: %v", len(webTargets))
 	gologger.Info().Msgf("service: %v", len(servResults))
 	gologger.Info().Msgf("crack: %v", len(crackTargets))
+	// webscan
 	options2 := &webscan.Options{
 		Proxy:       webscanOptions.Proxy,
 		Threads:     webscanOptions.Threads,
@@ -238,6 +246,7 @@ func (o *IpscanOptions) run() {
 		return
 	}
 	webscanRunner.Run(webTargets)
+	// crack
 	if o.Crack {
 		options3 := &crack.Options{
 			Threads:  crackOptions.Threads,
@@ -253,12 +262,5 @@ func (o *IpscanOptions) run() {
 		addrs := crack.ParseTargets(crackTargets)
 		addrs = crack.FilterModule(addrs, crackOptions.Module)
 		crackRunner.Run(addrs, []string{}, []string{})
-	}
-	// 保存 ipscan 结果
-	if commonOptions.ResultFile != "" {
-		err = utils.SaveMarshal(commonOptions.ResultFile, ipResults)
-		if err != nil {
-			gologger.Error().Msgf("utils.SaveMarshal() err, %v", err)
-		}
 	}
 }

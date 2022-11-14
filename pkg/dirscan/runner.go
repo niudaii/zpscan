@@ -32,25 +32,30 @@ func NewRunner(options *Options) (*Runner, error) {
 	}, nil
 }
 
-func (r *Runner) Run(urls []string, dirData []string) (results Results) {
-	for _, url := range urls {
-		results = append(results, r.Dirscan(url, dirData)...)
+type Input struct {
+	Target string
+	Dirs   []string
+}
+
+func (r *Runner) Run(inputs []*Input) (results Results) {
+	for _, input := range inputs {
+		results = append(results, r.Dirscan(input)...)
 	}
 	return
 }
 
-func (r *Runner) Dirscan(url string, dirData []string) (results Results) {
-	gologger.Info().Msgf("开始扫描: %v", url)
+func (r *Runner) Dirscan(input *Input) (results Results) {
+	gologger.Info().Msgf("开始扫描: %v", input.Target)
 	// 存活检测
-	resp, err := webscan.FirstGet(r.reqClient.R(), url)
+	resp, err := webscan.FirstGet(r.reqClient.R(), input.Target)
 	if err != nil {
 		gologger.Error().Msgf("%v", err)
 		return
 	}
-	url = resp.Request.URL.String()
+	url := resp.Request.URL.String()
 	tasks := make([]string, 0)
 	url = strings.TrimSuffix(url, "/")
-	for _, dir := range dirData {
+	for _, dir := range input.Dirs {
 		if !strings.HasPrefix(dir, "/") {
 			dir = "/" + dir
 		}

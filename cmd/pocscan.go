@@ -42,6 +42,10 @@ var pocscanCmd = &cobra.Command{
 			gologger.Fatal().Msgf("Program exiting: %v", err)
 		}
 
+		if err := initPoc(); err != nil {
+			gologger.Fatal().Msgf("initPoc() err, %v", err)
+		}
+
 		pocscanOptions.run()
 	},
 }
@@ -56,6 +60,13 @@ func (o *PocscanOptions) configureOptions() error {
 		o.Proxy = "http://127.0.0.1:8080"
 	}
 	// 加载resource资源
+	opt, _ := json.Marshal(o)
+	gologger.Debug().Msgf("pocscanOptions: %v", string(opt))
+
+	return nil
+}
+
+func initPoc() error {
 	var err error
 	config.Worker.Pocscan.GobyPocs, err = goby.LoadAllPoc(config.Worker.Pocscan.GobyPocDir)
 	if err != nil {
@@ -73,8 +84,6 @@ func (o *PocscanOptions) configureOptions() error {
 	if err != nil {
 		return err
 	}
-	opt, _ := json.Marshal(o)
-	gologger.Debug().Msgf("pocscanOptions: %v", string(opt))
 	gologger.Info().Msgf("gobyPocs: %v", len(config.Worker.Pocscan.GobyPocs))
 	gologger.Info().Msgf("xrayPocs: %v", len(config.Worker.Pocscan.XrayPocs))
 	gologger.Info().Msgf("nucleiPocs: %v", len(config.Worker.Pocscan.NucleiPocs))
