@@ -69,6 +69,7 @@ func InitNuclei(pocDir string, limiter, timeout int, proxy string) (err error) {
 
 	outputWriter := testutils.NewMockOutputWriter()
 	outputWriter.WriteCallback = func(event *output.ResultEvent) {
+		gologger.Debug().Msgf("加载POC: %v", event.Info.Name)
 		if event.MatcherStatus {
 			gologger.Debug().Msgf("漏洞存在: %v", event.Info.Name)
 			result := &common.Result{

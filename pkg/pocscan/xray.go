@@ -26,6 +26,7 @@ func (r *Runner) RunXrayPoc(target string, pocTag string) (results []*common.Res
 	}
 	gologger.Info().Msgf("load %v xray pocs", len(pocList))
 	for _, poc := range pocList {
+		gologger.Debug().Msgf("加载POC: %v", poc.Name)
 		res, err := r.ScanXray(target, poc)
 		if err != nil {
 			gologger.Error().Msgf("r.Scan() err, %v", err)
