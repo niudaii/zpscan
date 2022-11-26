@@ -37,6 +37,22 @@ type Input struct {
 	Dirs   []string
 }
 
+var contentTypes = []string{".zip", ".7z", ".rar", ".tar", ".txt", ".tar.gz", ".tgz", ".bak", ".swp", ".jar", ".war", ".sql"}
+var contentTypeMap = map[string]string{
+	".zip":    "application/zip",
+	".7z":     "application/x-7z-compressed",
+	".rar":    "application/x-rar-compressed",
+	".tar":    "application/x-tar",
+	".txt":    "text/plain",
+	".tar.gz": "application/gzip",
+	".tgz":    "application/x-tar",
+	".bak":    "application/octet-stream",
+	".swp":    "application/octet-stream",
+	".jar":    "application/java-archive",
+	".war":    "application/octet-stream",
+	".sql":    "application/x-sql",
+}
+
 func (r *Runner) Run(inputs []*Input) (results Results) {
 	for _, input := range inputs {
 		results = append(results, r.Dirscan(input)...)
@@ -76,11 +92,19 @@ func (r *Runner) Dirscan(input *Input) (results Results) {
 					gologger.Debug().Msgf("%v", err)
 				} else {
 					if result.ContentLength != 0 && utils.HasInt(r.options.MatchStatus, result.StatusCode) {
-						gologger.Silent().Msgf("%v [%v] [%v]", result.Url, result.StatusCode, result.ContentLength)
-						mutex.Lock()
-						respMap[result.ContentLength] += 1
-						tmpResults = append(tmpResults, result)
-						mutex.Unlock()
+						flag := true
+						if suffix, ok := utils.SuffixStr(contentTypes, result.Url); ok {
+							if result.ContentType != contentTypeMap[suffix] {
+								flag = false
+							}
+						}
+						if flag {
+							gologger.Silent().Msgf("%v [%v] [%v]", result.Url, result.StatusCode, result.ContentLength)
+							mutex.Lock()
+							respMap[result.ContentLength] += 1
+							tmpResults = append(tmpResults, result)
+							mutex.Unlock()
+						}
 					}
 				}
 				wg.Done()
@@ -119,6 +143,7 @@ func (r *Runner) Req(url string) (result *Result, err error) {
 		Url:           resp.Request.URL.String(),
 		StatusCode:    resp.StatusCode,
 		ContentLength: len(resp.String()),
+		ContentType:   resp.GetContentType(),
 	}
 	return
 }

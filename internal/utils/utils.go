@@ -3,6 +3,7 @@ package utils
 import (
 	"crypto/md5"
 	"encoding/hex"
+	"strings"
 )
 
 func RemoveDuplicate(list []string) []string {
@@ -34,6 +35,15 @@ func HasStr(datas []string, to string) bool {
 		}
 	}
 	return false
+}
+
+func SuffixStr(datas []string, to string) (string, bool) {
+	for _, data := range datas {
+		if strings.HasSuffix(to, data) {
+			return data, true
+		}
+	}
+	return "", false
 }
 
 func HasInt(datas []int, to int) bool {

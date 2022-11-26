@@ -147,6 +147,10 @@ pocscan
 
 ## 更新
 
+2022-11-10
+
+- 增加 pocscan 模块。
+
 ## Q&A
 
 #### 1、linux操作系统端口扫描时出现：ping err, socket: permission denied

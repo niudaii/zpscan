@@ -4,6 +4,8 @@ type Result struct {
 	Url           string
 	StatusCode    int
 	ContentLength int
+	Suffix        string
+	ContentType   string
 }
 
 // Results 按照contentLength排序
