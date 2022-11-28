@@ -46,7 +46,7 @@ func (r *Runner) ScanNuclei(target string, pocList []*nuclei.Poc, pocTag string)
 		result.Target = target
 		result.PocTag = pocTag
 		results = append(results, result)
-		gologger.Silent().Msgf("[%v] [%v] [%v] [%v]", time.Now().Format("2006-01-02 15:04:05"), result.Source, result.PocName, result.Level)
+		gologger.Silent().Msgf("[%v] [%v] [%v] [%v] [%v]", time.Now().Format("2006-01-02 15:04:05"), result.Source, result.PocName, result.Level, result.Extractors)
 	}
 	nuclei.Results = make([]*common.Result, 0)
 	return

@@ -71,11 +71,12 @@ func InitNuclei(pocDir string, limiter, timeout int, proxy string) (err error) {
 	outputWriter.WriteCallback = func(event *output.ResultEvent) {
 		gologger.Debug().Msgf("加载POC: %v", event.Info.Name)
 		if event.MatcherStatus {
-			gologger.Debug().Msgf("漏洞存在: %v", event.Info.Name)
+			gologger.Debug().Msgf("漏洞存在: %v", event.TemplateID)
 			result := &common.Result{
-				Source:  "nuclei",
-				Level:   event.Info.SeverityHolder.Severity.String(),
-				PocName: event.Info.Name,
+				Source:     "nuclei",
+				Level:      event.Info.SeverityHolder.Severity.String(),
+				PocName:    event.TemplateID,
+				Extractors: strings.Join(event.ExtractedResults, ","),
 			}
 			Results = append(Results, result)
 		}
@@ -90,7 +91,7 @@ func InitNuclei(pocDir string, limiter, timeout int, proxy string) (err error) {
 
 	_ = protocolstate.Init(Options)
 	_ = protocolinit.Init(Options)
-	_ = loadProxyServers(Options)
+	_ = loadProxyServers(Options) // 初始化代理
 
 	interactOpts := interactsh.NewDefaultOptions(outputWriter, reportingClient, mockProgress)
 	interactClient, err := interactsh.New(interactOpts)
