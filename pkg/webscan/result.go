@@ -39,6 +39,15 @@ func FmtResult(result *Result, noColor bool) (res string) {
 	return
 }
 
+func HasPoc(fingers []*FingerRule) bool {
+	for _, finger := range fingers {
+		if finger.HasPoc {
+			return true
+		}
+	}
+	return false
+}
+
 func GetFingerString(fingers []*FingerRule) (fingerString string) {
 	for _, finger := range fingers {
 		fingerString += fmt.Sprintf("(%v", finger.Name)
