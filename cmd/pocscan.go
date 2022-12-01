@@ -96,18 +96,18 @@ func (o *PocscanOptions) run() {
 		Timeout: pocscanOptions.Timeout,
 		Headers: pocscanOptions.Headers,
 	}
-	pocscanRunner, err := pocscan.NewRunner(options, config.Worker.Pocscan.GobyPocs, config.Worker.Pocscan.XrayPocs, config.Worker.Pocscan.NucleiPocs)
+	pocscanRunner, err := pocscan.NewRunner(options, config.Worker.Pocscan.GobyPocs, config.Worker.Pocscan.XrayPocs, config.Worker.Pocscan.NucleiPocs, config.Worker.Expscan.NucleiExps)
 	if err != nil {
 		gologger.Error().Msgf("pocscan.NewRunner() err, %v", err)
 		return
 	}
-	scanInputs, err := pocscan.ParseTargets(targets)
+	scanInputs, err := pocscan.ParsePocInput(targets)
 	if err != nil {
-		gologger.Error().Msgf("pocscan.ParseTargets() err, %v", err)
+		gologger.Error().Msgf("pocscan.ParsePocInput() err, %v", err)
 		return
 	}
 	// poc扫描
-	results := pocscanRunner.Run(scanInputs)
+	results := pocscanRunner.RunPoc(scanInputs)
 	if len(results) > 0 {
 		gologger.Info().Msgf("poc验证成功: %v", len(results))
 	}

@@ -23,6 +23,7 @@ type Config struct {
 	Webscan    Webscan    `yaml:"webscan"`
 	Dirscan    Dirscan    `yaml:"dirscan"`
 	Pocscan    Pocscan    `yaml:"pocscan"`
+	Expscan    Expscan    `yaml:"expscan"`
 }
 
 type Domainscan struct {
@@ -81,6 +82,11 @@ type Pocscan struct {
 	GobyPocs     []*goby.Poc
 	XrayPocs     []*xray.Poc
 	NucleiPocs   []*nuclei.Poc
+}
+
+type Expscan struct {
+	NucleiExpDir string `yaml:"nuclei-exp-dir"`
+	NucleiExps   []*nuclei.Exp
 }
 
 var Worker Config

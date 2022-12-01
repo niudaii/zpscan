@@ -188,24 +188,24 @@ func (o *WebscanOptions) run() {
 			Timeout: o.Timeout,
 			Headers: o.Headers,
 		}
-		pocscanRunner, err := pocscan.NewRunner(options2, config.Worker.Pocscan.GobyPocs, config.Worker.Pocscan.XrayPocs, config.Worker.Pocscan.NucleiPocs)
+		pocscanRunner, err := pocscan.NewRunner(options2, config.Worker.Pocscan.GobyPocs, config.Worker.Pocscan.XrayPocs, config.Worker.Pocscan.NucleiPocs, config.Worker.Expscan.NucleiExps)
 		if err != nil {
 			gologger.Error().Msgf("utils.SaveMarshal() err, %v", err)
 			return
 		}
-		var inputs []*pocscan.Input
+		var inputs []*pocscan.PocInput
 		for _, result := range results {
 			if len(result.Fingers) > 0 {
 				var pocTags []string
 				for _, finger := range result.Fingers {
 					pocTags = append(pocTags, finger.PocTags...)
 				}
-				inputs = append(inputs, &pocscan.Input{
+				inputs = append(inputs, &pocscan.PocInput{
 					Target:  result.Url,
 					PocTags: pocTags,
 				})
 			}
 		}
-		pocscanRunner.Run(inputs)
+		pocscanRunner.RunPoc(inputs)
 	}
 }
