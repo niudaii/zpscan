@@ -40,7 +40,7 @@ func LoadAllPoc(pocDir string) (pocs []*Poc, err error) {
 		return
 	}
 	for _, pocPath := range pocPathList {
-		if !strings.HasSuffix(pocPath, ".yaml") || strings.Contains(pocPath, "workflows") {
+		if !strings.HasSuffix(pocPath, ".yaml") || strings.Contains(pocPath, "workflows") || strings.HasSuffix(pocPath, "-exp.yaml") {
 			continue
 		}
 		var poc *Poc
