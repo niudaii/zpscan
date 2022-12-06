@@ -21,6 +21,7 @@ import (
 )
 
 type IpscanOptions struct {
+	Proxy     string
 	PortRange string
 	Rate      int
 	Threads   int
@@ -34,6 +35,7 @@ var ipscanOptions IpscanOptions
 
 func init() {
 	ipscanCmd.Flags().StringVarP(&ipscanOptions.PortRange, "port-range", "p", "1-65535", "port range(example: -p '22,80-90,1433,3306')")
+	ipscanCmd.Flags().StringVar(&ipscanOptions.Proxy, "proxy", "", "proxy, (example: --proxy 192.168.31.227:47871')")
 	ipscanCmd.Flags().IntVar(&ipscanOptions.Rate, "rate", 3000, "packets to send per second")
 	ipscanCmd.Flags().IntVar(&ipscanOptions.Threads, "threads", 10, "number of threads")
 
@@ -141,6 +143,7 @@ func (o *IpscanOptions) run() {
 	}
 	options := &ipscan.Options{
 		Hosts:     hosts,
+		Proxy:     o.Proxy,
 		PortRange: o.PortRange,
 		Rate:      o.Rate,
 		Threads:   o.Threads,

@@ -9,6 +9,7 @@ import (
 
 type Options struct {
 	Hosts     []string
+	Proxy     string
 	PortRange string
 	Rate      int
 	Threads   int
@@ -33,6 +34,7 @@ func NewRunner(options *Options) (*Runner, error) {
 		Rate:      options.Rate,
 		Retries:   portscan.DefaultRetriesSynScan,
 		Interface: "",
+		Proxy:     options.Proxy,
 	}
 	synscanRunner, err := synscanOptions.NewRunner(synscanOptions)
 	if err != nil {
