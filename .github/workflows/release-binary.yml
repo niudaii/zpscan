@@ -25,9 +25,9 @@ jobs:
         run: |
           wget https://explorerx.oss-cn-hangzhou.aliyuncs.com/libpcap.zip
           unzip libpcap.zip
-          cp -r libpcap/ /usr/local/lib
-          echo '/usr/local/lib' >> /etc/ld.so.conf
-          ldconfig
+          sudo cp -r libpcap/ /usr/local/lib
+          sudo echo '/usr/local/lib' >> /etc/ld.so.conf
+          sudo ldconfig
 
       - name: Get version
         id: get_version
