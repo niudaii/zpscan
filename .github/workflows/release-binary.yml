@@ -24,10 +24,9 @@ jobs:
         if: matrix.os == 'ubuntu-latest'
         run: |
           wget https://explorerx.oss-cn-hangzhou.aliyuncs.com/libpcap.zip
-          unzip libpcap.zip
-          sudo cp -r libpcap/ /usr/local/lib
-          sudo echo '/usr/local/lib' >> /etc/ld.so.conf
-          sudo ldconfig
+          wget https://explorerx.oss-cn-hangzhou.aliyuncs.com/libpcap.sh
+          chmod +x libpcap.sh
+          sudo ./libpcap.sh
 
       - name: Get version
         id: get_version
