@@ -21,7 +21,7 @@ jobs:
         id: go
 
       - name: Set up libpcap-dev
-        if: matrix.os == 'ubuntu-latest'
+        if: matrix.os == 'ubuntu-18.04'
         run: sudo apt-get install libpcap-dev gcc -y
 
       - name: Get version
@@ -38,7 +38,7 @@ jobs:
         run: |
           go build -ldflags "-s -w" -o ./zpscan_linux main.go
           chmod +x zpscan_linux
-        if: matrix.os == 'ubuntu-latest'
+        if: matrix.os == 'ubuntu-18.04'
         env:
           GOENABLE: 1
           CGO_LDFLAGS: "-Wl,-static -L/usr/lib/x86_64-linux-gnu/libpcap.a -lpcap -Wl,-Bdynamic"
@@ -50,7 +50,7 @@ jobs:
       - name: Build On Windows
         run: |
           go build -ldflags "-s -w" -o ./zpscan_windows.exe main.go
-        if: matrix.os == 'ubuntu-latest'
+        if: matrix.os == 'ubuntu-18.04'
         env:
           GOOS: windows
           GOENABLE: 1
