@@ -11,7 +11,7 @@ jobs:
     strategy:
       matrix:
         os:
-          - ubuntu-latest
+          - centos-latest
           - macos-latest
     steps:
       - name: Set up Go 1.18
@@ -21,13 +21,15 @@ jobs:
         id: go
 
       - name: Set up libpcap-dev
-        if: matrix.os == 'ubuntu-latest'
+        if: matrix.os == 'centos-latest'
         run: |
-          cd /tmp
-          wget https://explorerx.oss-cn-hangzhou.aliyuncs.com/libpcap.zip
-          wget https://explorerx.oss-cn-hangzhou.aliyuncs.com/libpcap.sh
-          chmod +x libpcap.sh
-          sudo ./libpcap.sh
+          wget -O /etc/yum.repos.d/CentOS-Base.repo https://mirrors.aliyun.com/repo/Centos-vault-8.5.2111.repo
+          yum clean all
+          yum makecache
+          dnf config-manager --add-repo /etc/yum.repos.d/CentOS-PowerTools.repo
+          dnf config-manager --set-enabled PowerTools
+          dnf install epel-release -y
+          dnf install libpcap-devel -y
 
       - name: Get version
         id: get_version
@@ -43,7 +45,7 @@ jobs:
         run: |
           go build -ldflags "-s -w" -o ./zpscan_linux main.go
           chmod +x zpscan_linux
-        if: matrix.os == 'ubuntu-latest'
+        if: matrix.os == 'centos-latest'
         env:
           GOENABLE: 1
       - name: Build On Darwin
@@ -54,7 +56,7 @@ jobs:
       - name: Build On Windows
         run: |
           go build -ldflags "-s -w" -o ./zpscan_windows.exe main.go
-        if: matrix.os == 'ubuntu-latest'
+        if: matrix.os == 'centos-latest'
         env:
           GOOS: windows
           GOENABLE: 1
