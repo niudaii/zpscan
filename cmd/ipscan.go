@@ -12,7 +12,6 @@ import (
 	"github.com/niudaii/zpscan/pkg/crack"
 	"github.com/niudaii/zpscan/pkg/ipscan"
 	"github.com/niudaii/zpscan/pkg/ipscan/portfinger"
-	"github.com/niudaii/zpscan/pkg/ipscan/portscan"
 	"github.com/niudaii/zpscan/pkg/ipscan/qqwry"
 
 	"github.com/projectdiscovery/gologger"
@@ -135,7 +134,7 @@ type Service struct {
 func (o *IpscanOptions) run() {
 	var hosts []string
 	for _, target := range targets {
-		tmpHosts, err := portscan.ParseIP(target)
+		tmpHosts, err := utils.ParseIP(target)
 		if err != nil {
 			return
 		}
@@ -145,8 +144,6 @@ func (o *IpscanOptions) run() {
 		Hosts:     hosts,
 		Proxy:     o.Proxy,
 		PortRange: o.PortRange,
-		Rate:      o.Rate,
-		Threads:   o.Threads,
 		MaxPort:   o.MaxPort,
 		QQwry:     config.Worker.Ipscan.Qqwry,
 		NmapProbe: config.Worker.Ipscan.NmapProbe,

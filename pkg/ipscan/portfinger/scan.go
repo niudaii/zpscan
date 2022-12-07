@@ -1,9 +1,9 @@
 package portfinger
 
 import (
-	"context"
 	"github.com/projectdiscovery/gologger"
 	"golang.org/x/net/proxy"
+	"net"
 	"regexp"
 	"strconv"
 	"strings"
@@ -13,13 +13,11 @@ import (
 
 type Engine struct {
 	Scanner *NmapProbe
-	Threads int
 	Proxy   string
 }
 
-func NewEngine(threads int, proxy string, scanner *NmapProbe) (*Engine, error) {
+func NewEngine(proxy string, scanner *NmapProbe) (*Engine, error) {
 	return &Engine{
-		Threads: threads,
 		Scanner: scanner,
 		Proxy:   proxy,
 	}, nil
@@ -51,12 +49,12 @@ type Address struct {
 	Port string
 }
 
-func (e *Engine) Run(targets map[string]map[int]struct{}) []*Result {
+func (e *Engine) Run(targets map[string][]int) []*Result {
 	var results []*Result
 	// 并发任务
 	wg := &sync.WaitGroup{}
-	taskChan := make(chan Address, e.Threads)
-	for i := 0; i < e.Threads; i++ {
+	taskChan := make(chan Address, 200)
+	for i := 0; i < 200; i++ {
 		go func() {
 			for task := range taskChan {
 				resp := e.Scanner.ScanWithProbe(task.IP, task.Port, e.Proxy, 5)
@@ -71,7 +69,7 @@ func (e *Engine) Run(targets map[string]map[int]struct{}) []*Result {
 
 	// 往chan发送目标
 	for ip, ports := range targets {
-		for port := range ports {
+		for _, port := range ports {
 			addr := Address{
 				IP:   ip,
 				Port: strconv.Itoa(port),
@@ -342,13 +340,24 @@ func (m *Match) ParseVersionInfo(response []byte) Extras {
 // 进行socket连接发送数据
 func (N *NmapProbe) grabResponse(addr, proxyAddr string, Indexes, SocketTimeout int) ([]byte, error) {
 	var response []byte // 保存响应的结果
-	dialer, err := proxy.SOCKS5("tcp", proxyAddr,
-		nil,
-		nil,
-	)
-	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Second)
-	defer cancel()
-	conn, err := dialer.(proxy.ContextDialer).DialContext(ctx, "tcp", addr)
+	var err error
+	var dialer proxy.Dialer
+	var conn net.Conn
+	connTimeout := time.Duration(int64(SocketTimeout)) * time.Second // 设置socket连接超时时间
+	if proxyAddr != "" {
+		dialer, err = proxy.SOCKS5("tcp", proxyAddr,
+			nil,
+			&net.Dialer{Timeout: connTimeout},
+		)
+		conn, err = dialer.Dial("tcp", addr)
+	} else {
+		conn, err = net.DialTimeout("tcp", addr, connTimeout)
+	}
+	defer func() {
+		if conn != nil {
+			conn.Close()
+		}
+	}()
 	if err != nil { // 连接端口失败
 		return nil, err
 	}

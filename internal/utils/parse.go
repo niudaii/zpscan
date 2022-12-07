@@ -1,4 +1,4 @@
-package portscan
+package utils
 
 import (
 	"fmt"

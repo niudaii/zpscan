@@ -10,7 +10,6 @@ import (
 )
 
 // 对nmap指纹库进行解析
-
 type NmapProbe struct {
 	Probes         []*Probe
 	ProbesMapKName map[string]*Probe // 以探针名为key对应Probe
@@ -38,7 +37,6 @@ func (N *NmapProbe) Init(nmapData []byte) error {
 	nmapStr := string(nmapData)
 	N.parseProbesFromContent(&nmapStr) // 解析nmap指纹库
 	N.parseProbesToMapKName()
-
 	return nil
 }
 

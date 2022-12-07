@@ -8,7 +8,7 @@ import (
 )
 
 func TestRun(t *testing.T) {
-	tests := map[string]*Input{
+	tests := map[string]*PocInput{
 		"success": {
 			Target:  "http://127.0.0.1:9200",
 			PocTags: []string{"elasticsearch"},
@@ -44,7 +44,7 @@ func TestRun(t *testing.T) {
 		t.Error(err)
 	}
 	t.Log("nucleiPcs", len(nucleiPcs))
-	r, err := NewRunner(&options, gobyPocs, xrayPocs, nucleiPcs)
+	r, err := NewRunner(&options, gobyPocs, xrayPocs, nucleiPcs, nucleiPcs)
 	if err != nil {
 		t.Error(err)
 	}
