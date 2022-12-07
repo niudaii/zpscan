@@ -1,12 +1,9 @@
 name: Test
 on:
-  create:
-    tags:
-      - v*
   workflow_dispatch:
 
 jobs:
-  release:
+  build:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
