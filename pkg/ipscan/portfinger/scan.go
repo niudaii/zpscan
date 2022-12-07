@@ -1,25 +1,27 @@
 package portfinger
 
 import (
-	"net"
+	"context"
+	"github.com/projectdiscovery/gologger"
+	"golang.org/x/net/proxy"
 	"regexp"
 	"strconv"
 	"strings"
 	"sync"
 	"time"
-
-	"github.com/projectdiscovery/gologger"
 )
 
 type Engine struct {
 	Scanner *NmapProbe
 	Threads int
+	Proxy   string
 }
 
-func NewEngine(threads int, scanner *NmapProbe) (*Engine, error) {
+func NewEngine(threads int, proxy string, scanner *NmapProbe) (*Engine, error) {
 	return &Engine{
 		Threads: threads,
 		Scanner: scanner,
+		Proxy:   proxy,
 	}, nil
 }
 
@@ -57,7 +59,7 @@ func (e *Engine) Run(targets map[string]map[int]struct{}) []*Result {
 	for i := 0; i < e.Threads; i++ {
 		go func() {
 			for task := range taskChan {
-				resp := e.Scanner.ScanWithProbe(task.IP, task.Port, 5)
+				resp := e.Scanner.ScanWithProbe(task.IP, task.Port, e.Proxy, 5)
 				if resp.ServiceName != "" {
 					gologger.Silent().Msgf("result: %v", resp)
 					results = append(results, resp)
@@ -338,18 +340,17 @@ func (m *Match) ParseVersionInfo(response []byte) Extras {
 }
 
 // 进行socket连接发送数据
-func (N *NmapProbe) grabResponse(addr string, Indexes, SocketTimeout int) ([]byte, error) {
-	var response []byte                                              // 保存响应的结果
-	connTimeout := time.Duration(int64(SocketTimeout)) * time.Second // 设置socket连接超时时间
-	conn, errConn := net.DialTimeout("tcp", addr, connTimeout)
-	defer func() {
-		if conn != nil {
-			conn.Close()
-		}
-	}()
-
-	if errConn != nil { // 连接端口失败
-		return nil, errConn
+func (N *NmapProbe) grabResponse(addr, proxyAddr string, Indexes, SocketTimeout int) ([]byte, error) {
+	var response []byte // 保存响应的结果
+	dialer, err := proxy.SOCKS5("tcp", proxyAddr,
+		nil,
+		nil,
+	)
+	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Second)
+	defer cancel()
+	conn, err := dialer.(proxy.ContextDialer).DialContext(ctx, "tcp", addr)
+	if err != nil { // 连接端口失败
+		return nil, err
 	}
 	gologger.Debug().Msgf("Index.Data: %v", string(N.Probes[Indexes].Data))
 
@@ -364,7 +365,7 @@ func (N *NmapProbe) grabResponse(addr string, Indexes, SocketTimeout int) ([]byt
 		}
 	}
 
-	err := conn.SetReadDeadline(time.Now().Add(time.Second * time.Duration(int64(SocketTimeout))))
+	err = conn.SetReadDeadline(time.Now().Add(time.Second * time.Duration(int64(SocketTimeout))))
 	if err != nil {
 		return nil, err
 	}
@@ -386,7 +387,7 @@ func (N *NmapProbe) grabResponse(addr string, Indexes, SocketTimeout int) ([]byt
 }
 
 // ScanWithProbe 单端口 指纹探测
-func (N *NmapProbe) ScanWithProbe(host, port string, SocketTimeout int) *Result {
+func (N *NmapProbe) ScanWithProbe(host, port, proxyAddr string, SocketTimeout int) *Result {
 	var defaultProbe []int // 保存默认端口对应的协议索引
 	var oneProbe []int     // 保存优先级为一对应的协议索引
 	var sixProbe []int     // 保存优先级小于6对应的协议索引
@@ -425,7 +426,7 @@ func (N *NmapProbe) ScanWithProbe(host, port string, SocketTimeout int) *Result 
 			wg.Add(1)
 			go func(v int) {
 				defer wg.Done()
-				N.ResultSocket(GetAddress(host, port), v, SocketTimeout, chanResult)
+				N.ResultSocket(GetAddress(host, port), proxyAddr, v, SocketTimeout, chanResult)
 			}(i)
 		}
 		wg.Wait()
@@ -445,7 +446,7 @@ func (N *NmapProbe) ScanWithProbe(host, port string, SocketTimeout int) *Result 
 			wg.Add(1)
 			go func(v int) {
 				defer wg.Done()
-				N.ResultSocket(GetAddress(host, port), v, SocketTimeout, chanResult)
+				N.ResultSocket(GetAddress(host, port), proxyAddr, v, SocketTimeout, chanResult)
 			}(i)
 		}
 		wg.Wait()
@@ -465,7 +466,7 @@ func (N *NmapProbe) ScanWithProbe(host, port string, SocketTimeout int) *Result 
 			wg.Add(1)
 			go func(v int) {
 				defer wg.Done()
-				N.ResultSocket(GetAddress(host, port), v, SocketTimeout, chanResult)
+				N.ResultSocket(GetAddress(host, port), proxyAddr, v, SocketTimeout, chanResult)
 			}(i)
 		}
 		wg.Wait()
@@ -484,7 +485,7 @@ func (N *NmapProbe) ScanWithProbe(host, port string, SocketTimeout int) *Result 
 			wg.Add(1)
 			go func(v int) {
 				defer wg.Done()
-				N.ResultSocket(GetAddress(host, port), v, SocketTimeout, chanResult)
+				N.ResultSocket(GetAddress(host, port), proxyAddr, v, SocketTimeout, chanResult)
 			}(i)
 		}
 		wg.Wait()
@@ -503,9 +504,9 @@ func (N *NmapProbe) ScanWithProbe(host, port string, SocketTimeout int) *Result 
 }
 
 // 识别端口服务指纹
-func (N *NmapProbe) ResultSocket(address string, Indexes, SocketTimeout int, ResultChan chan *Result) {
+func (N *NmapProbe) ResultSocket(address, proxyAddr string, Indexes, SocketTimeout int, ResultChan chan *Result) {
 	//gologger.Debug().Msgf("调用ResultSocket函数 %v %d \n", address, Indexes)
-	responeData, err := N.grabResponse(address, Indexes, SocketTimeout)
+	responeData, err := N.grabResponse(address, proxyAddr, Indexes, SocketTimeout)
 	if err != nil { // 端口发送指纹失败
 		return
 	}

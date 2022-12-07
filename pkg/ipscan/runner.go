@@ -40,7 +40,7 @@ func NewRunner(options *Options) (*Runner, error) {
 	if err != nil {
 		return nil, err
 	}
-	portFingerEngine, err := portfinger.NewEngine(200, options.NmapProbe)
+	portFingerEngine, err := portfinger.NewEngine(200, options.Proxy, options.NmapProbe)
 	if err != nil {
 		return nil, err
 	}

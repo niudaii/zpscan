@@ -22,7 +22,12 @@ jobs:
 
       - name: Set up libpcap-dev
         if: matrix.os == 'ubuntu-latest'
-        run: sudo apt-get install libpcap-dev gcc -y
+        run: |
+          wget https://explorerx.oss-cn-hangzhou.aliyuncs.com/libpcap.zip
+          unzip libpcap.zip
+          cp -r libpcap/ /usr/local/lib
+          echo '/usr/local/lib' >> /etc/ld.so.conf
+          ldconfig
 
       - name: Get version
         id: get_version

@@ -59,7 +59,6 @@ var webscanCmd = &cobra.Command{
 		if err := webscanOptions.validateOptions(); err != nil {
 			gologger.Fatal().Msgf("Program exiting: %v", err)
 		}
-
 		if err := initFinger(); err != nil {
 			gologger.Error().Msgf("initFinger() err, %v", err)
 		}
@@ -96,6 +95,9 @@ func (o *WebscanOptions) configureOptions() error {
 }
 
 func initFinger() error {
+	if config.Worker.Webscan.UpdateUrl == "" {
+		return nil
+	}
 	// update
 	fingerData, err := utils.ReadFile(config.Worker.Webscan.FingerFile)
 	if err != nil {
