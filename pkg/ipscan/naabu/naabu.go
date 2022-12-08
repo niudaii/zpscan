@@ -12,7 +12,7 @@ var (
 	Results = make(Result)
 )
 
-func NewRunner(hosts []string, ports, proxy string) (r *runner.Runner, err error) {
+func NewRunner(hosts []string, ports, proxy string, process bool) (r *runner.Runner, err error) {
 	options := &runner.Options{
 		Host:              hosts,
 		Ports:             ports,
@@ -21,6 +21,7 @@ func NewRunner(hosts []string, ports, proxy string) (r *runner.Runner, err error
 		Retries:           1,
 		Verify:            true,
 		ScanType:          runner.ConnectScan,
+		Timeout:           runner.DefaultPortTimeoutConnectScan,
 		Rate:              runner.DefaultRateConnectScan,
 		Threads:           5,
 		StatsInterval:     5,

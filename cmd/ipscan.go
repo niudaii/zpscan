@@ -24,8 +24,8 @@ type IpscanOptions struct {
 	PortRange string
 	Rate      int
 	Threads   int
-
-	MaxPort int
+	Process   bool
+	MaxPort   int
 
 	Crack bool
 }
@@ -35,10 +35,10 @@ var ipscanOptions IpscanOptions
 func init() {
 	ipscanCmd.Flags().StringVarP(&ipscanOptions.PortRange, "port-range", "p", "1-65535", "port range(example: -p '22,80-90,1433,3306')")
 	ipscanCmd.Flags().StringVar(&ipscanOptions.Proxy, "proxy", "", "proxy, (example: --proxy 192.168.31.227:47871')")
-	ipscanCmd.Flags().IntVar(&ipscanOptions.Rate, "rate", 3000, "packets to send per second")
-	ipscanCmd.Flags().IntVar(&ipscanOptions.Threads, "threads", 10, "number of threads")
-
+	//ipscanCmd.Flags().IntVar(&ipscanOptions.Rate, "rate", 3000, "packets to send per second")
+	//ipscanCmd.Flags().IntVar(&ipscanOptions.Threads, "threads", 10, "number of threads")
 	ipscanCmd.Flags().IntVar(&ipscanOptions.MaxPort, "max-port", 200, "discard result if it more than max port")
+	ipscanCmd.Flags().BoolVar(&ipscanOptions.Process, "process", false, "show process")
 
 	ipscanCmd.Flags().BoolVar(&ipscanOptions.Crack, "crack", false, "open crack")
 
@@ -145,6 +145,7 @@ func (o *IpscanOptions) run() {
 		Proxy:     o.Proxy,
 		PortRange: o.PortRange,
 		MaxPort:   o.MaxPort,
+		Process:   o.Process,
 		QQwry:     config.Worker.Ipscan.Qqwry,
 		NmapProbe: config.Worker.Ipscan.NmapProbe,
 	}
