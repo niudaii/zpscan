@@ -30,9 +30,6 @@ func NewRunner(hosts []string, ports, proxy string) (r *runner.Runner, err error
 			Results[result.IP] = result.Ports
 		},
 	}
-	if proxy != "" {
-		options.Ping = true
-	}
 	r, err = runner.NewRunner(options)
 	return
 }

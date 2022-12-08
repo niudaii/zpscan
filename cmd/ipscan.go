@@ -134,7 +134,7 @@ type Service struct {
 func (o *IpscanOptions) run() {
 	var hosts []string
 	for _, target := range targets {
-		tmpHosts, err := utils.ParseIP(target)
+		tmpHosts, err := ipscan.ParseIP(target)
 		if err != nil {
 			return
 		}
