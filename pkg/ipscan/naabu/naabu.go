@@ -12,7 +12,7 @@ var (
 	Results = make(Result)
 )
 
-func NewRunner(hosts []string, ports, proxy string, process bool) (r *runner.Runner, err error) {
+func NewRunner(hosts []string, ports, proxy string, process bool, rate, threads int) (r *runner.Runner, err error) {
 	options := &runner.Options{
 		Host:              hosts,
 		Ports:             ports,
@@ -22,10 +22,10 @@ func NewRunner(hosts []string, ports, proxy string, process bool) (r *runner.Run
 		Verify:            true,
 		ScanType:          runner.ConnectScan,
 		Timeout:           runner.DefaultPortTimeoutConnectScan,
-		Rate:              runner.DefaultRateConnectScan,
-		Threads:           5,
+		Rate:              rate,
+		Threads:           threads,
 		StatsInterval:     5,
-		EnableProgressBar: true,
+		EnableProgressBar: process,
 		OnResult: func(result *result.HostResult) {
 			gologger.Info().Msgf("%v %v", result.IP, result.Ports)
 			Results[result.IP] = result.Ports

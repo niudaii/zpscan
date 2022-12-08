@@ -16,7 +16,7 @@ type Options struct {
 	MaxPort   int
 	Process   bool
 	Rate      int
-	Thread    int
+	Threads   int
 	QQwry     *qqwry.QQwry
 	NmapProbe *portfinger.NmapProbe
 }
@@ -28,7 +28,7 @@ type Runner struct {
 }
 
 func NewRunner(options *Options) (*Runner, error) {
-	naabuRunner, err := naabu.NewRunner(options.Hosts, options.PortRange, options.Proxy, options.Process)
+	naabuRunner, err := naabu.NewRunner(options.Hosts, options.PortRange, options.Proxy, options.Process, options.Rate, options.Threads)
 	if err != nil {
 		return nil, err
 	}
