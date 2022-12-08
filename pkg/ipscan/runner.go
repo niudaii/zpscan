@@ -59,6 +59,7 @@ func (r *Runner) Run() (results []*portfinger.Result) {
 	}
 	// 去除开放端口数大于maxPort
 	naabuResults := naabu.Results
+	naabu.Results = make(naabu.Result)
 	for k := range naabuResults {
 		if len(naabuResults[k]) > r.options.MaxPort {
 			gologger.Info().Msgf("%v 开放端口大于 %v", k, r.options.MaxPort)
