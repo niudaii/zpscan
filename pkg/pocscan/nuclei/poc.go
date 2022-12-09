@@ -107,7 +107,7 @@ func InitExecuterOptions(pocDir string) (err error) {
 
 func InitEngine(timeout int, proxy string) (engine *core.Engine) {
 	ExecuterOptions.Options.Timeout = timeout
-	ExecuterOptions.Options.RateLimit = 5
+	ExecuterOptions.Options.RateLimit = 1
 	ExecuterOptions.Options.ProxyInternal = true
 	ExecuterOptions.Options.Proxy = []string{proxy}
 

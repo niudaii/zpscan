@@ -15,10 +15,9 @@ import (
 	"github.com/projectdiscovery/nuclei/v2/pkg/types"
 )
 
-var proxyURLList []url.URL
-
 // LoadProxyServers load list of proxy servers from file or comma seperated
 func loadProxyServers(options *types.Options) error {
+	var proxyURLList []url.URL // bug 需要放入函数内
 	if len(options.Proxy) == 0 {
 		return nil
 	}
@@ -47,10 +46,10 @@ func loadProxyServers(options *types.Options) error {
 			return fmt.Errorf("invalid proxy file or URL provided for %s", p)
 		}
 	}
-	return processProxyList(options)
+	return processProxyList(options, proxyURLList)
 }
 
-func processProxyList(options *types.Options) error {
+func processProxyList(options *types.Options, proxyURLList []url.URL) error {
 	if len(proxyURLList) == 0 {
 		return fmt.Errorf("could not find any valid proxy")
 	} else {

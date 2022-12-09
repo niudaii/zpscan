@@ -241,12 +241,14 @@ func (o *IpscanOptions) run() {
 	gologger.Info().Msgf("crack: %v", len(crackTargets))
 	// webscan
 	options2 := &webscan.Options{
-		Proxy:       "socks5://" + ipscanOptions.Proxy,
 		Threads:     webscanOptions.Threads,
 		Timeout:     webscanOptions.Timeout,
 		Headers:     webscanOptions.Headers,
 		NoColor:     commonOptions.NoColor,
 		FingerRules: config.Worker.Webscan.FingerRules,
+	}
+	if ipscanOptions.Proxy != "" {
+		options.Proxy = "socks5://" + ipscanOptions.Proxy
 	}
 	webscanRunner, err := webscan.NewRunner(options2)
 	if err != nil {
@@ -294,9 +296,11 @@ func (o *IpscanOptions) run() {
 		var nucleiEngine *core.Engine
 		nucleiPocs, nucleiEngine, err = pocscan.InitNucleiPoc(config.Worker.Pocscan.NucleiPocDir, "socks5://"+ipscanOptions.Proxy, pocscanOptions.Timeout)
 		options4 := &pocscan.Options{
-			Proxy:   "socks5://" + ipscanOptions.Proxy,
 			Timeout: pocscanOptions.Timeout,
 			Headers: pocscanOptions.Headers,
+		}
+		if ipscanOptions.Proxy != "" {
+			options4.Proxy = "socks5://" + ipscanOptions.Proxy
 		}
 		pocscanRunner, err := pocscan.NewRunner(options4, config.Worker.Pocscan.GobyPocs, config.Worker.Pocscan.XrayPocs, nucleiPocs, nucleiExps, nucleiEngine)
 		if err != nil {
