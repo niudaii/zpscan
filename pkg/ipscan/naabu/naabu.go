@@ -17,14 +17,15 @@ func NewRunner(hosts []string, ports, proxy string, process bool, rate, threads 
 		Host:              hosts,
 		Ports:             ports,
 		Proxy:             proxy,
-		ResumeCfg:         &runner.ResumeCfg{},
-		Retries:           2,
 		ScanType:          runner.ConnectScan,
-		Timeout:           runner.DefaultRateConnectScan,
+		Timeout:           runner.DefaultPortTimeoutConnectScan,
+		Retries:           2,
+		Verify:            true,
 		Rate:              rate,
 		Threads:           threads,
 		StatsInterval:     5,
 		EnableProgressBar: process,
+		ResumeCfg:         &runner.ResumeCfg{},
 		OnResult: func(result *result.HostResult) {
 			gologger.Info().Msgf("%v %v", result.IP, result.Ports)
 			Results[result.IP] = result.Ports
