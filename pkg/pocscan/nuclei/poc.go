@@ -26,10 +26,8 @@ import (
 type Poc = templates.Template
 
 var (
-	Options         *types.Options
-	ExecuterOptions protocols.ExecuterOptions
-	Engine          *core.Engine
 	Results         []*common.Result
+	ExecuterOptions protocols.ExecuterOptions
 )
 
 // LoadAllPoc 加载全部poc
@@ -44,7 +42,7 @@ func LoadAllPoc(pocDir string) (pocs []*Poc, err error) {
 			continue
 		}
 		var poc *Poc
-		poc, err = ParsePocFile(pocPath)
+		poc, err = templates.Parse(pocPath, nil, ExecuterOptions)
 		if err != nil {
 			gologger.Error().Msgf("ParsePocFile() %v err, %v", pocPath, err)
 			continue
@@ -54,12 +52,7 @@ func LoadAllPoc(pocDir string) (pocs []*Poc, err error) {
 	return
 }
 
-func ParsePocFile(filePath string) (template *templates.Template, err error) {
-	template, err = templates.Parse(filePath, nil, ExecuterOptions)
-	return
-}
-
-func InitNuclei(pocDir string, limiter, timeout int, proxy string) (err error) {
+func InitExecuterOptions(pocDir string) (err error) {
 	cache := hosterrorscache.New(30, hosterrorscache.DefaultMaxHostsCount)
 	defer cache.Close()
 
@@ -82,16 +75,10 @@ func InitNuclei(pocDir string, limiter, timeout int, proxy string) (err error) {
 		}
 	}
 
-	Options = types.DefaultOptions()
-	Options.ProxyInternal = true
-	Options.Timeout = timeout
-	Options.Proxy = []string{proxy}
-	Options.RateLimit = limiter
-	Options.TemplatesDirectory = pocDir
+	options := types.DefaultOptions()
 
-	_ = protocolstate.Init(Options)
-	_ = protocolinit.Init(Options)
-	_ = loadProxyServers(Options) // 初始化代理
+	_ = protocolstate.Init(options)
+	_ = protocolinit.Init(options)
 
 	interactOpts := interactsh.NewDefaultOptions(outputWriter, reportingClient, mockProgress)
 	interactClient, err := interactsh.New(interactOpts)
@@ -101,9 +88,10 @@ func InitNuclei(pocDir string, limiter, timeout int, proxy string) (err error) {
 	defer interactClient.Close()
 
 	catalog := disk.NewCatalog(pocDir)
+
 	ExecuterOptions = protocols.ExecuterOptions{
 		Output:          outputWriter,
-		Options:         Options,
+		Options:         options,
 		Progress:        mockProgress,
 		Catalog:         catalog,
 		IssuesClient:    reportingClient,
@@ -114,8 +102,24 @@ func InitNuclei(pocDir string, limiter, timeout int, proxy string) (err error) {
 		ResumeCfg:       types.NewResumeCfg(),
 	}
 
-	Engine = core.New(Options)
-	Engine.SetExecuterOptions(ExecuterOptions)
+	return
+}
 
-	return nil
+func InitEngine(limiter, timeout int, proxy string) (engine *core.Engine) {
+	options := types.DefaultOptions()
+	options.Timeout = timeout
+	options.ProxyInternal = true
+	options.Proxy = []string{proxy}
+	options.RateLimit = limiter
+
+	_ = protocolstate.Init(options)
+	_ = protocolinit.Init(options)
+	_ = loadProxyServers(options) // 初始化代理
+
+	ExecuterOptions.Options = options
+
+	engine = core.New(options)
+	engine.SetExecuterOptions(ExecuterOptions)
+
+	return
 }

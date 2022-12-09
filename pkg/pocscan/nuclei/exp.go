@@ -21,7 +21,7 @@ func LoadAllExp(pocDir string) (exps []*Exp, err error) {
 			continue
 		}
 		var exp *Exp
-		exp, err = ParsePocFile(pocPath)
+		exp, err = templates.Parse(pocPath, nil, ExecuterOptions)
 		if err != nil {
 			gologger.Error().Msgf("ParsePocFile() %v err, %v", pocPath, err)
 			continue

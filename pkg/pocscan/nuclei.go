@@ -61,9 +61,9 @@ func (r *Runner) RunNucleiExp(target, pocName, payload string) (results []*commo
 func (r *Runner) NucleiPoc(target string, pocList []*nuclei.Poc) (results []*common.Result, err error) {
 	// 运行
 	input := &inputs.SimpleInputProvider{Inputs: []string{target}}
-	_ = nuclei.Engine.Execute(pocList, input)
+	_ = r.nucleiEngine.Execute(pocList, input)
 	time.Sleep(5 * time.Second) // 战术性 sleep，等待 Interactsh Server 结果
-	nuclei.Engine.WorkPool().Wait()
+	r.nucleiEngine.WorkPool().Wait()
 	// 结果保存
 	for _, result := range nuclei.Results {
 		result.Target = target
@@ -81,9 +81,9 @@ func (r *Runner) NucleiExp(target string, pocList []*nuclei.Poc, payload string)
 	for _, poc := range pocList {
 		poc.Variables.Set("exp", payload)
 	}
-	_ = nuclei.Engine.Execute(pocList, input)
+	_ = r.nucleiEngine.Execute(pocList, input)
 	time.Sleep(5 * time.Second) // 战术性 sleep，等待 Interactsh Server 结果
-	nuclei.Engine.WorkPool().Wait()
+	r.nucleiEngine.WorkPool().Wait()
 	// 结果保存
 	for _, result := range nuclei.Results {
 		result.Target = target

@@ -9,10 +9,12 @@ import (
 	"github.com/niudaii/zpscan/pkg/pocscan/nuclei"
 	"github.com/niudaii/zpscan/pkg/pocscan/xray"
 	"github.com/projectdiscovery/gologger"
+	"github.com/projectdiscovery/nuclei/v2/pkg/core"
 	"github.com/spf13/cobra"
 )
 
 type PocscanOptions struct {
+	Limiter int
 	Timeout int
 	Proxy   string
 	Headers []string
@@ -24,6 +26,7 @@ var (
 
 func init() {
 	pocscanCmd.Flags().IntVar(&pocscanOptions.Timeout, "timeout", 10, "timeout in seconds")
+	pocscanCmd.Flags().IntVar(&pocscanOptions.Limiter, "limiter", 5, "limiter")
 	pocscanCmd.Flags().StringVarP(&pocscanOptions.Proxy, "proxy", "p", "", "proxy(example: -p 'http://127.0.0.1:8080')")
 	pocscanCmd.Flags().StringSliceVar(&pocscanOptions.Headers, "headers", []string{}, "add custom headers(example: --headers 'User-Agent: xxx,Cookie: xxx')")
 	rootCmd.AddCommand(pocscanCmd)
@@ -40,10 +43,6 @@ var pocscanCmd = &cobra.Command{
 
 		if err := pocscanOptions.configureOptions(); err != nil {
 			gologger.Fatal().Msgf("Program exiting: %v", err)
-		}
-
-		if err := initPoc(); err != nil {
-			gologger.Fatal().Msgf("initPoc() err, %v", err)
 		}
 
 		pocscanOptions.run()
@@ -66,37 +65,42 @@ func (o *PocscanOptions) configureOptions() error {
 	return nil
 }
 
-func initPoc() error {
-	var err error
+func initPoc() (engine *core.Engine, err error) {
 	config.Worker.Pocscan.GobyPocs, err = goby.LoadAllPoc(config.Worker.Pocscan.GobyPocDir)
 	if err != nil {
-		return err
+		return
 	}
 	config.Worker.Pocscan.XrayPocs, err = xray.LoadAllPoc(config.Worker.Pocscan.XrayPocDir)
 	if err != nil {
-		return err
+		return
 	}
-	err = nuclei.InitNuclei(config.Worker.Pocscan.NucleiPocDir, 5, pocscanOptions.Timeout, pocscanOptions.Proxy)
+	err = nuclei.InitExecuterOptions(config.Worker.Pocscan.NucleiPocDir)
 	if err != nil {
-		return err
+		return
 	}
+	engine = nuclei.InitEngine(pocscanOptions.Limiter, pocscanOptions.Timeout, pocscanOptions.Proxy)
 	config.Worker.Pocscan.NucleiPocs, err = nuclei.LoadAllPoc(config.Worker.Pocscan.NucleiPocDir)
 	if err != nil {
-		return err
+		return
 	}
 	gologger.Info().Msgf("gobyPocs: %v", len(config.Worker.Pocscan.GobyPocs))
 	gologger.Info().Msgf("xrayPocs: %v", len(config.Worker.Pocscan.XrayPocs))
 	gologger.Info().Msgf("nucleiPocs: %v", len(config.Worker.Pocscan.NucleiPocs))
-	return nil
+	return
 }
 
 func (o *PocscanOptions) run() {
+	engine, err := initPoc()
+	if err != nil {
+		gologger.Fatal().Msgf("initPoc() err, %v", err)
+		return
+	}
 	options := &pocscan.Options{
 		Proxy:   pocscanOptions.Proxy,
 		Timeout: pocscanOptions.Timeout,
 		Headers: pocscanOptions.Headers,
 	}
-	pocscanRunner, err := pocscan.NewRunner(options, config.Worker.Pocscan.GobyPocs, config.Worker.Pocscan.XrayPocs, config.Worker.Pocscan.NucleiPocs, config.Worker.Expscan.NucleiExps)
+	pocscanRunner, err := pocscan.NewRunner(options, config.Worker.Pocscan.GobyPocs, config.Worker.Pocscan.XrayPocs, config.Worker.Pocscan.NucleiPocs, config.Worker.Expscan.NucleiExps, engine)
 	if err != nil {
 		gologger.Error().Msgf("pocscan.NewRunner() err, %v", err)
 		return

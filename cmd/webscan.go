@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/niudaii/zpscan/pkg/pocscan"
+	"github.com/projectdiscovery/nuclei/v2/pkg/core"
 	"sort"
 	"time"
 
@@ -61,10 +62,6 @@ var webscanCmd = &cobra.Command{
 		}
 		if err := initFinger(); err != nil {
 			gologger.Error().Msgf("initFinger() err, %v", err)
-		}
-
-		if err := initPoc(); err != nil {
-			gologger.Error().Msgf("initPoc() err, %v", err)
 		}
 
 		if err := webscanOptions.configureOptions(); err != nil {
@@ -185,12 +182,18 @@ func (o *WebscanOptions) run() {
 	}
 	// pocscan
 	if o.Pocscan {
+		var engine *core.Engine
+		engine, err = initPoc()
+		if err != nil {
+			gologger.Fatal().Msgf("initPoc() err, %v", err)
+			return
+		}
 		options2 := &pocscan.Options{
 			Proxy:   o.Proxy,
 			Timeout: o.Timeout,
 			Headers: o.Headers,
 		}
-		pocscanRunner, err := pocscan.NewRunner(options2, config.Worker.Pocscan.GobyPocs, config.Worker.Pocscan.XrayPocs, config.Worker.Pocscan.NucleiPocs, config.Worker.Expscan.NucleiExps)
+		pocscanRunner, err := pocscan.NewRunner(options2, config.Worker.Pocscan.GobyPocs, config.Worker.Pocscan.XrayPocs, config.Worker.Pocscan.NucleiPocs, config.Worker.Expscan.NucleiExps, engine)
 		if err != nil {
 			gologger.Error().Msgf("utils.SaveMarshal() err, %v", err)
 			return

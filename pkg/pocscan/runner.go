@@ -8,6 +8,7 @@ import (
 	"github.com/niudaii/zpscan/pkg/pocscan/nuclei"
 	"github.com/niudaii/zpscan/pkg/pocscan/xray"
 	"github.com/projectdiscovery/gologger"
+	"github.com/projectdiscovery/nuclei/v2/pkg/core"
 )
 
 type Options struct {
@@ -17,20 +18,22 @@ type Options struct {
 }
 
 type Runner struct {
-	gobyPocs   []*goby.Poc
-	xrayPocs   []*xray.Poc
-	nucleiPocs []*nuclei.Poc
-	nucleiExps []*nuclei.Poc
-	reqClient  *req.Client
+	gobyPocs     []*goby.Poc
+	xrayPocs     []*xray.Poc
+	nucleiPocs   []*nuclei.Poc
+	nucleiExps   []*nuclei.Poc
+	reqClient    *req.Client
+	nucleiEngine *core.Engine
 }
 
-func NewRunner(options *Options, gobyPocs []*goby.Poc, xrayPocs []*xray.Poc, nucleiPcs []*nuclei.Poc, nucleiExps []*nuclei.Exp) (runner *Runner, err error) {
+func NewRunner(options *Options, gobyPocs []*goby.Poc, xrayPocs []*xray.Poc, nucleiPcs []*nuclei.Poc, nucleiExps []*nuclei.Exp, engine *core.Engine) (runner *Runner, err error) {
 	runner = &Runner{
-		gobyPocs:   gobyPocs,
-		xrayPocs:   xrayPocs,
-		nucleiPocs: nucleiPcs,
-		nucleiExps: nucleiExps,
-		reqClient:  utils.NewReqClient(options.Proxy, options.Timeout, options.Headers),
+		gobyPocs:     gobyPocs,
+		xrayPocs:     xrayPocs,
+		nucleiPocs:   nucleiPcs,
+		nucleiExps:   nucleiExps,
+		reqClient:    utils.NewReqClient(options.Proxy, options.Timeout, options.Headers),
+		nucleiEngine: engine,
 	}
 	return runner, nil
 }
