@@ -8,12 +8,10 @@ import (
 	"github.com/niudaii/zpscan/pkg/pocscan"
 	"github.com/niudaii/zpscan/pkg/pocscan/nuclei"
 	"github.com/projectdiscovery/gologger"
-	"github.com/projectdiscovery/nuclei/v2/pkg/core"
 	"github.com/spf13/cobra"
 )
 
 type ExpscanOptions struct {
-	Limiter int
 	Timeout int
 	Proxy   string
 	Headers []string
@@ -26,7 +24,6 @@ var (
 
 func init() {
 	expscanCmd.Flags().IntVar(&expscanOptions.Timeout, "timeout", 10, "timeout in seconds")
-	expscanCmd.Flags().IntVar(&expscanOptions.Limiter, "limiter", 5, "limiter")
 	expscanCmd.Flags().StringVarP(&expscanOptions.Proxy, "proxy", "p", "", "proxy(example: -p 'http://127.0.0.1:8080')")
 	expscanCmd.Flags().StringSliceVar(&expscanOptions.Headers, "headers", []string{}, "add custom headers(example: --headers 'User-Agent: xxx,Cookie: xxx')")
 	expscanCmd.Flags().StringVar(&expscanOptions.Payload, "payload", "", "payload to send")
@@ -68,32 +65,19 @@ func (o *ExpscanOptions) configureOptions() error {
 	return nil
 }
 
-func initExp() (engine *core.Engine, err error) {
-	err = nuclei.InitExecuterOptions(config.Worker.Pocscan.NucleiPocDir)
-	if err != nil {
-		return
-	}
-	engine = nuclei.InitEngine(expscanOptions.Limiter, expscanOptions.Timeout, pocscanOptions.Proxy)
-	config.Worker.Expscan.NucleiExps, err = nuclei.LoadAllExp(config.Worker.Expscan.NucleiExpDir)
-	if err != nil {
-		return
-	}
-	gologger.Info().Msgf("nucleiExps: %v", len(config.Worker.Expscan.NucleiExps))
-	return
-}
-
 func (o *ExpscanOptions) run() {
-	engine, err := initExp()
+	var nucleiPocs []*nuclei.Poc
+	nucleiExps, nucleiEngine, err := pocscan.InitNucleiExp(config.Worker.Expscan.NucleiExpDir, expscanOptions.Proxy, expscanOptions.Timeout)
 	if err != nil {
-		gologger.Fatal().Msgf("initExp() err, %v", err)
 		return
 	}
+	gologger.Info().Msgf("nucleiExps: %v", len(nucleiExps))
 	options := &pocscan.Options{
 		Proxy:   expscanOptions.Proxy,
 		Timeout: expscanOptions.Timeout,
 		Headers: expscanOptions.Headers,
 	}
-	pocscanRunner, err := pocscan.NewRunner(options, config.Worker.Pocscan.GobyPocs, config.Worker.Pocscan.XrayPocs, config.Worker.Pocscan.NucleiPocs, config.Worker.Expscan.NucleiExps, engine)
+	pocscanRunner, err := pocscan.NewRunner(options, config.Worker.Pocscan.GobyPocs, config.Worker.Pocscan.XrayPocs, nucleiPocs, nucleiExps, nucleiEngine)
 	if err != nil {
 		gologger.Error().Msgf("pocscan.NewRunner() err, %v", err)
 		return

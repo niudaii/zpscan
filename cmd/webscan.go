@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/niudaii/zpscan/pkg/pocscan"
+	"github.com/niudaii/zpscan/pkg/pocscan/nuclei"
 	"github.com/projectdiscovery/nuclei/v2/pkg/core"
 	"sort"
 	"time"
@@ -182,18 +183,21 @@ func (o *WebscanOptions) run() {
 	}
 	// pocscan
 	if o.Pocscan {
-		var engine *core.Engine
-		engine, err = initPoc()
+		err = initPoc()
 		if err != nil {
 			gologger.Fatal().Msgf("initPoc() err, %v", err)
 			return
 		}
+		var nucleiPocs []*nuclei.Poc
+		var nucleiExps []*nuclei.Exp
+		var nucleiEngine *core.Engine
+		nucleiPocs, nucleiEngine, err = pocscan.InitNucleiPoc(config.Worker.Pocscan.NucleiPocDir, pocscanOptions.Proxy, pocscanOptions.Timeout)
 		options2 := &pocscan.Options{
 			Proxy:   o.Proxy,
 			Timeout: o.Timeout,
 			Headers: o.Headers,
 		}
-		pocscanRunner, err := pocscan.NewRunner(options2, config.Worker.Pocscan.GobyPocs, config.Worker.Pocscan.XrayPocs, config.Worker.Pocscan.NucleiPocs, config.Worker.Expscan.NucleiExps, engine)
+		pocscanRunner, err := pocscan.NewRunner(options2, config.Worker.Pocscan.GobyPocs, config.Worker.Pocscan.XrayPocs, nucleiPocs, nucleiExps, nucleiEngine)
 		if err != nil {
 			gologger.Error().Msgf("utils.SaveMarshal() err, %v", err)
 			return

@@ -105,20 +105,17 @@ func InitExecuterOptions(pocDir string) (err error) {
 	return
 }
 
-func InitEngine(limiter, timeout int, proxy string) (engine *core.Engine) {
-	options := types.DefaultOptions()
-	options.Timeout = timeout
-	options.ProxyInternal = true
-	options.Proxy = []string{proxy}
-	options.RateLimit = limiter
+func InitEngine(timeout int, proxy string) (engine *core.Engine) {
+	ExecuterOptions.Options.Timeout = timeout
+	ExecuterOptions.Options.RateLimit = 5
+	ExecuterOptions.Options.ProxyInternal = true
+	ExecuterOptions.Options.Proxy = []string{proxy}
 
-	_ = protocolstate.Init(options)
-	_ = protocolinit.Init(options)
-	_ = loadProxyServers(options) // 初始化代理
+	_ = protocolstate.Init(ExecuterOptions.Options)
+	_ = protocolinit.Init(ExecuterOptions.Options)
+	_ = loadProxyServers(ExecuterOptions.Options) // 初始化代理
 
-	ExecuterOptions.Options = options
-
-	engine = core.New(options)
+	engine = core.New(ExecuterOptions.Options)
 	engine.SetExecuterOptions(ExecuterOptions)
 
 	return
