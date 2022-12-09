@@ -147,7 +147,6 @@ func (o *IpscanOptions) run() {
 	}
 	options := &ipscan.Options{
 		Hosts:     hosts,
-		Proxy:     o.Proxy,
 		PortRange: o.PortRange,
 		MaxPort:   o.MaxPort,
 		Process:   o.Process,
@@ -155,6 +154,7 @@ func (o *IpscanOptions) run() {
 		Threads:   o.Threads,
 		QQwry:     config.Worker.Ipscan.Qqwry,
 		NmapProbe: config.Worker.Ipscan.NmapProbe,
+		Proxy:     o.Proxy,
 	}
 	ipscanRunner, err := ipscan.NewRunner(options)
 	if err != nil {
