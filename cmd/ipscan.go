@@ -4,7 +4,10 @@ import (
 	"encoding/binary"
 	"encoding/json"
 	"fmt"
+	"github.com/niudaii/zpscan/pkg/pocscan"
+	"github.com/niudaii/zpscan/pkg/pocscan/nuclei"
 	"github.com/niudaii/zpscan/pkg/webscan"
+	"github.com/projectdiscovery/nuclei/v2/pkg/core"
 	"strings"
 
 	"github.com/niudaii/zpscan/config"
@@ -27,20 +30,22 @@ type IpscanOptions struct {
 	Process   bool
 	MaxPort   int
 
-	Crack bool
+	Crack   bool
+	Pocscan bool
 }
 
 var ipscanOptions IpscanOptions
 
 func init() {
 	ipscanCmd.Flags().StringVarP(&ipscanOptions.PortRange, "port-range", "p", "1-65535", "port range(example: -p '22,80-90,1433,3306')")
-	ipscanCmd.Flags().StringVar(&ipscanOptions.Proxy, "proxy", "", "proxy, (example: --proxy 192.168.31.227:47871')")
-	ipscanCmd.Flags().IntVar(&ipscanOptions.Rate, "rate", 5000, "packets to send per second")
-	ipscanCmd.Flags().IntVar(&ipscanOptions.Threads, "threads", 10, "number of threads")
+	ipscanCmd.Flags().StringVar(&ipscanOptions.Proxy, "proxy", "", "socks5 proxy, (example: --proxy 192.168.31.227:47871')")
+	ipscanCmd.Flags().IntVar(&ipscanOptions.Rate, "rate", 1500, "packets to send per second")
+	ipscanCmd.Flags().IntVar(&ipscanOptions.Threads, "threads", 25, "number of threads")
 	ipscanCmd.Flags().IntVar(&ipscanOptions.MaxPort, "max-port", 200, "discard result if it more than max port")
 	ipscanCmd.Flags().BoolVar(&ipscanOptions.Process, "process", false, "show process")
 
 	ipscanCmd.Flags().BoolVar(&ipscanOptions.Crack, "crack", false, "open crack")
+	ipscanCmd.Flags().BoolVar(&ipscanOptions.Pocscan, "pocscan", false, "open pocscan")
 
 	rootCmd.AddCommand(ipscanCmd)
 }
@@ -236,7 +241,7 @@ func (o *IpscanOptions) run() {
 	gologger.Info().Msgf("crack: %v", len(crackTargets))
 	// webscan
 	options2 := &webscan.Options{
-		Proxy:       webscanOptions.Proxy,
+		Proxy:       "socks5://" + ipscanOptions.Proxy,
 		Threads:     webscanOptions.Threads,
 		Timeout:     webscanOptions.Timeout,
 		Headers:     webscanOptions.Headers,
@@ -248,7 +253,19 @@ func (o *IpscanOptions) run() {
 		gologger.Error().Msgf("webscan.NewRunner() err, %v", err)
 		return
 	}
-	webscanRunner.Run(webTargets)
+	webscanResults := webscanRunner.Run(webTargets)
+	var pocscanTargets []string
+	for _, webResult := range webscanResults {
+		if len(webResult.Fingers) > 0 {
+			var pocTags []string
+			for _, finger := range webResult.Fingers {
+				pocTags = append(pocTags, finger.PocTags...)
+			}
+			if len(pocTags) > 0 {
+				pocscanTargets = append(pocscanTargets, webResult.Url+"|"+strings.Join(pocTags, ","))
+			}
+		}
+	}
 	// crack
 	if o.Crack {
 		options3 := &crack.Options{
@@ -265,5 +282,33 @@ func (o *IpscanOptions) run() {
 		addrs := crack.ParseTargets(crackTargets)
 		addrs = crack.FilterModule(addrs, crackOptions.Module)
 		crackRunner.Run(addrs, []string{}, []string{})
+	}
+	if o.Pocscan {
+		err = initPoc()
+		if err != nil {
+			gologger.Fatal().Msgf("initPoc() err, %v", err)
+			return
+		}
+		var nucleiPocs []*nuclei.Poc
+		var nucleiExps []*nuclei.Exp
+		var nucleiEngine *core.Engine
+		nucleiPocs, nucleiEngine, err = pocscan.InitNucleiPoc(config.Worker.Pocscan.NucleiPocDir, "socks5://"+ipscanOptions.Proxy, pocscanOptions.Timeout)
+		options4 := &pocscan.Options{
+			Proxy:   "socks5://" + ipscanOptions.Proxy,
+			Timeout: pocscanOptions.Timeout,
+			Headers: pocscanOptions.Headers,
+		}
+		pocscanRunner, err := pocscan.NewRunner(options4, config.Worker.Pocscan.GobyPocs, config.Worker.Pocscan.XrayPocs, nucleiPocs, nucleiExps, nucleiEngine)
+		if err != nil {
+			gologger.Error().Msgf("pocscan.NewRunner() err, %v", err)
+			return
+		}
+		scanInputs, err := pocscan.ParsePocInput(pocscanTargets)
+		if err != nil {
+			gologger.Error().Msgf("pocscan.ParsePocInput() err, %v", err)
+			return
+		}
+		// poc扫描
+		pocscanRunner.RunPoc(scanInputs)
 	}
 }

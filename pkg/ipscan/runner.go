@@ -46,13 +46,12 @@ func NewRunner(options *Options) (*Runner, error) {
 func (r *Runner) Run() (results []*portfinger.Result) {
 	start := time.Now()
 	gologger.Info().Msgf("开始端口扫描")
-
+	defer r.naabuRunner.Close()
 	err := r.naabuRunner.RunEnumeration()
 	if err != nil {
 		gologger.Error().Msgf("naabuRunner.RunEnumeration() err, %v", err)
 		return
 	}
-	r.naabuRunner.Close()
 	gologger.Info().Msgf("开放端口的host: %v", len(naabu.Results))
 	if len(naabu.Results) == 0 {
 		return
