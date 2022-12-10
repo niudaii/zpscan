@@ -2,6 +2,7 @@ package nuclei
 
 import (
 	"context"
+	"fmt"
 	"github.com/logrusorgru/aurora"
 	"github.com/niudaii/zpscan/internal/utils"
 	"github.com/niudaii/zpscan/pkg/pocscan/common"
@@ -19,11 +20,12 @@ import (
 	"github.com/projectdiscovery/nuclei/v2/pkg/testutils"
 	"github.com/projectdiscovery/nuclei/v2/pkg/types"
 	"github.com/projectdiscovery/nuclei/v2/pkg/utils/ratelimit"
+	"gopkg.in/yaml.v3"
 	"strings"
 	"time"
 )
 
-type Poc = templates.Template
+type Template = templates.Template
 
 var (
 	Results         []*common.Result
@@ -31,7 +33,7 @@ var (
 )
 
 // LoadAllPoc 加载全部poc
-func LoadAllPoc(pocDir string) (pocs []*Poc, err error) {
+func LoadAllPoc(pocDir string) (pocs []*Template, err error) {
 	var pocPathList []string
 	pocPathList, err = utils.GetAllFile(pocDir)
 	if err != nil {
@@ -41,13 +43,22 @@ func LoadAllPoc(pocDir string) (pocs []*Poc, err error) {
 		if !strings.HasSuffix(pocPath, ".yaml") || strings.Contains(pocPath, "workflows") || strings.HasSuffix(pocPath, "-exp.yaml") {
 			continue
 		}
-		var poc *Poc
-		poc, err = templates.Parse(pocPath, nil, ExecuterOptions)
+		//poc, err = templates.Parse(pocPath, nil, ExecuterOptions)
+		//if err != nil {
+		//	gologger.Error().Msgf("ParsePocFile() %v err, %v", pocPath, err)
+		//	continue
+		//}
+		var data []byte
+		data, err = utils.ReadFile(pocPath)
 		if err != nil {
-			gologger.Error().Msgf("ParsePocFile() %v err, %v", pocPath, err)
-			continue
+			return
 		}
-		pocs = append(pocs, poc)
+		template := &templates.Template{}
+		if err = yaml.Unmarshal(data, template); err != nil {
+			return
+		}
+		template.Path = pocPath
+		pocs = append(pocs, template)
 	}
 	return
 }
@@ -76,9 +87,6 @@ func InitExecuterOptions(pocDir string) (err error) {
 	}
 
 	options := types.DefaultOptions()
-
-	_ = protocolstate.Init(options)
-	_ = protocolinit.Init(options)
 
 	interactOpts := interactsh.NewDefaultOptions(outputWriter, reportingClient, mockProgress)
 	interactClient, err := interactsh.New(interactOpts)
@@ -109,11 +117,23 @@ func InitEngine(timeout int, proxy string) (engine *core.Engine) {
 	ExecuterOptions.Options.Timeout = timeout
 	ExecuterOptions.Options.RateLimit = 1
 	ExecuterOptions.Options.ProxyInternal = true
-	ExecuterOptions.Options.Proxy = []string{proxy}
+	if proxy == "" {
+		ExecuterOptions.Options.Proxy = []string{}
+	} else {
+		ExecuterOptions.Options.Proxy = []string{proxy}
+	}
 
-	_ = protocolstate.Init(ExecuterOptions.Options)
-	_ = protocolinit.Init(ExecuterOptions.Options)
-	_ = loadProxyServers(ExecuterOptions.Options) // 初始化代理
+	if err := loadProxyServers(ExecuterOptions.Options); err != nil { // 初始化代理
+		fmt.Println(err)
+	}
+	//fmt.Println("ProxyURL: ", types.ProxyURL)
+	//fmt.Println("ProxySocksURL: ", types.ProxySocksURL)
+	if err := protocolstate.Init(ExecuterOptions.Options); err != nil {
+		fmt.Println(err)
+	}
+	if err := protocolinit.Init(ExecuterOptions.Options); err != nil {
+		fmt.Println(err)
+	}
 
 	engine = core.New(ExecuterOptions.Options)
 	engine.SetExecuterOptions(ExecuterOptions)

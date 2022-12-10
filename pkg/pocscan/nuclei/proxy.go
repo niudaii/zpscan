@@ -17,7 +17,7 @@ import (
 
 // LoadProxyServers load list of proxy servers from file or comma seperated
 func loadProxyServers(options *types.Options) error {
-	var proxyURLList []url.URL // bug 需要放入函数内
+	var proxyURLList []url.URL // bug
 	if len(options.Proxy) == 0 {
 		return nil
 	}

@@ -1,21 +1,29 @@
 package pocscan
 
 import (
+	"fmt"
 	"github.com/niudaii/zpscan/internal/utils"
 	"github.com/niudaii/zpscan/pkg/pocscan/common"
 	"github.com/niudaii/zpscan/pkg/pocscan/nuclei"
 	"github.com/projectdiscovery/gologger"
 	"github.com/projectdiscovery/nuclei/v2/pkg/core/inputs"
+	"github.com/projectdiscovery/nuclei/v2/pkg/templates"
 	"strings"
 	"time"
 )
 
 // RunNucleiPoc 启动
-func (r *Runner) RunNucleiPoc(target string, pocTag string) (results []*common.Result) {
-	var pocList []*nuclei.Poc
-	for _, poc := range r.nucleiPocs {
+func (r *Runner) RunNucleiPoc(target string, keyword string) (results []*common.Result) {
+	var pocList []*nuclei.Template
+	for _, tmpPoc := range r.nucleiTemplates {
 		// 判断 ID 和 tags
-		if strings.Contains(strings.ToLower(poc.ID), pocTag) || utils.HasStr(poc.Info.Tags.ToSlice(), pocTag) {
+		if strings.Contains(strings.ToLower(tmpPoc.ID), keyword) || utils.HasStr(tmpPoc.Info.Tags.ToSlice(), keyword) {
+			var poc *templates.Template
+			poc, err := templates.Parse(tmpPoc.Path, nil, nuclei.ExecuterOptions)
+			if err != nil {
+				fmt.Println(err)
+				continue
+			}
 			pocList = append(pocList, poc)
 		}
 	}
@@ -36,8 +44,14 @@ func (r *Runner) RunNucleiPoc(target string, pocTag string) (results []*common.R
 
 // RunNucleiExp 启动
 func (r *Runner) RunNucleiExp(target, pocName, payload string) (results []*common.Result) {
-	var pocList []*nuclei.Exp
-	for _, poc := range r.nucleiExps {
+	var pocList []*nuclei.Template
+	for _, tmpPoc := range r.nucleiTemplates {
+		var poc *templates.Template
+		poc, err := templates.Parse(tmpPoc.Path, nil, nuclei.ExecuterOptions)
+		if err != nil {
+			fmt.Println(err)
+			continue
+		}
 		if poc.ID == pocName+"-exp" {
 			pocList = append(pocList, poc)
 		}
@@ -58,7 +72,7 @@ func (r *Runner) RunNucleiExp(target, pocName, payload string) (results []*commo
 }
 
 // NucleiPoc 扫描
-func (r *Runner) NucleiPoc(target string, pocList []*nuclei.Poc) (results []*common.Result, err error) {
+func (r *Runner) NucleiPoc(target string, pocList []*nuclei.Template) (results []*common.Result, err error) {
 	// 运行
 	input := &inputs.SimpleInputProvider{Inputs: []string{target}}
 	_ = r.nucleiEngine.Execute(pocList, input)
@@ -75,7 +89,7 @@ func (r *Runner) NucleiPoc(target string, pocList []*nuclei.Poc) (results []*com
 }
 
 // NucleiExp 扫描
-func (r *Runner) NucleiExp(target string, pocList []*nuclei.Poc, payload string) (results []*common.Result, err error) {
+func (r *Runner) NucleiExp(target string, pocList []*nuclei.Template, payload string) (results []*common.Result, err error) {
 	// 运行
 	input := &inputs.SimpleInputProvider{Inputs: []string{target}}
 	for _, poc := range pocList {

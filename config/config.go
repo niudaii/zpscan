@@ -81,12 +81,12 @@ type Pocscan struct {
 	NucleiPocDir string `yaml:"nuclei-poc-dir"`
 	GobyPocs     []*goby.Poc
 	XrayPocs     []*xray.Poc
-	NucleiPocs   []*nuclei.Poc
+	NucleiPocs   []*nuclei.Template
 }
 
 type Expscan struct {
 	NucleiExpDir string `yaml:"nuclei-exp-dir"`
-	NucleiExps   []*nuclei.Exp
+	NucleiExps   []*nuclei.Template
 }
 
 var Worker Config

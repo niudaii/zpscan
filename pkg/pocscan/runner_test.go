@@ -35,16 +35,13 @@ func TestRun(t *testing.T) {
 	}
 	t.Log("xrayPocs", len(xrayPocs))
 	pocDir = "/Users/root/go/src/zpscan/resource/pocscan/nuclei"
-	err = nuclei.InitNuclei(pocDir, 10, options.Timeout, options.Proxy)
-	if err != nil {
-		t.Error(err)
-	}
 	nucleiPcs, err := nuclei.LoadAllPoc(pocDir)
 	if err != nil {
 		t.Error(err)
 	}
 	t.Log("nucleiPcs", len(nucleiPcs))
-	r, err := NewRunner(&options, gobyPocs, xrayPocs, nucleiPcs, nucleiPcs)
+	var nucleiPocs []*nuclei.Template
+	r, err := NewRunner(&options, gobyPocs, xrayPocs, pocDir, nucleiPocs)
 	if err != nil {
 		t.Error(err)
 	}

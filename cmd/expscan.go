@@ -65,19 +65,28 @@ func (o *ExpscanOptions) configureOptions() error {
 	return nil
 }
 
-func (o *ExpscanOptions) run() {
-	var nucleiPocs []*nuclei.Poc
-	nucleiExps, nucleiEngine, err := pocscan.InitNucleiExp(config.Worker.Expscan.NucleiExpDir, expscanOptions.Proxy, expscanOptions.Timeout)
+func initExp() (err error) {
+	config.Worker.Expscan.NucleiExps, err = nuclei.LoadAllExp(config.Worker.Expscan.NucleiExpDir)
 	if err != nil {
 		return
 	}
-	gologger.Info().Msgf("nucleiExps: %v", len(nucleiExps))
+
+	gologger.Info().Msgf("nucleiExps: %v", len(config.Worker.Expscan.NucleiExps))
+	return
+}
+
+func (o *ExpscanOptions) run() {
+	err := initExp()
+	if err != nil {
+		gologger.Fatal().Msgf("initExp() err, %v", err)
+		return
+	}
 	options := &pocscan.Options{
 		Proxy:   expscanOptions.Proxy,
 		Timeout: expscanOptions.Timeout,
 		Headers: expscanOptions.Headers,
 	}
-	pocscanRunner, err := pocscan.NewRunner(options, config.Worker.Pocscan.GobyPocs, config.Worker.Pocscan.XrayPocs, nucleiPocs, nucleiExps, nucleiEngine)
+	pocscanRunner, err := pocscan.NewRunner(options, config.Worker.Pocscan.GobyPocs, config.Worker.Pocscan.XrayPocs, config.Worker.Expscan.NucleiExpDir, config.Worker.Expscan.NucleiExps)
 	if err != nil {
 		gologger.Error().Msgf("pocscan.NewRunner() err, %v", err)
 		return

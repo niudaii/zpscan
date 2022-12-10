@@ -5,9 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/niudaii/zpscan/pkg/pocscan"
-	"github.com/niudaii/zpscan/pkg/pocscan/nuclei"
 	"github.com/niudaii/zpscan/pkg/webscan"
-	"github.com/projectdiscovery/nuclei/v2/pkg/core"
 	"strings"
 
 	"github.com/niudaii/zpscan/config"
@@ -291,10 +289,6 @@ func (o *IpscanOptions) run() {
 			gologger.Fatal().Msgf("initPoc() err, %v", err)
 			return
 		}
-		var nucleiPocs []*nuclei.Poc
-		var nucleiExps []*nuclei.Exp
-		var nucleiEngine *core.Engine
-		nucleiPocs, nucleiEngine, err = pocscan.InitNucleiPoc(config.Worker.Pocscan.NucleiPocDir, "socks5://"+ipscanOptions.Proxy, pocscanOptions.Timeout)
 		options4 := &pocscan.Options{
 			Timeout: pocscanOptions.Timeout,
 			Headers: pocscanOptions.Headers,
@@ -302,7 +296,7 @@ func (o *IpscanOptions) run() {
 		if ipscanOptions.Proxy != "" {
 			options4.Proxy = "socks5://" + ipscanOptions.Proxy
 		}
-		pocscanRunner, err := pocscan.NewRunner(options4, config.Worker.Pocscan.GobyPocs, config.Worker.Pocscan.XrayPocs, nucleiPocs, nucleiExps, nucleiEngine)
+		pocscanRunner, err := pocscan.NewRunner(options4, config.Worker.Pocscan.GobyPocs, config.Worker.Pocscan.XrayPocs, config.Worker.Pocscan.NucleiPocDir, config.Worker.Pocscan.NucleiPocs)
 		if err != nil {
 			gologger.Error().Msgf("pocscan.NewRunner() err, %v", err)
 			return

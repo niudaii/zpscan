@@ -7,10 +7,8 @@ import (
 	"strings"
 )
 
-type Exp = templates.Template
-
 // LoadAllExp 加载全部exp
-func LoadAllExp(pocDir string) (exps []*Exp, err error) {
+func LoadAllExp(pocDir string) (exps []*Template, err error) {
 	var pocPathList []string
 	pocPathList, err = utils.GetAllFile(pocDir)
 	if err != nil {
@@ -20,7 +18,7 @@ func LoadAllExp(pocDir string) (exps []*Exp, err error) {
 		if !strings.HasSuffix(pocPath, "-exp.yaml") {
 			continue
 		}
-		var exp *Exp
+		var exp *Template
 		exp, err = templates.Parse(pocPath, nil, ExecuterOptions)
 		if err != nil {
 			gologger.Error().Msgf("ParsePocFile() %v err, %v", pocPath, err)

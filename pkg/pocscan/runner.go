@@ -18,24 +18,30 @@ type Options struct {
 }
 
 type Runner struct {
-	gobyPocs     []*goby.Poc
-	xrayPocs     []*xray.Poc
-	nucleiPocs   []*nuclei.Poc
-	nucleiExps   []*nuclei.Poc
-	reqClient    *req.Client
-	nucleiEngine *core.Engine
+	gobyPocs        []*goby.Poc
+	xrayPocs        []*xray.Poc
+	nucleiDir       string
+	nucleiTemplates []*nuclei.Template
+	reqClient       *req.Client
+	nucleiEngine    *core.Engine
 }
 
-func NewRunner(options *Options, gobyPocs []*goby.Poc, xrayPocs []*xray.Poc, nucleiPcs []*nuclei.Poc, nucleiExps []*nuclei.Exp, engine *core.Engine) (runner *Runner, err error) {
-	runner = &Runner{
-		gobyPocs:     gobyPocs,
-		xrayPocs:     xrayPocs,
-		nucleiPocs:   nucleiPcs,
-		nucleiExps:   nucleiExps,
-		reqClient:    utils.NewReqClient(options.Proxy, options.Timeout, options.Headers),
-		nucleiEngine: engine,
+func NewRunner(options *Options, gobyPocs []*goby.Poc, xrayPocs []*xray.Poc, nucleiDir string, nucleiTemplates []*nuclei.Template) (runner *Runner, err error) {
+	err = nuclei.InitExecuterOptions(nucleiDir)
+	if err != nil {
+		return
 	}
-	return runner, nil
+	nucleiEngine := nuclei.InitEngine(options.Timeout, options.Proxy)
+	reqClient := utils.NewReqClient(options.Proxy, options.Timeout, options.Headers)
+	runner = &Runner{
+		gobyPocs:        gobyPocs,
+		xrayPocs:        xrayPocs,
+		nucleiDir:       nucleiDir,
+		nucleiTemplates: nucleiTemplates,
+		reqClient:       reqClient,
+		nucleiEngine:    nucleiEngine,
+	}
+	return
 }
 
 type PocInput struct {

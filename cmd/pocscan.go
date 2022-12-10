@@ -9,7 +9,6 @@ import (
 	"github.com/niudaii/zpscan/pkg/pocscan/nuclei"
 	"github.com/niudaii/zpscan/pkg/pocscan/xray"
 	"github.com/projectdiscovery/gologger"
-	"github.com/projectdiscovery/nuclei/v2/pkg/core"
 	"github.com/spf13/cobra"
 )
 
@@ -72,9 +71,14 @@ func initPoc() (err error) {
 	if err != nil {
 		return
 	}
+	config.Worker.Pocscan.NucleiPocs, err = nuclei.LoadAllPoc(config.Worker.Pocscan.NucleiPocDir)
+	if err != nil {
+		return
+	}
 
 	gologger.Info().Msgf("gobyPocs: %v", len(config.Worker.Pocscan.GobyPocs))
 	gologger.Info().Msgf("xrayPocs: %v", len(config.Worker.Pocscan.XrayPocs))
+	gologger.Info().Msgf("nucleiPocs: %v", len(config.Worker.Pocscan.NucleiPocs))
 	return
 }
 
@@ -84,20 +88,12 @@ func (o *PocscanOptions) run() {
 		gologger.Fatal().Msgf("initPoc() err, %v", err)
 		return
 	}
-	var nucleiPocs []*nuclei.Poc
-	var nucleiExps []*nuclei.Exp
-	var nucleiEngine *core.Engine
-	nucleiPocs, nucleiEngine, err = pocscan.InitNucleiPoc(config.Worker.Pocscan.NucleiPocDir, pocscanOptions.Proxy, pocscanOptions.Timeout)
-	if err != nil {
-		return
-	}
-	gologger.Info().Msgf("nucleiPocs: %v", len(nucleiPocs))
 	options := &pocscan.Options{
 		Proxy:   pocscanOptions.Proxy,
 		Timeout: pocscanOptions.Timeout,
 		Headers: pocscanOptions.Headers,
 	}
-	pocscanRunner, err := pocscan.NewRunner(options, config.Worker.Pocscan.GobyPocs, config.Worker.Pocscan.XrayPocs, nucleiPocs, nucleiExps, nucleiEngine)
+	pocscanRunner, err := pocscan.NewRunner(options, config.Worker.Pocscan.GobyPocs, config.Worker.Pocscan.XrayPocs, config.Worker.Pocscan.NucleiPocDir, config.Worker.Pocscan.NucleiPocs)
 	if err != nil {
 		gologger.Error().Msgf("pocscan.NewRunner() err, %v", err)
 		return
