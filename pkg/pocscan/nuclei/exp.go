@@ -3,7 +3,7 @@ package nuclei
 import (
 	"github.com/niudaii/zpscan/internal/utils"
 	"github.com/projectdiscovery/nuclei/v2/pkg/templates"
-	"gopkg.in/yaml.v3"
+	"gopkg.in/yaml.v2"
 	"strings"
 )
 
