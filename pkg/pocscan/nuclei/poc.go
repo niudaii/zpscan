@@ -33,14 +33,14 @@ var (
 )
 
 // LoadAllPoc 加载全部poc
-func LoadAllPoc(pocDir string) (pocs []*Template, err error) {
-	var pocPathList []string
-	pocPathList, err = utils.GetAllFile(pocDir)
+func LoadAllPoc(dir string) (pocs []*Template, err error) {
+	var pathList []string
+	pathList, err = utils.GetAllFile(dir)
 	if err != nil {
 		return
 	}
-	for _, pocPath := range pocPathList {
-		if !strings.HasSuffix(pocPath, ".yaml") || strings.Contains(pocPath, "workflows") || strings.HasSuffix(pocPath, "-exp.yaml") {
+	for _, path := range pathList {
+		if !strings.HasSuffix(path, ".yaml") || strings.Contains(path, "workflows") || strings.HasSuffix(path, "-exp.yaml") {
 			continue
 		}
 		//var poc *Template
@@ -50,7 +50,7 @@ func LoadAllPoc(pocDir string) (pocs []*Template, err error) {
 		//	continue
 		//}
 		var data []byte
-		data, err = utils.ReadFile(pocPath)
+		data, err = utils.ReadFile(path)
 		if err != nil {
 			return
 		}
@@ -58,7 +58,7 @@ func LoadAllPoc(pocDir string) (pocs []*Template, err error) {
 		if err = yaml.Unmarshal(data, template); err != nil {
 			return
 		}
-		template.Path = pocPath
+		template.Path = path
 		pocs = append(pocs, template)
 	}
 	return

@@ -8,24 +8,18 @@ import (
 )
 
 // LoadAllExp 加载全部exp
-func LoadAllExp(pocDir string) (exps []*Template, err error) {
-	var pocPathList []string
-	pocPathList, err = utils.GetAllFile(pocDir)
+func LoadAllExp(dir string) (exps []*Template, err error) {
+	var pathList []string
+	pathList, err = utils.GetAllFile(dir)
 	if err != nil {
 		return
 	}
-	for _, pocPath := range pocPathList {
-		if !strings.HasSuffix(pocPath, "-exp.yaml") {
+	for _, path := range pathList {
+		if !strings.HasSuffix(path, "-exp.yaml") {
 			continue
 		}
-		//var exp *Template
-		//exp, err = templates.Parse(pocPath, nil, ExecuterOptions)
-		//if err != nil {
-		//	gologger.Error().Msgf("ParsePocFile() %v err, %v", pocPath, err)
-		//	continue
-		//}
 		var data []byte
-		data, err = utils.ReadFile(pocPath)
+		data, err = utils.ReadFile(path)
 		if err != nil {
 			return
 		}
@@ -33,7 +27,7 @@ func LoadAllExp(pocDir string) (exps []*Template, err error) {
 		if err = yaml.Unmarshal(data, template); err != nil {
 			return
 		}
-		template.Path = pocPath
+		template.Path = path
 		exps = append(exps, template)
 	}
 	return
