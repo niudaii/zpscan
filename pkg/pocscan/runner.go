@@ -26,17 +26,12 @@ type Runner struct {
 	nucleiEngine    *core.Engine
 }
 
-func NewRunner(options *Options, gobyPocs []*goby.Poc, xrayPocs []*xray.Poc, nucleiDir string, nucleiTemplates []*nuclei.Template) (runner *Runner, err error) {
-	err = nuclei.InitExecuterOptions(nucleiDir)
-	if err != nil {
-		return
-	}
+func NewRunner(options *Options, gobyPocs []*goby.Poc, xrayPocs []*xray.Poc, nucleiTemplates []*nuclei.Template) (runner *Runner, err error) {
 	nucleiEngine := nuclei.InitEngine(options.Timeout, options.Proxy)
 	reqClient := utils.NewReqClient(options.Proxy, options.Timeout, options.Headers)
 	runner = &Runner{
 		gobyPocs:        gobyPocs,
 		xrayPocs:        xrayPocs,
-		nucleiDir:       nucleiDir,
 		nucleiTemplates: nucleiTemplates,
 		reqClient:       reqClient,
 		nucleiEngine:    nucleiEngine,

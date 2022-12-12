@@ -93,7 +93,7 @@ func (o *PocscanOptions) run() {
 		Timeout: pocscanOptions.Timeout,
 		Headers: pocscanOptions.Headers,
 	}
-	pocscanRunner, err := pocscan.NewRunner(options, config.Worker.Pocscan.GobyPocs, config.Worker.Pocscan.XrayPocs, config.Worker.Pocscan.NucleiPocDir, config.Worker.Pocscan.NucleiPocs)
+	pocscanRunner, err := pocscan.NewRunner(options, config.Worker.Pocscan.GobyPocs, config.Worker.Pocscan.XrayPocs, config.Worker.Pocscan.NucleiPocs)
 	if err != nil {
 		gologger.Error().Msgf("pocscan.NewRunner() err, %v", err)
 		return

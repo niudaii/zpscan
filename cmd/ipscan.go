@@ -296,7 +296,7 @@ func (o *IpscanOptions) run() {
 		if ipscanOptions.Proxy != "" {
 			options4.Proxy = "socks5://" + ipscanOptions.Proxy
 		}
-		pocscanRunner, err := pocscan.NewRunner(options4, config.Worker.Pocscan.GobyPocs, config.Worker.Pocscan.XrayPocs, config.Worker.Pocscan.NucleiPocDir, config.Worker.Pocscan.NucleiPocs)
+		pocscanRunner, err := pocscan.NewRunner(options4, config.Worker.Pocscan.GobyPocs, config.Worker.Pocscan.XrayPocs, config.Worker.Pocscan.NucleiPocs)
 		if err != nil {
 			gologger.Error().Msgf("pocscan.NewRunner() err, %v", err)
 			return

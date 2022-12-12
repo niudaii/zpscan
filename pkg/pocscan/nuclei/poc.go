@@ -20,7 +20,7 @@ import (
 	"github.com/projectdiscovery/nuclei/v2/pkg/testutils"
 	"github.com/projectdiscovery/nuclei/v2/pkg/types"
 	"github.com/projectdiscovery/nuclei/v2/pkg/utils/ratelimit"
-	"gopkg.in/yaml.v3"
+	"gopkg.in/yaml.v2"
 	"strings"
 	"time"
 )
@@ -34,6 +34,10 @@ var (
 
 // LoadAllPoc 加载全部poc
 func LoadAllPoc(dir string) (pocs []*Template, err error) {
+	err = InitExecuterOptions(dir)
+	if err != nil {
+		return
+	}
 	var pathList []string
 	pathList, err = utils.GetAllFile(dir)
 	if err != nil {
@@ -64,7 +68,7 @@ func LoadAllPoc(dir string) (pocs []*Template, err error) {
 	return
 }
 
-func InitExecuterOptions(pocDir string) (err error) {
+func InitExecuterOptions(dir string) (err error) {
 	cache := hosterrorscache.New(30, hosterrorscache.DefaultMaxHostsCount)
 	defer cache.Close()
 
@@ -88,6 +92,8 @@ func InitExecuterOptions(pocDir string) (err error) {
 	}
 
 	options := types.DefaultOptions()
+	_ = protocolstate.Init(options)
+	_ = protocolinit.Init(options)
 
 	interactOpts := interactsh.NewDefaultOptions(outputWriter, reportingClient, mockProgress)
 	interactClient, err := interactsh.New(interactOpts)
@@ -96,7 +102,7 @@ func InitExecuterOptions(pocDir string) (err error) {
 	}
 	defer interactClient.Close()
 
-	catalog := disk.NewCatalog(pocDir)
+	catalog := disk.NewCatalog(dir)
 
 	ExecuterOptions = protocols.ExecuterOptions{
 		Output:          outputWriter,

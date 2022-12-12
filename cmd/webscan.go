@@ -191,7 +191,7 @@ func (o *WebscanOptions) run() {
 			Timeout: o.Timeout,
 			Headers: o.Headers,
 		}
-		pocscanRunner, err := pocscan.NewRunner(options2, config.Worker.Pocscan.GobyPocs, config.Worker.Pocscan.XrayPocs, config.Worker.Pocscan.NucleiPocDir, config.Worker.Pocscan.NucleiPocs)
+		pocscanRunner, err := pocscan.NewRunner(options2, config.Worker.Pocscan.GobyPocs, config.Worker.Pocscan.XrayPocs, config.Worker.Pocscan.NucleiPocs)
 		if err != nil {
 			gologger.Error().Msgf("utils.SaveMarshal() err, %v", err)
 			return

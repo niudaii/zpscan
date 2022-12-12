@@ -86,7 +86,7 @@ func (o *ExpscanOptions) run() {
 		Timeout: expscanOptions.Timeout,
 		Headers: expscanOptions.Headers,
 	}
-	pocscanRunner, err := pocscan.NewRunner(options, config.Worker.Pocscan.GobyPocs, config.Worker.Pocscan.XrayPocs, config.Worker.Expscan.NucleiExpDir, config.Worker.Expscan.NucleiExps)
+	pocscanRunner, err := pocscan.NewRunner(options, config.Worker.Pocscan.GobyPocs, config.Worker.Pocscan.XrayPocs, config.Worker.Expscan.NucleiExps)
 	if err != nil {
 		gologger.Error().Msgf("pocscan.NewRunner() err, %v", err)
 		return
