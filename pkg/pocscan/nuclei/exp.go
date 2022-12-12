@@ -2,8 +2,8 @@ package nuclei
 
 import (
 	"github.com/niudaii/zpscan/internal/utils"
-	"github.com/projectdiscovery/gologger"
 	"github.com/projectdiscovery/nuclei/v2/pkg/templates"
+	"gopkg.in/yaml.v3"
 	"strings"
 )
 
@@ -18,13 +18,23 @@ func LoadAllExp(pocDir string) (exps []*Template, err error) {
 		if !strings.HasSuffix(pocPath, "-exp.yaml") {
 			continue
 		}
-		var exp *Template
-		exp, err = templates.Parse(pocPath, nil, ExecuterOptions)
+		//var exp *Template
+		//exp, err = templates.Parse(pocPath, nil, ExecuterOptions)
+		//if err != nil {
+		//	gologger.Error().Msgf("ParsePocFile() %v err, %v", pocPath, err)
+		//	continue
+		//}
+		var data []byte
+		data, err = utils.ReadFile(pocPath)
 		if err != nil {
-			gologger.Error().Msgf("ParsePocFile() %v err, %v", pocPath, err)
-			continue
+			return
 		}
-		exps = append(exps, exp)
+		template := &templates.Template{}
+		if err = yaml.Unmarshal(data, template); err != nil {
+			return
+		}
+		template.Path = pocPath
+		exps = append(exps, template)
 	}
 	return
 }

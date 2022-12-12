@@ -43,6 +43,7 @@ func LoadAllPoc(pocDir string) (pocs []*Template, err error) {
 		if !strings.HasSuffix(pocPath, ".yaml") || strings.Contains(pocPath, "workflows") || strings.HasSuffix(pocPath, "-exp.yaml") {
 			continue
 		}
+		//var poc *Template
 		//poc, err = templates.Parse(pocPath, nil, ExecuterOptions)
 		//if err != nil {
 		//	gologger.Error().Msgf("ParsePocFile() %v err, %v", pocPath, err)
