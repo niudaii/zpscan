@@ -9,9 +9,7 @@ import (
 	"github.com/niudaii/zpscan/pkg/domainscan"
 	"github.com/niudaii/zpscan/pkg/domainscan/domainweb"
 	"github.com/niudaii/zpscan/pkg/webscan"
-
 	"github.com/projectdiscovery/gologger"
-	"github.com/projectdiscovery/subfinder/v2/pkg/runner"
 	"github.com/spf13/cobra"
 )
 
@@ -47,10 +45,6 @@ var domainscanCmd = &cobra.Command{
 
 		if err := initFinger(); err != nil {
 			gologger.Error().Msgf("initFinger() err, %v", err)
-		}
-
-		if err := initProviders(); err != nil {
-			gologger.Fatal().Msgf("Program exiting: %v", err)
 		}
 
 		if err := domainscanOptions.configureOptions(); err != nil {
@@ -108,25 +102,16 @@ func (o *DomainscanOptions) configureOptions() error {
 	return nil
 }
 
-func initProviders() error {
-	config.Worker.Domainscan.Providers = &runner.Providers{}
-	if domainscanOptions.ProviderFile == "" {
-		domainscanOptions.ProviderFile = config.Worker.Domainscan.ProviderFile
-	}
-	err := config.Worker.Domainscan.Providers.UnmarshalFrom(domainscanOptions.ProviderFile)
-	return err
-}
-
 func (o *DomainscanOptions) run() {
 	// 子域名收集
 	options := &domainscan.Options{
-		Layer:         o.Layer,
-		Rate:          o.Rate,
-		SubdomainData: config.Worker.Domainscan.SubdomainData,
-		SubnextData:   config.Worker.Domainscan.SubnextData,
-		CdnCnameData:  config.Worker.Domainscan.CdnCnameData,
-		CdnIpData:     config.Worker.Domainscan.CdnIpData,
-		Providers:     config.Worker.Domainscan.Providers,
+		Layer:          o.Layer,
+		Rate:           o.Rate,
+		SubdomainData:  config.Worker.Domainscan.SubdomainData,
+		SubnextData:    config.Worker.Domainscan.SubnextData,
+		CdnCnameData:   config.Worker.Domainscan.CdnCnameData,
+		CdnIpData:      config.Worker.Domainscan.CdnIpData,
+		ProviderConfig: config.Worker.Domainscan.ProviderFile,
 	}
 	domainscanRunner, err := domainscan.NewRunner(options)
 	if err != nil {

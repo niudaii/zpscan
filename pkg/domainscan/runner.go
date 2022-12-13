@@ -6,17 +6,16 @@ import (
 	"github.com/niudaii/zpscan/pkg/domainscan/ksubdomain"
 	"github.com/niudaii/zpscan/pkg/domainscan/subfinder"
 	"github.com/projectdiscovery/gologger"
-	"github.com/projectdiscovery/subfinder/v2/pkg/runner"
 )
 
 type Options struct {
-	Layer         int
-	Rate          string
-	SubdomainData []string
-	SubnextData   []string
-	CdnCnameData  []string
-	CdnIpData     []string
-	Providers     *runner.Providers
+	Layer          int
+	Rate           string
+	SubdomainData  []string
+	SubnextData    []string
+	CdnCnameData   []string
+	CdnIpData      []string
+	ProviderConfig string
 }
 
 type Runner struct {
@@ -47,7 +46,7 @@ func (r *Runner) RunEnumeration(domain string) (results []*Result) {
 
 	// 被动收集,subfinder
 	gologger.Info().Msgf("开始被动收集")
-	domains, err := subfinder.Run([]string{domain}, r.options.Providers)
+	domains, err := subfinder.Run([]string{domain}, r.options.ProviderConfig)
 	if err != nil {
 		gologger.Error().Msgf("subfinder.Run() err, %v", err)
 	}

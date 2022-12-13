@@ -22,7 +22,7 @@ require (
 	github.com/projectdiscovery/fileutil v0.0.3
 	github.com/projectdiscovery/gologger v1.1.5
 	github.com/projectdiscovery/naabu/v2 v2.1.1
-	github.com/projectdiscovery/subfinder/v2 v2.5.3
+	github.com/projectdiscovery/subfinder/v2 v2.5.5
 	github.com/projectdiscovery/wappalyzergo v0.0.71
 	github.com/satori/go.uuid v1.2.0
 	github.com/sijms/go-ora/v2 v2.5.3
@@ -167,7 +167,7 @@ require (
 	github.com/projectdiscovery/asnmap v0.0.1 // indirect
 	github.com/projectdiscovery/blackrock v0.0.0-20220628111055-35616c71b2dc // indirect
 	github.com/projectdiscovery/cdncheck v0.0.4-0.20220322144854-b2d8ce308abb // indirect
-	github.com/projectdiscovery/chaos-client v0.2.0 // indirect
+	github.com/projectdiscovery/chaos-client v0.3.0 // indirect
 	github.com/projectdiscovery/clistats v0.0.9 // indirect
 	github.com/projectdiscovery/cryptoutil v1.0.0 // indirect
 	github.com/projectdiscovery/dnsx v1.1.1 // indirect
@@ -240,7 +240,7 @@ require (
 	gopkg.in/alecthomas/kingpin.v2 v2.2.6 // indirect
 	gopkg.in/corvus-ch/zbase32.v1 v1.0.0 // indirect
 	gopkg.in/tomb.v1 v1.0.0-20141024135613-dd632973f1e7 // indirect
-	gopkg.in/yaml.v3 v3.0.1
+	gopkg.in/yaml.v3 v3.0.1 // indirect
 	moul.io/http2curl v1.0.0 // indirect
 )
 

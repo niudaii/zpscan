@@ -11,8 +11,6 @@ import (
 	"github.com/niudaii/zpscan/pkg/ipscan/qqwry"
 	"github.com/niudaii/zpscan/pkg/webscan"
 
-	"github.com/projectdiscovery/subfinder/v2/pkg/runner"
-
 	"gopkg.in/yaml.v2"
 )
 
@@ -38,7 +36,6 @@ type Domainscan struct {
 	SubnextData   []string
 	CdnCnameData  []string
 	CdnIpData     []string
-	Providers     *runner.Providers
 }
 
 type Ipscan struct {

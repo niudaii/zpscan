@@ -3,11 +3,9 @@ package subfinder
 import (
 	"bufio"
 	"bytes"
-	"context"
 	"io"
 	"strings"
 
-	"github.com/projectdiscovery/subfinder/v2/pkg/passive"
 	"github.com/projectdiscovery/subfinder/v2/pkg/resolve"
 	"github.com/projectdiscovery/subfinder/v2/pkg/runner"
 )
@@ -30,22 +28,25 @@ func (r *result) Output() []string {
 	return r.m
 }
 
-func Run(domains []string, providers *runner.Providers) ([]string, error) {
-	runnerInstance, err := runner.NewRunner(&runner.Options{
-		Threads:            10,                              // Thread controls the number of threads to use for active enumerations
-		Timeout:            30,                              // Timeout is the seconds to wait for sources to respond
-		MaxEnumerationTime: 10,                              // MaxEnumerationTime is the maximum amount of time in mins to wait for enumeration
-		Resolvers:          resolve.DefaultResolvers,        // Use the default list of resolvers by marshaling it to the config
-		Sources:            passive.DefaultSources,          // Use the default list of passive sources
-		AllSources:         passive.DefaultAllSources,       // Use the default list of all passive sources
-		Recursive:          passive.DefaultRecursiveSources, // Use the default list of recursive sources
-		Providers:          providers,                       // Use empty api keys for all providers
-	})
+func Run(domains []string, providerConfig string) (output []string, err error) {
+	options := &runner.Options{
+		Threads:            10,                       // Thread controls the number of threads to use for active enumerations
+		Timeout:            30,                       // Timeout is the seconds to wait for sources to respond
+		MaxEnumerationTime: 10,                       // MaxEnumerationTime is the maximum amount of time in mins to wait for enumeration
+		Resolvers:          resolve.DefaultResolvers, // Use the default list of resolvers by marshaling it to the config
+		All:                true,                     // Use the default list of all passive sources
+		ProviderConfig:     providerConfig,
+	}
+	err = runner.UnmarshalFrom(options.ProviderConfig)
+	if err != nil {
+		return
+	}
+	runnerInstance, err := runner.NewRunner(options)
 	if err != nil {
 		return nil, err
 	}
 	buf := result{}
-	err = runnerInstance.EnumerateMultipleDomains(context.Background(), strings.NewReader(strings.Join(domains, "\n")), []io.Writer{&buf})
+	err = runnerInstance.EnumerateMultipleDomains(strings.NewReader(strings.Join(domains, "\n")), []io.Writer{&buf})
 	if err != nil {
 		return nil, err
 	}
