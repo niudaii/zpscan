@@ -80,8 +80,7 @@ func (r *Runner) Run(urls []string) (results Results) {
 }
 
 func (r *Runner) Webinfo(url string) (result *Result, err error) {
-	request := r.reqClient.R()
-	resp, err := FirstGet(request, url)
+	resp, err := FirstGet(r.reqClient, url)
 	if err != nil {
 		return
 	}
@@ -91,7 +90,7 @@ func (r *Runner) Webinfo(url string) (result *Result, err error) {
 		if jumpurl == "" {
 			break
 		}
-		resp, err = request.Get(jumpurl)
+		resp, err = r.reqClient.R().Get(jumpurl)
 	}
 	if err != nil {
 		return
@@ -113,13 +112,15 @@ func (r *Runner) Webinfo(url string) (result *Result, err error) {
 	return
 }
 
-func FirstGet(r *req.Request, url string) (resp *req.Response, err error) {
+func FirstGet(client *req.Client, url string) (resp *req.Response, err error) {
+	request := client.R()
 	var scheme string
 	var flag bool
 	if !strings.HasPrefix(url, "http") {
 		scheme = "http://"
-		resp, err = r.Get(scheme + url)
+		resp, err = request.Get(scheme + url)
 		if err != nil {
+			gologger.Debug().Msgf("r.Get() err, %v", err)
 			scheme = "https://"
 			flag = true
 		} else {
@@ -129,8 +130,9 @@ func FirstGet(r *req.Request, url string) (resp *req.Response, err error) {
 			}
 		}
 	} else if strings.HasPrefix(url, "http://") {
-		resp, err = r.Get(url)
+		resp, err = request.Get(url)
 		if err != nil {
+			gologger.Debug().Msgf("r.Get() err, %v", err)
 			scheme = "https://"
 			url = url[7:]
 			flag = true
@@ -145,7 +147,7 @@ func FirstGet(r *req.Request, url string) (resp *req.Response, err error) {
 		flag = true
 	}
 	if flag {
-		resp, err = r.Get(scheme + url)
+		resp, err = request.Get(scheme + url)
 	}
 	return
 }
