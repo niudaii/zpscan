@@ -51,7 +51,10 @@
   - 结果过滤（重复 contentLength 判断）
 - pocscan
   - 支持多种 poc 格式（goby、xray、nuclei）
-  - 支持指定 tag 加载 poc。
+  - 支持指定 tag 加载 poc
+  
+- expscan
+  - 基于 nuclei 的 exp 框架，通过 variables 替换 payload，通过 extractors 匹配结果
   
 
 ## 使用

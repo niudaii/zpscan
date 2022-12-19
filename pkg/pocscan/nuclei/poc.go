@@ -68,6 +68,11 @@ func LoadAllPoc(dir string) (pocs []*Template, err error) {
 	return
 }
 
+// ParsePoc 解析poc
+func ParsePoc(templateString string) {
+
+}
+
 func InitExecuterOptions(dir string) (err error) {
 	cache := hosterrorscache.New(30, hosterrorscache.DefaultMaxHostsCount)
 	defer cache.Close()
