@@ -152,7 +152,11 @@ pocscan
 
 2022-11-10
 
-- 增加 pocscan 模块。
+- 增加 pocscan 模块
+
+### TODO
+
+- [ ] 子域名泛解析：使用 TTL 判断
 
 ## Q&A
 

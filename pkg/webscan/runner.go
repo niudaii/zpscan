@@ -112,6 +112,15 @@ func (r *Runner) Webinfo(url string) (result *Result, err error) {
 	return
 }
 
+var (
+	ToHttps = []string{
+		"sent to HTTPS port",
+		"This combination of host and port requires TLS",
+		"Instead use the HTTPS scheme to",
+		"This web server is running in SSL mode",
+	}
+)
+
 func FirstGet(client *req.Client, url string) (resp *req.Response, err error) {
 	request := client.R()
 	var scheme string
@@ -124,9 +133,12 @@ func FirstGet(client *req.Client, url string) (resp *req.Response, err error) {
 			scheme = "https://"
 			flag = true
 		} else {
-			if strings.Contains(resp.String(), "sent to HTTPS port") || strings.Contains(resp.String(), "This combination of host and port requires TLS") || strings.Contains(resp.String(), "Instead use the HTTPS scheme to") {
-				scheme = "https://"
-				flag = true
+			for _, str := range ToHttps {
+				if strings.Contains(resp.String(), str) {
+					scheme = "https://"
+					flag = true
+					break
+				}
 			}
 		}
 	} else if strings.HasPrefix(url, "http://") {
@@ -137,10 +149,12 @@ func FirstGet(client *req.Client, url string) (resp *req.Response, err error) {
 			url = url[7:]
 			flag = true
 		} else {
-			if strings.Contains(resp.String(), "sent to HTTPS port") || strings.Contains(resp.String(), "This combination of host and port requires TLS") || strings.Contains(resp.String(), "Instead use the HTTPS scheme to") {
-				scheme = "https://"
-				url = url[7:]
-				flag = true
+			for _, str := range ToHttps {
+				if strings.Contains(resp.String(), str) {
+					scheme = "https://"
+					url = url[7:]
+					flag = true
+				}
 			}
 		}
 	} else {

@@ -1,6 +1,7 @@
 package pocscan
 
 import (
+	"encoding/base64"
 	"fmt"
 	"github.com/niudaii/zpscan/internal/utils"
 	"github.com/niudaii/zpscan/pkg/pocscan/common"
@@ -93,7 +94,7 @@ func (r *Runner) NucleiExp(target string, pocList []*nuclei.Template, payload st
 	// 运行
 	input := &inputs.SimpleInputProvider{Inputs: []string{target}}
 	for _, poc := range pocList {
-		poc.Variables.Set("exp", payload)
+		poc.Variables.Set("exp", base64.StdEncoding.EncodeToString([]byte(payload)))
 	}
 	_ = r.nucleiEngine.Execute(pocList, input)
 	time.Sleep(5 * time.Second) // 战术性 sleep，等待 Interactsh Server 结果
