@@ -1,8 +1,6 @@
 package pocscan
 
 import (
-	"encoding/base64"
-	"fmt"
 	"github.com/niudaii/zpscan/internal/utils"
 	"github.com/niudaii/zpscan/pkg/pocscan/common"
 	"github.com/niudaii/zpscan/pkg/pocscan/nuclei"
@@ -16,13 +14,13 @@ import (
 // RunNucleiPoc 启动
 func (r *Runner) RunNucleiPoc(target string, keyword string) (results []*common.Result) {
 	var pocList []*nuclei.Template
+	keyword = strings.ToLower(keyword)
 	for _, tmpPoc := range r.nucleiTemplates {
 		// 判断 ID 和 tags
 		if strings.Contains(strings.ToLower(tmpPoc.ID), keyword) || utils.HasStr(tmpPoc.Info.Tags.ToSlice(), keyword) {
 			var poc *templates.Template
 			poc, err := templates.Parse(tmpPoc.Path, nil, nuclei.ExecuterOptions)
 			if err != nil {
-				fmt.Println(err)
 				continue
 			}
 			pocList = append(pocList, poc)
@@ -46,14 +44,14 @@ func (r *Runner) RunNucleiPoc(target string, keyword string) (results []*common.
 // RunNucleiExp 启动
 func (r *Runner) RunNucleiExp(target, pocName, payload string) (results []*common.Result) {
 	var pocList []*nuclei.Template
+	pocName = strings.ToLower(pocName)
 	for _, tmpPoc := range r.nucleiTemplates {
 		var poc *templates.Template
 		poc, err := templates.Parse(tmpPoc.Path, nil, nuclei.ExecuterOptions)
 		if err != nil {
-			fmt.Println(err)
 			continue
 		}
-		if poc.ID == pocName+"-exp" {
+		if strings.ToLower(poc.ID) == pocName+"-exp" {
 			pocList = append(pocList, poc)
 		}
 	}
@@ -94,7 +92,7 @@ func (r *Runner) NucleiExp(target string, pocList []*nuclei.Template, payload st
 	// 运行
 	input := &inputs.SimpleInputProvider{Inputs: []string{target}}
 	for _, poc := range pocList {
-		poc.Variables.Set("exp", base64.StdEncoding.EncodeToString([]byte(payload)))
+		poc.Variables.Set("exp", payload)
 	}
 	_ = r.nucleiEngine.Execute(pocList, input)
 	time.Sleep(5 * time.Second) // 战术性 sleep，等待 Interactsh Server 结果
