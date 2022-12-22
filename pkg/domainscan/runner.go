@@ -11,6 +11,7 @@ import (
 type Options struct {
 	Layer          int
 	Rate           string
+	Proxy          string
 	SubdomainData  []string
 	SubnextData    []string
 	CdnCnameData   []string
@@ -46,10 +47,11 @@ func (r *Runner) RunEnumeration(domain string) (results []*Result) {
 
 	// 被动收集,subfinder
 	gologger.Info().Msgf("开始被动收集")
-	domains, err := subfinder.Run([]string{domain}, r.options.ProviderConfig)
+	domains, err := subfinder.Run([]string{domain}, r.options.Proxy, r.options.ProviderConfig)
 	if err != nil {
 		gologger.Error().Msgf("subfinder.Run() err, %v", err)
 	}
+	gologger.Info().Msgf("subfinder: %v", domains)
 	// 加入本身这个域名
 	domains = append(domains, domain)
 	// 判断泛解析

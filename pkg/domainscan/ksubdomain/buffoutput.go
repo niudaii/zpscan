@@ -1,6 +1,7 @@
 package ksubdomain
 
 import (
+	"fmt"
 	"github.com/boy-hack/ksubdomain/runner/result"
 )
 
@@ -14,6 +15,7 @@ func NewBuffOutput() (*BuffOutput, error) {
 }
 
 func (b *BuffOutput) WriteDomainResult(domain result.Result) error {
+	fmt.Printf("%v => %v\n", domain.Subdomain, domain.Answers)
 	b.sb = append(b.sb, &Result{
 		Host: domain.Subdomain,
 		IP:   domain.Answers[0],

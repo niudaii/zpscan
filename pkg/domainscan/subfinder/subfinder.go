@@ -28,11 +28,12 @@ func (r *result) Output() []string {
 	return r.m
 }
 
-func Run(domains []string, providerConfig string) (output []string, err error) {
+func Run(domains []string, proxy, providerConfig string) (output []string, err error) {
 	options := &runner.Options{
-		Threads:            10,                       // Thread controls the number of threads to use for active enumerations
+		Proxy:              proxy,
+		Threads:            5,                        // Thread controls the number of threads to use for active enumerations
 		Timeout:            30,                       // Timeout is the seconds to wait for sources to respond
-		MaxEnumerationTime: 10,                       // MaxEnumerationTime is the maximum amount of time in mins to wait for enumeration
+		MaxEnumerationTime: 15,                       // MaxEnumerationTime is the maximum amount of time in mins to wait for enumeration
 		Resolvers:          resolve.DefaultResolvers, // Use the default list of resolvers by marshaling it to the config
 		All:                true,                     // Use the default list of all passive sources
 		ProviderConfig:     providerConfig,

@@ -26,7 +26,7 @@ func Run(domains []string, rate string) (results []*Result, err error) {
 		Domain:      domainChanel,
 		DomainTotal: len(domains),
 		Resolvers:   options.GetResolvers(""),
-		Silent:      true,
+		Silent:      false,
 		TimeOut:     10,
 		Retry:       3,
 		Method:      runner.VerifyType,

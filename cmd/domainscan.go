@@ -20,6 +20,7 @@ type DomainscanOptions struct {
 
 	Layer int
 	Rate  string
+	Proxy string
 }
 
 var domainscanOptions DomainscanOptions
@@ -27,6 +28,7 @@ var domainscanOptions DomainscanOptions
 func init() {
 	domainscanCmd.Flags().IntVarP(&domainscanOptions.Layer, "layer", "l", 1, "number of domain layer(1|2)")
 	domainscanCmd.Flags().StringVar(&domainscanOptions.Rate, "rate", "500000k", "ksubdomain rate")
+	domainscanCmd.Flags().StringVarP(&domainscanOptions.Proxy, "proxy", "p", "", "proxy(example: -p 'http://127.0.0.1:8080')")
 	domainscanCmd.Flags().StringVar(&domainscanOptions.ProviderFile, "provider-file", "", "subfinder provider config file(example: --provider-config 'xxx.yaml')")
 	domainscanCmd.Flags().StringVar(&domainscanOptions.SubdomainFile, "subdomain-file", "", "subdomain file(example: --subdomain-file 'xxx.txt')")
 	domainscanCmd.Flags().StringVar(&domainscanOptions.SubnextFile, "subnext-file", "", "subnext file(example: --subnext-file 'xxx.txt')")
@@ -107,6 +109,7 @@ func (o *DomainscanOptions) run() {
 	options := &domainscan.Options{
 		Layer:          o.Layer,
 		Rate:           o.Rate,
+		Proxy:          o.Proxy,
 		SubdomainData:  config.Worker.Domainscan.SubdomainData,
 		SubnextData:    config.Worker.Domainscan.SubnextData,
 		CdnCnameData:   config.Worker.Domainscan.CdnCnameData,
