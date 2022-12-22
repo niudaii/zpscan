@@ -109,6 +109,7 @@ func initFinger() error {
 		if err != nil {
 			return err
 		}
+		fingerData = []byte(resp.String())
 		gologger.Info().Msgf("当前指纹非最新版本,已获取最新指纹")
 	}
 	// parse
