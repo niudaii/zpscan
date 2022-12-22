@@ -67,7 +67,7 @@ func regexJsjump(resp *req.Response) string {
 	matches := reg1.FindAllStringSubmatch(resp.String(), -1)
 	if len(matches) > 0 {
 		// 去除注释的情况
-		if !strings.Contains(resp.String(), "<!--\r\n"+matches[0][0]) {
+		if !strings.Contains(resp.String(), "<!--\r\n"+matches[0][0]) && !strings.Contains(matches[0][1], "nojavascript.html") && !strings.Contains(resp.String(), "<!--[if lt IE 7]>\n"+matches[0][0]) {
 			return matches[0][1]
 		}
 	}
