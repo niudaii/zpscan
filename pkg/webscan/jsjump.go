@@ -2,6 +2,7 @@ package webscan
 
 import (
 	"github.com/projectdiscovery/gologger"
+	"path/filepath"
 	"regexp"
 	"strings"
 
@@ -43,24 +44,19 @@ func Jsjump(resp *req.Response) (jumpurl string) {
 		res = strings.ReplaceAll(res, "\"", "")
 		res = strings.ReplaceAll(res, "'", "")
 		res = strings.ReplaceAll(res, "./", "/")
-		var baseUrl string
 		if strings.HasPrefix(res, "http") {
 			jumpurl = res
 		} else if strings.HasPrefix(res, "/") {
-			// 前缀存在 / 时获取重定向之前的请求url
-			baseUrl = resp.Request.URL.Scheme + "://" + resp.Request.URL.Host
+			// 前缀存在 / 时拼接绝对目录
+			baseUrl := resp.Request.URL.Scheme + "://" + resp.Request.URL.Host
 			jumpurl = baseUrl + res
 		} else {
-			// 前缀不存在 / 时获取重定向之后的请求url
-			//baseUrl = resp.Response.Request.URL.String()
-			baseUrl = resp.Request.URL.Scheme + "://" + resp.Request.URL.Host
-			if !strings.HasSuffix(baseUrl, "/") {
-				baseUrl = baseUrl + "/"
-			}
+			// 前缀不存在 / 时拼接相对目录
+			baseUrl := resp.Request.URL.Scheme + "://" + resp.Request.URL.Host + "/" + filepath.Dir(resp.Request.URL.Path) + "/"
 			jumpurl = baseUrl + res
 		}
 	}
-	return jumpurl
+	return
 }
 
 func regexJsjump(resp *req.Response) string {
