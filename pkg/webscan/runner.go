@@ -57,6 +57,7 @@ func (r *Runner) Run(urls []string) (results Results) {
 					if len(resp.Fingers) > 5 {
 						gologger.Warning().Msgf("%v 可能为蜜罐", resp.Url)
 					} else {
+						gologger.Silent().Msgf(FmtResult(resp, r.options.NoColor))
 						mutex.Lock()
 						results = append(results, resp)
 						mutex.Unlock()
@@ -108,7 +109,6 @@ func (r *Runner) Webinfo(url string) (result *Result, err error) {
 	if !r.options.NoWappalyzer {
 		result.Wappalyzer = r.wappalyzerClient.Fingerprint(resp.Header, resp.Bytes())
 	}
-	gologger.Silent().Msgf(FmtResult(result, r.options.NoColor))
 	return
 }
 

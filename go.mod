@@ -28,7 +28,7 @@ require (
 	github.com/sijms/go-ora/v2 v2.5.3
 	github.com/spf13/cobra v1.5.0
 	github.com/stacktitan/smb v0.0.0-20190531122847-da9a425dceb8
-	github.com/tomatome/grdp v0.0.0-20220713105348-9917c8b96a4f
+	github.com/tomatome/grdp v0.0.0-20211231062539-be8adab7eaf3
 	github.com/twmb/murmur3 v1.1.6
 	github.com/zu1k/nali v0.5.3
 	go.uber.org/zap v1.23.0
@@ -48,6 +48,7 @@ require (
 	github.com/projectdiscovery/utils v0.0.4-0.20221201124851-f8524345b6d3 // indirect
 	github.com/zmap/zcertificate v0.0.0-20180516150559-0e3d58b1bac4 // indirect
 	gopkg.in/djherbis/times.v1 v1.3.0 // indirect
+	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
 
 require (
@@ -240,7 +241,6 @@ require (
 	gopkg.in/alecthomas/kingpin.v2 v2.2.6 // indirect
 	gopkg.in/corvus-ch/zbase32.v1 v1.0.0 // indirect
 	gopkg.in/tomb.v1 v1.0.0-20141024135613-dd632973f1e7 // indirect
-	gopkg.in/yaml.v3 v3.0.1 // indirect
 	moul.io/http2curl v1.0.0 // indirect
 )
 
@@ -251,5 +251,5 @@ replace (
 	github.com/projectdiscovery/sliceutil v0.0.1 => github.com/projectdiscovery/sliceutil v0.0.0-20220625085859-c3a4ecb669f4 // indirect
 	github.com/projectdiscovery/stringsutil v0.0.2 => github.com/projectdiscovery/stringsutil v0.0.1 // indirect
 	github.com/shirou/gopsutil/v3 v3.22.11 => github.com/shirou/gopsutil/v3 v3.22.10
-	github.com/tomatome/grdp v0.0.0-20220713105348-9917c8b96a4f => github.com/shadow1ng/grdp v1.0.3
+	github.com/tomatome/grdp v0.0.0-20211231062539-be8adab7eaf3 => github.com/shadow1ng/grdp v1.0.3
 )
