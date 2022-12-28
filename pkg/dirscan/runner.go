@@ -61,7 +61,7 @@ func (r *Runner) Run(inputs []*Input) (results Results) {
 }
 
 func (r *Runner) Dirscan(input *Input) (results Results) {
-	gologger.Info().Msgf("开始扫描: %v", input.Target)
+	gologger.Info().Msgf("开始目录扫描: %v", input.Target)
 	// 存活检测
 	resp, err := webscan.FirstGet(r.reqClient, input.Target)
 	if err != nil {

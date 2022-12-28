@@ -42,6 +42,7 @@ func NewRunner(options *Options) (runner *Runner, err error) {
 }
 
 func (r *Runner) Run(urls []string) (results Results) {
+	gologger.Info().Msgf("开始WEB扫描")
 	// RunTask
 	wg := &sync.WaitGroup{}
 	mutex := sync.Mutex{}

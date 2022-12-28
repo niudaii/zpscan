@@ -3,6 +3,7 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/projectdiscovery/gologger/writer"
 	"time"
 
 	"github.com/niudaii/zpscan/config"
@@ -68,7 +69,7 @@ func (o *CommonOptions) configureOutput() {
 		gologger.DefaultLogger.SetMaxLevel(levels.LevelDebug)
 	}
 
-	gologger.DefaultLogger.SetWriter(utils.NewCLI(o.OutputFile))
+	gologger.DefaultLogger.SetWriter(writer.NewLogFile(o.OutputFile))
 }
 
 // configureOptions 配置选项

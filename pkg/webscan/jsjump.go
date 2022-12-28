@@ -38,8 +38,8 @@ var (
 
 func Jsjump(resp *req.Response) (jumpurl string) {
 	res := regexJsjump(resp)
-	gologger.Debug().Msgf("regexJsjump(), %v", res)
 	if res != "" {
+		gologger.Debug().Msgf("regexJsjump(), %v", res)
 		res = strings.TrimSpace(res)
 		res = strings.ReplaceAll(res, "\"", "")
 		res = strings.ReplaceAll(res, "'", "")

@@ -245,6 +245,7 @@ require (
 )
 
 replace (
+	github.com/projectdiscovery/gologger v1.1.5 => github.com/niudaii/gologger v0.0.0-20221228035758-e9e3db534f19
 	github.com/projectdiscovery/ipranger v0.0.3 => github.com/projectdiscovery/ipranger v0.0.3-0.20210831161617-ac80efae0961
 	github.com/projectdiscovery/nuclei/v2 v2.7.9 => github.com/niudaii/nuclei/v2 v2.7.11
 	github.com/projectdiscovery/ratelimit v0.0.2 => github.com/projectdiscovery/ratelimit v0.0.1 // indirect

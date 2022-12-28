@@ -43,10 +43,10 @@ func (r *Runner) Run(domains []string) (results []*Result) {
 }
 
 func (r *Runner) RunEnumeration(domain string) (results []*Result) {
-	gologger.Info().Msgf("当前目标: %v", domain)
+	gologger.Info().Msgf("开始子域名扫描: %v", domain)
 
 	// 被动收集,subfinder
-	gologger.Info().Msgf("开始被动收集")
+	gologger.Info().Msgf("被动收集...")
 	domains, err := subfinder.Run([]string{domain}, r.options.Proxy, r.options.ProviderConfig)
 	if err != nil {
 		gologger.Error().Msgf("subfinder.Run() err, %v", err)
