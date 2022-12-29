@@ -230,7 +230,7 @@ func (N *NmapProbe) regxRespone(response []byte, matchtmp []*Match, Fallback str
 	return false, &extras
 }
 
-// 正则匹配respone内容
+// MatchPattern 正则匹配respone内容
 func (m *Match) MatchPattern(response []byte) (matched bool) {
 	responseStr := string([]rune(string(response)))
 	foundItems := m.PatternCompiled.FindStringSubmatch(responseStr)
@@ -361,10 +361,10 @@ func (N *NmapProbe) grabResponse(addr, proxyAddr string, Indexes, SocketTimeout 
 	if err != nil { // 连接端口失败
 		return nil, err
 	}
-	gologger.Debug().Msgf("Index.Data: %v", string(N.Probes[Indexes].Data))
+	gologger.Debug().Msgf("req data: %v", string(N.Probes[Indexes].Data))
 
 	if len(N.Probes[Indexes].Data) > 0 { // 发送指纹探测数据
-		err := conn.SetWriteDeadline(time.Now().Add(time.Second * time.Duration(int64(SocketTimeout))))
+		err = conn.SetWriteDeadline(time.Now().Add(time.Second * time.Duration(int64(SocketTimeout))))
 		if err != nil {
 			return nil, err
 		}
@@ -392,6 +392,7 @@ func (N *NmapProbe) grabResponse(addr, proxyAddr string, Indexes, SocketTimeout 
 			response = append(response, buff[:n]...)
 		}
 	}
+	gologger.Debug().Msgf("resp data: %v", string(response))
 	return response, nil
 }
 
@@ -512,14 +513,12 @@ func (N *NmapProbe) ScanWithProbe(host, port, proxyAddr string, SocketTimeout in
 	return &Resulttmp
 }
 
-// 识别端口服务指纹
+// ResultSocket 识别端口服务指纹
 func (N *NmapProbe) ResultSocket(address, proxyAddr string, Indexes, SocketTimeout int, ResultChan chan *Result) {
-	//gologger.Debug().Msgf("调用ResultSocket函数 %v %d \n", address, Indexes)
 	responeData, err := N.grabResponse(address, proxyAddr, Indexes, SocketTimeout)
 	if err != nil { // 端口发送指纹失败
 		return
 	}
-	//gologger.Debug().Msgf("socket 返回 responseData %v \n", string(responeData))
 	ok, extras := N.regxRespone(responeData, N.Probes[Indexes].Matchs, N.Probes[Indexes].Fallback)
 	if !ok { // 指纹识别失败
 		return

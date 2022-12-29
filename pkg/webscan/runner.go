@@ -42,6 +42,9 @@ func NewRunner(options *Options) (runner *Runner, err error) {
 }
 
 func (r *Runner) Run(urls []string) (results Results) {
+	if len(urls) == 0 {
+		return
+	}
 	gologger.Info().Msgf("开始WEB扫描")
 	// RunTask
 	wg := &sync.WaitGroup{}
