@@ -11,9 +11,6 @@
   <a href="https://opensource.org/licenses/MIT">
     <img src="https://img.shields.io/badge/license-MIT-_red.svg">
   </a>
-  <a href="https://github.com/niudaii/zpscan/actions">
-    <img src="https://img.shields.io/github/workflow/status/niudaii/zpscan/Release" alt="Github Actions">
-  </a>
   <a href="https://github.com/niudaii/zpscan/releases">
   	<img src="https://img.shields.io/github/downloads/niudaii/zpscan/total">
   </a>
