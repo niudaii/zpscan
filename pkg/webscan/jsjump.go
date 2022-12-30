@@ -11,29 +11,31 @@ import (
 
 var (
 	/*
-		http://42.200.74.172
 		<head>
 			<meta http-equiv="refresh" content="1;URL='/admin'"/>
 		</head>
 
-		http://vip.wasu.com
 		<!--
-		<meta http-equiv="refresh" content="0.1;url=https://www.wasu.cn/">
+		<meta http-equiv="refresh" content="0.1;url=https://www.xxx.cn/">
 		-->
 
-		http://144.123.42.59:7077
 		<head>
 		<meta http-equiv=refresh content=0;url=index.jsp>
 		</head>
 	*/
 	reg1 = regexp.MustCompile(`(?i)<meta.*?http-equiv=.*?refresh.*?url=(.*?)/?>`)
 	/*
-		https://183.235.236.180:4433
 		<script type="text/javascript">
 			location.href = "./ui/";
 		</script>
 	*/
 	reg2 = regexp.MustCompile(`(?i)location\.href.*?=.*?["'](.*?)["']`)
+	/*
+		<script language="javascript">
+			window.location.replace("/mymeetings/");
+		</script>
+	*/
+	reg3 = regexp.MustCompile(`(?i)window\.location\.replace\(['"](.*?)['"]\)`)
 )
 
 func Jsjump(resp *req.Response) (jumpurl string) {
@@ -67,16 +69,17 @@ func regexJsjump(resp *req.Response) string {
 			return matches[0][1]
 		}
 	}
-	if len(resp.String()) < 400 {
-		matches = reg2.FindAllStringSubmatch(resp.String(), -1)
-		if len(matches) > 0 {
-			return matches[0][1]
-		}
-	} else {
-		matches = reg2.FindAllStringSubmatch(resp.String()[:400], -1)
-		if len(matches) > 0 {
-			return matches[0][1]
-		}
+	body := resp.String()
+	if len(body) > 700 {
+		body = body[:700]
+	}
+	matches = reg2.FindAllStringSubmatch(body, -1)
+	if len(matches) > 0 {
+		return matches[0][1]
+	}
+	matches = reg3.FindAllStringSubmatch(body, -1)
+	if len(matches) > 0 {
+		return matches[0][1]
 	}
 	return ""
 }
