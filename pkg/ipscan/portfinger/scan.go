@@ -349,6 +349,9 @@ func (N *NmapProbe) grabResponse(addr, proxyAddr string, Indexes, SocketTimeout 
 			nil,
 			&net.Dialer{Timeout: connTimeout},
 		)
+		if err != nil {
+			return nil, err
+		}
 		conn, err = dialer.Dial("tcp", addr)
 	} else {
 		conn, err = net.DialTimeout("tcp", addr, connTimeout)

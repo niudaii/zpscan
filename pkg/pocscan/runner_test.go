@@ -41,7 +41,7 @@ func TestRun(t *testing.T) {
 	}
 	t.Log("nucleiPcs", len(nucleiPcs))
 	var nucleiPocs []*nuclei.Template
-	r, err := NewRunner(&options, gobyPocs, xrayPocs, pocDir, nucleiPocs)
+	r, err := NewRunner(&options, gobyPocs, xrayPocs, nucleiPocs)
 	if err != nil {
 		t.Error(err)
 	}

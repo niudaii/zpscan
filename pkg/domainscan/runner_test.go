@@ -2,29 +2,26 @@ package domainscan
 
 import (
 	"testing"
-
-	"github.com/projectdiscovery/subfinder/v2/pkg/runner"
 )
 
 func TestLayer(t *testing.T) {
-	providers := &runner.Providers{}
 	subdomainData := []string{"a1", "b1", "c1", "d1"}
 	subnextData := []string{"a2", "b2", "c2", "d2"}
 	op1 := &Options{
-		Layer:         1,
-		Providers:     providers,
-		SubdomainData: subdomainData,
-		SubnextData:   subnextData,
+		Layer:          1,
+		ProviderConfig: "",
+		SubdomainData:  subdomainData,
+		SubnextData:    subnextData,
 	}
 	e1, err := NewRunner(op1)
 	if err != nil {
 		t.Errorf("NewEngine err, %v", err)
 	}
 	op2 := &Options{
-		Layer:         2,
-		Providers:     providers,
-		SubdomainData: subdomainData,
-		SubnextData:   subnextData,
+		Layer:          2,
+		ProviderConfig: "",
+		SubdomainData:  subdomainData,
+		SubnextData:    subnextData,
 	}
 	e2, _ := NewRunner(op2)
 	tests := map[string]*Runner{
@@ -39,14 +36,13 @@ func TestLayer(t *testing.T) {
 }
 
 func TestCheckCDN(t *testing.T) {
-	providers := &runner.Providers{}
 	subdomainData := []string{""}
 	subnextData := []string{""}
 	options := &Options{
-		Layer:         1,
-		Providers:     providers,
-		SubdomainData: subdomainData,
-		SubnextData:   subnextData,
+		Layer:          1,
+		ProviderConfig: "",
+		SubdomainData:  subdomainData,
+		SubnextData:    subnextData,
 	}
 	engine, err := NewRunner(options)
 	if err != nil {

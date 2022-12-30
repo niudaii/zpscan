@@ -20,7 +20,6 @@ type Options struct {
 type Runner struct {
 	gobyPocs        []*goby.Poc
 	xrayPocs        []*xray.Poc
-	nucleiDir       string
 	nucleiTemplates []*nuclei.Template
 	reqClient       *req.Client
 	nucleiEngine    *core.Engine
