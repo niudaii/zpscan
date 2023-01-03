@@ -5,8 +5,6 @@ import (
 	"net"
 	"strconv"
 	"strings"
-
-	"github.com/projectdiscovery/gologger"
 )
 
 // ParseIP 参考 fscan
@@ -15,7 +13,6 @@ func ParseIP(ip string) ([]string, error) {
 	if strings.Contains(ip, "/") {
 		_, ipNet, err := net.ParseCIDR(ip)
 		if err != nil {
-			gologger.Error().Msgf("utils.ParseIP() err, %v", err)
 			return hosts, err
 		}
 		hosts = parseIP1(IPRange(ipNet))

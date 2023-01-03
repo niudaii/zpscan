@@ -20,6 +20,10 @@ var (
 func CheckOS(ip string) (os string, err error) {
 	var ttl int
 	pinger, err := ping.NewPinger(ip) // nolint
+	if err != nil {
+		return
+	}
+	pinger.SetPrivileged(true)
 	pinger.Count = 2
 	pinger.Timeout = 3 * time.Second
 	pinger.OnRecv = func(packet *ping.Packet) {
