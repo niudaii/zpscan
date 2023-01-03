@@ -129,14 +129,7 @@ func (o *DomainscanOptions) run() {
 	for _, result := range results {
 		urls = append(urls, result.Domain)
 	}
-	for _, target := range targets {
-		tmpUrls, err := domainweb.Run(target, config.Worker.Domainscan.FofaEmail, config.Worker.Domainscan.FofaKey)
-		if err != nil {
-			gologger.Error().Msgf("domainweb.Run() err, %v", err)
-			continue
-		}
-		urls = append(urls, tmpUrls...)
-	}
+	urls = append(urls, domainweb.Run(urls, webscanOptions.Threads, o.Proxy)...)
 	urls = utils.RemoveDuplicate(urls)
 	gologger.Info().Msgf("domain web: %v", len(urls))
 	options2 := &webscan.Options{

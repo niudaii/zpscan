@@ -4,42 +4,40 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
-	"time"
-
 	"github.com/imroc/req/v3"
+	"time"
 )
 
-type fofaRst struct {
-	Error   bool     `json:"error"`
-	Size    int      `json:"size"`
-	Results []string `json:"results"`
+type hunterRst struct {
+	//Error   bool     `json:"error"`
+	//Size    int      `json:"size"`
+	//Results []string `json:"results"`
 }
 
 var (
-	fofaApi = "https://fofa.info/api/v1/search/all"
+	hunterApi = "https://hunter.qianxin.com/openApi/search"
 )
 
-func fofa(query, fofaEmail, fofaKey string) (hosts []string, err error) {
+func hunter(query, apiKey string) (hosts []string, err error) {
 	query = fmt.Sprintf("domain=\"%v\"", query)
 	qBase64 := base64.StdEncoding.EncodeToString([]byte(query))
 	r := req.C().SetTimeout(15 * time.Second).R()
 	r.SetQueryParams(map[string]string{
-		"email":   fofaEmail,
-		"key":     fofaKey,
-		"qbase64": qBase64,
+		"api-key": apiKey,
+		"search":  qBase64,
 		"page":    "1",
-		"size":    "10000",
-		"fields":  "host",
+		"size":    "100",
+		"is_web":  "3",
 	})
-	resp, err := r.Get(fofaApi)
+	resp, err := r.Get(hunterApi)
 	if err != nil {
 		return
 	}
-	var res fofaRst
+	var res hunterRst
 	err = json.Unmarshal(resp.Bytes(), &res)
 	if err != nil {
 		return
 	}
-	hosts = res.Results
+	//hosts = res.Results
 	return
 }

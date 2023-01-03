@@ -3,10 +3,7 @@ package domainweb
 import "testing"
 
 func TestRun(t *testing.T) {
-	results, err := Run("dbappsecurity.com.cn", "xxx", "xxx")
-	if err != nil {
-		t.Errorf("Run() err, %v", err)
-	}
+	results := Run([]string{"cdn.nbcb.com.cn"}, 50, "")
 	t.Logf("结果数量: %v", len(results))
 	t.Log(results)
 }
