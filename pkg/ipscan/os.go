@@ -23,7 +23,6 @@ func CheckOS(ip string) (os string, err error) {
 	if err != nil {
 		return
 	}
-	pinger.SetPrivileged(true)
 	pinger.Count = 2
 	pinger.Timeout = 3 * time.Second
 	pinger.OnRecv = func(packet *ping.Packet) {

@@ -28,6 +28,8 @@ type IpscanOptions struct {
 	Process   bool
 	MaxPort   int
 
+	Os      bool
+	Addr    bool
 	Crack   bool
 	Pocscan bool
 }
@@ -41,6 +43,8 @@ func init() {
 	ipscanCmd.Flags().IntVar(&ipscanOptions.Threads, "threads", 25, "number of threads")
 	ipscanCmd.Flags().IntVar(&ipscanOptions.MaxPort, "max-port", 200, "discard result if it more than max port")
 	ipscanCmd.Flags().BoolVar(&ipscanOptions.Process, "process", false, "show process")
+	ipscanCmd.Flags().BoolVar(&ipscanOptions.Os, "os", false, "check os")
+	ipscanCmd.Flags().BoolVar(&ipscanOptions.Addr, "addr", false, "get addr")
 
 	ipscanCmd.Flags().BoolVar(&ipscanOptions.Crack, "crack", false, "open crack")
 	ipscanCmd.Flags().BoolVar(&ipscanOptions.Pocscan, "pocscan", false, "open pocscan")
@@ -166,14 +170,18 @@ func (o *IpscanOptions) run() {
 			Ip: ip,
 		}
 		// 获取地理位置
-		if ipResult.Country, ipResult.Area, err = ipscanRunner.GetIpAddr(ip); err != nil {
-			gologger.Error().Msgf("ipscanRunner.GetIpAddr() err, %v", err)
-			return
+		if o.Addr {
+			if ipResult.Country, ipResult.Area, err = ipscanRunner.GetAddr(ip); err != nil {
+				gologger.Error().Msgf("ipscanRunner.GetAddr() err, %v", err)
+				return
+			}
 		}
 		// 操作系统识别
-		if ipResult.OS, err = ipscan.CheckOS(ip); err != nil {
-			gologger.Error().Msgf("ipscan.CheckOS() err, %v", err)
-			return
+		if o.Os {
+			if ipResult.OS, err = ipscan.CheckOS(ip); err != nil {
+				gologger.Error().Msgf("ipscan.CheckOS() err, %v", err)
+				return
+			}
 		}
 		gologger.Info().Msgf("%v [%v %v] [%v]", ipResult.Ip, ipResult.Country, ipResult.Area, ipResult.OS)
 		ipResults = append(ipResults, ipResult)
