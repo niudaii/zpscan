@@ -29,7 +29,7 @@ var (
 			location.href = "./ui/";
 		</script>
 	*/
-	reg2 = regexp.MustCompile(`(?i)location\.href.*?=.*?["'](.*?)["']`)
+	reg2 = regexp.MustCompile(`(?i)[window\.]?location[\.href]?.*?=.*?["'](.*?)["']`)
 	/*
 		<script language="javascript">
 			window.location.replace("/mymeetings/");
