@@ -21,9 +21,9 @@ func Run(subdomains []string, timeout, threads int, proxy string) (results []str
 		return
 	}
 	var urls []string
-	for _, domain := range subdomains {
-		for _, port := range ports {
-			urls = append(urls, fmt.Sprintf("%v:%v", domain, port))
+	for _, subdomain := range subdomains {
+		for port := range ports {
+			urls = append(urls, fmt.Sprintf("%v:%v", subdomain, port))
 		}
 	}
 	results = webscan.CheckAlive(urls, timeout, threads, proxy)

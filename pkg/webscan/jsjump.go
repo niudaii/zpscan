@@ -1,7 +1,9 @@
 package webscan
 
 import (
+	"github.com/niudaii/zpscan/internal/utils"
 	"github.com/projectdiscovery/gologger"
+	"net"
 	"path/filepath"
 	"regexp"
 	"strings"
@@ -38,6 +40,10 @@ var (
 	reg3 = regexp.MustCompile(`(?i)window\.location\.replace\(['"](.*?)['"]\)`)
 )
 
+var (
+	regHost = regexp.MustCompile(`(?i)https?://(.*?)/`)
+)
+
 func Jsjump(resp *req.Response) (jumpurl string) {
 	res := regexJsjump(resp)
 	if res != "" {
@@ -47,6 +53,19 @@ func Jsjump(resp *req.Response) (jumpurl string) {
 		res = strings.ReplaceAll(res, "'", "")
 		res = strings.ReplaceAll(res, "./", "/")
 		if strings.HasPrefix(res, "http") {
+			matches := regHost.FindAllStringSubmatch(res, -1)
+			if len(matches) > 0 {
+				var ip net.IP
+				if strings.Contains(matches[0][1], ":") {
+					ip = net.ParseIP(strings.Split(matches[0][1], ":")[0])
+				} else {
+					ip = net.ParseIP(matches[0][1])
+				}
+				if utils.HasLocalIP(ip) {
+					baseUrl := resp.Request.URL.Host
+					res = strings.ReplaceAll(res, matches[0][1], baseUrl)
+				}
+			}
 			jumpurl = res
 		} else if strings.HasPrefix(res, "/") {
 			// 前缀存在 / 时拼接绝对目录

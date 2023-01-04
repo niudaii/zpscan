@@ -133,7 +133,7 @@ func FirstGet(client *req.Client, url string) (resp *req.Response, err error) {
 		scheme = "http://"
 		resp, err = request.Get(scheme + url)
 		if err != nil {
-			gologger.Debug().Msgf("r.Get() err, %v", err)
+			gologger.Debug().Msgf("request.Get() err, %v", err)
 			scheme = "https://"
 			flag = true
 		} else {
@@ -148,7 +148,7 @@ func FirstGet(client *req.Client, url string) (resp *req.Response, err error) {
 	} else if strings.HasPrefix(url, "http://") {
 		resp, err = request.Get(url)
 		if err != nil {
-			gologger.Debug().Msgf("r.Get() err, %v", err)
+			gologger.Debug().Msgf("request.Get() err, %v", err)
 			scheme = "https://"
 			url = url[7:]
 			flag = true
