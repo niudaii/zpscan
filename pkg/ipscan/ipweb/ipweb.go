@@ -10,7 +10,7 @@ import (
 
 var rePort = regexp.MustCompile(`https?://.*?:(\d+)`)
 
-func CheckWebPort(host string, timeout, threads int, proxy string) (results []int) {
+func Run(host string, timeout, threads int, proxy string) (results []int) {
 	ports, err := utils.ParsePortsList(utils.Webport)
 	if err != nil {
 		return

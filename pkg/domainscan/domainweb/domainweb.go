@@ -16,20 +16,16 @@ import (
 //}
 
 func Run(subdomains []string, timeout, threads int, proxy string) (results []string) {
-	for _, domain := range subdomains {
-		results = append(results, CheckUrl(domain, timeout, threads, proxy)...)
-	}
-	return
-}
-
-func CheckUrl(host string, timeout, threads int, proxy string) (results []string) {
 	ports, err := utils.ParsePortsList(utils.Webport)
 	if err != nil {
 		return
 	}
-	for port := range ports {
-		results = append(results, fmt.Sprintf("%v:%v", host, port))
+	var urls []string
+	for _, domain := range subdomains {
+		for _, port := range ports {
+			urls = append(urls, fmt.Sprintf("%v:%v", domain, port))
+		}
 	}
-	results = webscan.CheckAlive(results, timeout, threads, proxy)
-	return results
+	results = webscan.CheckAlive(urls, timeout, threads, proxy)
+	return
 }

@@ -12,14 +12,13 @@ func CheckAlive(urls []string, timeout, threads int, proxy string) (results []st
 	if len(urls) == 0 {
 		return
 	}
-	gologger.Info().Msgf("存活扫描数量: %v", len(urls))
+	gologger.Info().Msgf("开始HTTP探活: %v", len(urls))
 	client := req.C()
 	client.SetTimeout(time.Duration(timeout) * time.Millisecond)
 	client.GetTLSClientConfig().InsecureSkipVerify = true
 	if proxy != "" {
 		client.SetProxyURL(proxy)
 	}
-	gologger.Info().Msgf("开始HTTP探活")
 	// RunTask
 	wg := &sync.WaitGroup{}
 	mutex := sync.Mutex{}
@@ -55,6 +54,6 @@ func CheckAlive(urls []string, timeout, threads int, proxy string) (results []st
 	close(taskChan)
 	wg.Wait()
 
-	gologger.Info().Msgf("扫描结束")
+	gologger.Info().Msgf("HTTP探活结束")
 	return
 }

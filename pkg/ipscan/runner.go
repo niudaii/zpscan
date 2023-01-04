@@ -64,7 +64,7 @@ func (r *Runner) Run() (results []*portfinger.Result) {
 		if len(naabuResults[k]) > r.options.MaxPort {
 			gologger.Info().Msgf("%v 开放端口大于 %v", k, r.options.MaxPort)
 			// 如果端口开放大于 max-port，进行 web 探活
-			naabuResults[k] = ipweb.CheckWebPort(k, 500, 50, "")
+			naabuResults[k] = ipweb.Run(k, 500, 50, "")
 		}
 	}
 	gologger.Info().Msgf("端口开放扫描完成: %v", time.Since(start))
