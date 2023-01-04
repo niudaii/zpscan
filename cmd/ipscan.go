@@ -55,7 +55,7 @@ func init() {
 var ipscanCmd = &cobra.Command{
 	Use:   "ipscan",
 	Short: "端口扫描",
-	Long:  "端口扫描,对结果进行webscan扫描, 可选crack",
+	Long:  "端口扫描,对结果进行webscan扫描, 可选crack,pocscan",
 	Run: func(cmd *cobra.Command, args []string) {
 		if err := ipscanOptions.validateOptions(); err != nil {
 			gologger.Fatal().Msgf("Program exiting: %v", err)

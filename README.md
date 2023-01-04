@@ -149,8 +149,8 @@ pocscan
 
 2023-01-04
 
-- 改进 domainscan 模块的 subfinder 模块。
-- 改进 dirscan 模块，根据 url 自动补充字典。
+- 改进 domainscan 模块的 subfinder 模块
+- 改进 dirscan 模块，根据 url 自动补充字典
 
 2022-12-21
 
