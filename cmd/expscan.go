@@ -32,8 +32,8 @@ func init() {
 
 var expscanCmd = &cobra.Command{
 	Use:   "expscan",
-	Short: "expscan",
-	Long:  "expscan，支持nuclei",
+	Short: "exp扫描",
+	Long:  "exp扫描，支持nuclei",
 	Run: func(cmd *cobra.Command, args []string) {
 		if err := expscanOptions.validateOptions(); err != nil {
 			gologger.Fatal().Msgf("Program exiting: %v", err)

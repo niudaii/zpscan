@@ -1,6 +1,7 @@
 package ipscan
 
 import (
+	"github.com/niudaii/zpscan/pkg/ipscan/ipweb"
 	"github.com/niudaii/zpscan/pkg/ipscan/naabu"
 	"github.com/niudaii/zpscan/pkg/ipscan/portfinger"
 	"github.com/niudaii/zpscan/pkg/ipscan/qqwry"
@@ -62,7 +63,7 @@ func (r *Runner) Run() (results []*portfinger.Result) {
 	for k := range naabuResults {
 		if len(naabuResults[k]) > r.options.MaxPort {
 			gologger.Info().Msgf("%v 开放端口大于 %v", k, r.options.MaxPort)
-			naabuResults[k] = []int{}
+			naabuResults[k] = ipweb.CheckWebPort(k, 500, 50, "")
 		}
 	}
 	gologger.Info().Msgf("端口开放扫描完成: %v", time.Since(start))
