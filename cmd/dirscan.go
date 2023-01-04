@@ -33,7 +33,7 @@ var (
 
 func init() {
 	dirscanCmd.Flags().IntVar(&dirscanOptions.Threads, "threads", 10, "number of threads")
-	dirscanCmd.Flags().IntVar(&dirscanOptions.Timeout, "timeout", 10, "timeout in seconds")
+	dirscanCmd.Flags().IntVar(&dirscanOptions.Timeout, "timeout", 5, "timeout in seconds")
 	dirscanCmd.Flags().StringVarP(&dirscanOptions.Proxy, "proxy", "p", "", "proxy(example: -p 'http://127.0.0.1:8080')")
 	dirscanCmd.Flags().StringSliceVar(&dirscanOptions.Headers, "headers", []string{}, "add custom headers(example: --headers 'User-Agent: xxx,Cookie: xxx')")
 

@@ -1,6 +1,7 @@
 package dirscan
 
 import (
+	"fmt"
 	"github.com/niudaii/zpscan/internal/utils"
 	"github.com/niudaii/zpscan/pkg/webscan"
 	"strings"
@@ -37,8 +38,8 @@ type Input struct {
 	Dirs   []string
 }
 
-var contentTypes = []string{".zip", ".7z", ".rar", ".tar", ".txt", ".tar.gz", ".tgz", ".bak", ".swp", ".jar", ".war", ".sql"}
-var contentTypeMap = map[string]string{
+var extensions = []string{".zip", ".7z", ".rar", ".tar", ".txt", ".tar.gz", ".tgz", ".bak", ".swp", ".jar", ".war", ".sql", ".dll"}
+var mimeTypeMap = map[string]string{
 	".zip":    "application/zip",
 	".7z":     "application/x-7z-compressed",
 	".rar":    "application/x-rar-compressed",
@@ -55,13 +56,32 @@ var contentTypeMap = map[string]string{
 
 func (r *Runner) Run(inputs []*Input) (results Results) {
 	for _, input := range inputs {
+		input.Dirs = append(input.Dirs, generateDirs(input.Target)...)
+		input.Dirs = utils.RemoveDuplicate(input.Dirs)
 		results = append(results, r.Dirscan(input)...)
+	}
+	return
+}
+
+// genDirs 从url中提取关键词并增加扫描
+func generateDirs(url string) (dirs []string) {
+	if strings.Contains(url, "://") {
+		url = strings.Split(url, "://")[1]
+	}
+	if strings.Contains(url, ":") {
+		url = strings.Split(url, ":")[0]
+	}
+	if utils.IsVaildIp(url) { // IP
+		dirs = append(dirs, GenerateIpDirs(url)...)
+	} else { // 域名
+		dirs = append(dirs, GenerateDomainDirs(url)...)
 	}
 	return
 }
 
 func (r *Runner) Dirscan(input *Input) (results Results) {
 	gologger.Info().Msgf("开始目录扫描: %v", input.Target)
+	gologger.Info().Msgf("当前扫描字典: %v", len(input.Dirs))
 	// 存活检测
 	resp, err := webscan.FirstGet(r.reqClient, input.Target)
 	if err != nil {
@@ -91,10 +111,13 @@ func (r *Runner) Dirscan(input *Input) (results Results) {
 				if err != nil {
 					gologger.Debug().Msgf("%v", err)
 				} else {
+					if strings.Contains(task, "/login") {
+						fmt.Println(result)
+					}
 					if result.ContentLength != 0 && utils.HasInt(r.options.MatchStatus, result.StatusCode) {
 						flag := true
-						if suffix, ok := utils.SuffixStr(contentTypes, result.Url); ok {
-							if result.ContentType != contentTypeMap[suffix] {
+						if suffix, ok := utils.SuffixStr(extensions, result.Url); ok {
+							if result.ContentType != mimeTypeMap[suffix] {
 								flag = false
 							}
 						}
@@ -119,6 +142,7 @@ func (r *Runner) Dirscan(input *Input) (results Results) {
 	close(taskChan)
 	wg.Wait()
 
+	fmt.Println(respMap)
 	for _, result := range tmpResults {
 		if respMap[result.ContentLength] < r.options.MaxMatched {
 			results = append(results, &Result{
@@ -134,15 +158,14 @@ func (r *Runner) Dirscan(input *Input) (results Results) {
 }
 
 func (r *Runner) Req(url string) (result *Result, err error) {
-	request := r.reqClient.R()
-	resp, err := request.Get(url)
+	resp, err := r.reqClient.R().Head(url)
 	if err != nil {
 		return
 	}
 	result = &Result{
 		Url:           resp.Request.URL.String(),
 		StatusCode:    resp.StatusCode,
-		ContentLength: len(resp.String()),
+		ContentLength: int(resp.ContentLength),
 		ContentType:   resp.GetContentType(),
 	}
 	return
