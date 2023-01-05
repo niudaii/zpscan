@@ -21,6 +21,7 @@ func (r *Runner) RunNucleiPoc(target string, keyword string) (results []*common.
 			var poc *templates.Template
 			poc, err := templates.Parse(tmpPoc.Path, nil, nuclei.ExecuterOptions)
 			if err != nil {
+				gologger.Error().Msgf("templates.Parse() err, %v", err)
 				continue
 			}
 			pocList = append(pocList, poc)
@@ -49,6 +50,7 @@ func (r *Runner) RunNucleiExp(target, pocName, payload string) (results []*commo
 		var poc *templates.Template
 		poc, err := templates.Parse(tmpPoc.Path, nil, nuclei.ExecuterOptions)
 		if err != nil {
+			gologger.Error().Msgf("templates.Parse() err, %v", err)
 			continue
 		}
 		if strings.ToLower(poc.ID) == pocName+"-exp" {
