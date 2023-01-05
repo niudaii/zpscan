@@ -11,6 +11,6 @@ func TestGenerateIpDir(t *testing.T) {
 }
 
 func TestGenerateDomainiDir(t *testing.T) {
-	results := GenerateDomainDirs("xx.baidu.com")
+	results := GenerateDomainDirs("cpms.nbcb.com.cn")
 	fmt.Println(results)
 }

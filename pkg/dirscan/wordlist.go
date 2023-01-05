@@ -19,6 +19,7 @@ func GenerateIpDirs(ip string) (results []string) {
 
 func generatePossibilities(domain string) (results []string) {
 	split := strings.Split(domain, ".")
+	results = append(results, split[0])
 	for i := 0; i < len(split); i++ {
 		for j := i; j < len(split); j++ {
 			for _, extension := range extensions {
