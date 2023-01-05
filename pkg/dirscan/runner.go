@@ -141,8 +141,6 @@ func (r *Runner) Dirscan(input *Input) (results Results) {
 	}
 	close(taskChan)
 	wg.Wait()
-
-	fmt.Println(respMap)
 	for _, result := range tmpResults {
 		if respMap[result.ContentLength] < r.options.MaxMatched {
 			results = append(results, &Result{
@@ -158,14 +156,14 @@ func (r *Runner) Dirscan(input *Input) (results Results) {
 }
 
 func (r *Runner) Req(url string) (result *Result, err error) {
-	resp, err := r.reqClient.R().Head(url)
+	resp, err := r.reqClient.R().Get(url)
 	if err != nil {
 		return
 	}
 	result = &Result{
 		Url:           resp.Request.URL.String(),
 		StatusCode:    resp.StatusCode,
-		ContentLength: int(resp.ContentLength),
+		ContentLength: len(resp.String()),
 		ContentType:   resp.GetContentType(),
 	}
 	return
