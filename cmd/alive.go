@@ -24,7 +24,7 @@ var (
 
 func init() {
 	aliveCmd.Flags().StringVarP(&aliveOptions.PortRange, "port-range", "p", "1-65535", "port range(example: -p '22,80-90,1433,3306')")
-	aliveCmd.Flags().IntVar(&aliveOptions.Threads, "threads", 100, "number of threads")
+	aliveCmd.Flags().IntVar(&aliveOptions.Threads, "threads", 50, "number of threads")
 	aliveCmd.Flags().IntVar(&aliveOptions.Timeout, "timeout", 1, "timeout in seconds")
 	aliveCmd.Flags().StringVar(&aliveOptions.Proxy, "proxy", "", "proxy(example: -p 'http://127.0.0.1:8080')")
 
@@ -77,6 +77,7 @@ func (o *AliveOptions) run() {
 		}
 	}
 	aliveHosts := webscan.CheckAlive(urls, aliveOptions.Timeout, aliveOptions.Threads, aliveOptions.Proxy)
+	gologger.Info().Msgf("HTTP存活: %v", len(aliveHosts))
 	options := &webscan.Options{
 		Proxy:       o.Proxy,
 		Threads:     o.Threads,

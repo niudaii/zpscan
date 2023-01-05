@@ -14,7 +14,7 @@ func CheckAlive(urls []string, timeout, threads int, proxy string) (results []st
 	}
 	gologger.Info().Msgf("开始HTTP探活: %v", len(urls))
 	client := req.C()
-	client.SetTimeout(time.Duration(timeout) * time.Millisecond)
+	client.SetTimeout(time.Duration(timeout) * time.Second)
 	client.GetTLSClientConfig().InsecureSkipVerify = true
 	if proxy != "" {
 		client.SetProxyURL(proxy)
@@ -26,14 +26,14 @@ func CheckAlive(urls []string, timeout, threads int, proxy string) (results []st
 	for i := 0; i < threads; i++ {
 		go func() {
 			for task := range taskChan {
-				resp, err := client.R().Head("http://" + task)
+				resp, err := client.R().Get("http://" + task)
 				if err == nil {
 					mutex.Lock()
 					results = append(results, resp.Request.URL.String())
 					mutex.Unlock()
 				} else {
 					gologger.Debug().Msgf("%v", err)
-					resp, err = client.R().Head("https://" + task)
+					resp, err = client.R().Get("https://" + task)
 					if err == nil {
 						mutex.Lock()
 						results = append(results, resp.Request.URL.String())
