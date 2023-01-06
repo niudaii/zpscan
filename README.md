@@ -143,7 +143,7 @@ pocscan
 
 - 下载并放置资源文件（config.yaml、resource/）到可执行文件的同目录下
 
-  https://zpscan.oss-cn-hangzhou.aliyuncs.com/resource1.zip
+  https://niudaii.oss-cn-hangzhou.aliyuncs.com/resource.zip
 
 ## 更新
 
