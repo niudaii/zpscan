@@ -90,7 +90,7 @@ func InitExecuterOptions(dir string) (err error) {
 				Source:     "nuclei",
 				Level:      event.Info.SeverityHolder.Severity.String(),
 				PocName:    event.TemplateID,
-				Extractors: event.ExtractedResults[len(event.ExtractedResults)-1],
+				Extractors: strings.Join(event.ExtractedResults, "\n"),
 			}
 			Results = append(Results, result)
 		}
