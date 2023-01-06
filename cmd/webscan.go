@@ -91,26 +91,25 @@ func (o *WebscanOptions) configureOptions() error {
 }
 
 func initFinger() error {
-	if config.Worker.Webscan.UpdateUrl == "" {
-		return nil
-	}
 	// update
 	fingerData, err := utils.ReadFile(config.Worker.Webscan.FingerFile)
 	if err != nil {
 		return err
 	}
-	r := req.C().SetTimeout(5 * time.Second).SetCommonRetryCount(3).R()
-	resp, err := r.Get(config.Worker.Webscan.UpdateUrl)
-	if err != nil {
-		return err
-	}
-	if string(fingerData) != resp.String() {
-		err = utils.WriteFile(config.Worker.Webscan.FingerFile, resp.String())
+	if config.Worker.Webscan.UpdateUrl != "" {
+		r := req.C().SetTimeout(5 * time.Second).SetCommonRetryCount(3).R()
+		resp, err := r.Get(config.Worker.Webscan.UpdateUrl)
 		if err != nil {
 			return err
 		}
-		fingerData = []byte(resp.String())
-		gologger.Info().Msgf("当前指纹非最新版本,已获取最新指纹")
+		if string(fingerData) != resp.String() {
+			err = utils.WriteFile(config.Worker.Webscan.FingerFile, resp.String())
+			if err != nil {
+				return err
+			}
+			fingerData = []byte(resp.String())
+			gologger.Info().Msgf("当前指纹非最新版本,已获取最新指纹")
+		}
 	}
 	// parse
 	if webscanOptions.FingerFile != "" {
@@ -123,7 +122,6 @@ func initFinger() error {
 	if err != nil {
 		return err
 	}
-
 	gologger.Info().Msgf("指纹数量: %v", len(config.Worker.Webscan.FingerRules))
 
 	return nil
