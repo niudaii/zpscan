@@ -83,6 +83,7 @@ func (o *CommonOptions) configureOptions() error {
 		}
 		targets = append(targets, lines...)
 	}
+
 	targets = utils.RemoveDuplicate(targets)
 
 	opt, _ := json.Marshal(o)
