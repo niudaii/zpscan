@@ -11,7 +11,6 @@ import (
 	"github.com/projectdiscovery/nuclei/v2/pkg/core"
 	"github.com/projectdiscovery/nuclei/v2/pkg/output"
 	"github.com/projectdiscovery/nuclei/v2/pkg/protocols"
-	"github.com/projectdiscovery/nuclei/v2/pkg/protocols/common/hosterrorscache"
 	"github.com/projectdiscovery/nuclei/v2/pkg/protocols/common/interactsh"
 	"github.com/projectdiscovery/nuclei/v2/pkg/protocols/common/protocolinit"
 	"github.com/projectdiscovery/nuclei/v2/pkg/protocols/common/protocolstate"
@@ -74,8 +73,8 @@ func ParsePoc(templateString string) {
 }
 
 func InitExecuterOptions(dir string) (err error) {
-	cache := hosterrorscache.New(30, hosterrorscache.DefaultMaxHostsCount)
-	defer cache.Close()
+	//cache := hosterrorscache.New(30, hosterrorscache.DefaultMaxHostsCount)
+	//defer cache.Close()
 
 	mockProgress := &testutils.MockProgressClient{}
 	reportingClient, _ := reporting.New(&reporting.Options{}, "")
@@ -110,16 +109,16 @@ func InitExecuterOptions(dir string) (err error) {
 	catalog := disk.NewCatalog(dir)
 
 	ExecuterOptions = protocols.ExecuterOptions{
-		Output:          outputWriter,
-		Options:         options,
-		Progress:        mockProgress,
-		Catalog:         catalog,
-		IssuesClient:    reportingClient,
-		Interactsh:      interactClient,
-		RateLimiter:     ratelimit.New(context.Background(), 150, time.Second),
-		HostErrorsCache: cache,
-		Colorizer:       aurora.NewAurora(true),
-		ResumeCfg:       types.NewResumeCfg(),
+		Output:       outputWriter,
+		Options:      options,
+		Progress:     mockProgress,
+		Catalog:      catalog,
+		IssuesClient: reportingClient,
+		Interactsh:   interactClient,
+		RateLimiter:  ratelimit.New(context.Background(), 150, time.Second),
+		//HostErrorsCache: cache,
+		Colorizer: aurora.NewAurora(true),
+		ResumeCfg: types.NewResumeCfg(),
 	}
 
 	return
@@ -128,10 +127,11 @@ func InitExecuterOptions(dir string) (err error) {
 func InitEngine(timeout int, proxy string) (engine *core.Engine) {
 	ExecuterOptions.Options.Timeout = timeout
 	ExecuterOptions.Options.RateLimit = 1
-	ExecuterOptions.Options.ProxyInternal = true
 	if proxy == "" {
+		ExecuterOptions.Options.ProxyInternal = false
 		ExecuterOptions.Options.Proxy = []string{}
 	} else {
+		ExecuterOptions.Options.ProxyInternal = true
 		ExecuterOptions.Options.Proxy = []string{proxy}
 	}
 

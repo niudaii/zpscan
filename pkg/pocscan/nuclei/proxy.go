@@ -19,6 +19,8 @@ import (
 func loadProxyServers(options *types.Options) error {
 	var proxyURLList []url.URL // bug
 	if len(options.Proxy) == 0 {
+		types.ProxySocksURL = ""
+		types.ProxyURL = ""
 		return nil
 	}
 	for _, p := range options.Proxy {

@@ -27,6 +27,7 @@ type Runner struct {
 
 func NewRunner(options *Options, gobyPocs []*goby.Poc, xrayPocs []*xray.Poc, nucleiTemplates []*nuclei.Template) (runner *Runner, err error) {
 	nucleiEngine := nuclei.InitEngine(options.Timeout, options.Proxy)
+	//nucleiEngine = nuclei.InitEngine(options.Timeout, "")
 	reqClient := utils.NewReqClient(options.Proxy, options.Timeout, options.Headers)
 	runner = &Runner{
 		gobyPocs:        gobyPocs,
