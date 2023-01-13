@@ -112,7 +112,7 @@ func (r *Runner) Webinfo(url string) (result *Result, err error) {
 	if !r.options.NoWappalyzer {
 		result.Wappalyzer = r.wappalyzerClient.Fingerprint(resp.Header, resp.Bytes())
 	}
-	gologger.Silent().Msgf(FmtResult(resp, r.options.NoColor))
+	gologger.Silent().Msgf(FmtResult(result, r.options.NoColor))
 	return
 }
 

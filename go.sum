@@ -645,6 +645,8 @@ github.com/neelance/sourcemap v0.0.0-20151028013722-8c68805598ab/go.mod h1:Qr6/a
 github.com/neelance/sourcemap v0.0.0-20200213170602-2833bce08e4c/go.mod h1:Qr6/a/Q4r9LP1IltGz7tA7iOK1WonHEYhu1HRBA7ZiM=
 github.com/niudaii/gologger v0.0.0-20221228035758-e9e3db534f19 h1:PvtTiSJ6Ab5F/UvAldHhWYts13NRHhEA+BqwVxWBSAY=
 github.com/niudaii/gologger v0.0.0-20221228035758-e9e3db534f19/go.mod h1:bNyVaC1U/NpJtFkJltcesn01NR3K8Hg6RsLVce6yvrw=
+github.com/niudaii/nuclei v2.7.12+incompatible h1:7Vvtc1BDvbQDtu9+kkHri7QlxNHlxnSXKwaigxL0aJM=
+github.com/niudaii/nuclei v2.7.12+incompatible/go.mod h1:PH6H81A7U5PpYUWFpjnVUI/1wkJtU0X8PqflaM0/s/E=
 github.com/niudaii/nuclei/v2 v2.7.11 h1:8CYKi7b8EkuO7DO9KGZRBt7DBxZJtAr84lzmPFEVl5M=
 github.com/niudaii/nuclei/v2 v2.7.11/go.mod h1:mpgKrnHUoFU/6Rp9fPrzZ1Ch3gJRAwoTOhplfKJcAok=
 github.com/niudaii/subfinder/v2 v2.5.6+incompatible h1:wPzp41x5pNgSejpaKUtzImymQYkyinEbFqFmpwwpGyU=
