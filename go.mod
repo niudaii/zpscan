@@ -271,7 +271,7 @@ replace (
 	github.com/projectdiscovery/ratelimit v0.0.2 => github.com/projectdiscovery/ratelimit v0.0.1 // indirect
 	github.com/projectdiscovery/sliceutil v0.0.1 => github.com/projectdiscovery/sliceutil v0.0.0-20220625085859-c3a4ecb669f4 // indirect
 	github.com/projectdiscovery/stringsutil v0.0.2 => github.com/projectdiscovery/stringsutil v0.0.1 // indirect
-	github.com/projectdiscovery/subfinder/v2 v2.5.5 => github.com/niudaii/subfinder/v2 v2.5.6+incompatible
+	github.com/projectdiscovery/subfinder/v2 v2.5.5 => github.com/niudaii/subfinder/v2 v2.5.6
 	github.com/shirou/gopsutil/v3 v3.22.11 => github.com/shirou/gopsutil/v3 v3.22.10
 	github.com/tomatome/grdp v0.0.0-20211231062539-be8adab7eaf3 => github.com/shadow1ng/grdp v1.0.3
 )

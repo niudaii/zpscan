@@ -650,6 +650,8 @@ github.com/niudaii/nuclei v2.7.12+incompatible/go.mod h1:PH6H81A7U5PpYUWFpjnVUI/
 github.com/niudaii/nuclei/v2 v2.7.11 h1:8CYKi7b8EkuO7DO9KGZRBt7DBxZJtAr84lzmPFEVl5M=
 github.com/niudaii/nuclei/v2 v2.7.11/go.mod h1:mpgKrnHUoFU/6Rp9fPrzZ1Ch3gJRAwoTOhplfKJcAok=
 github.com/niudaii/subfinder/v2 v2.5.6+incompatible h1:wPzp41x5pNgSejpaKUtzImymQYkyinEbFqFmpwwpGyU=
+github.com/niudaii/subfinder/v2 v2.5.6 h1:n8lljQ0EhpBLlrfkdHh0VbXgPcfB6V9tTRVdjEkPMIQ=
+github.com/niudaii/subfinder/v2 v2.5.6/go.mod h1:ZDjMJVi5g3hta41rGFMRtNSKcbSQnoOSUx9GgJLUDbM=
 github.com/niudaii/subfinder/v2 v2.5.6+incompatible/go.mod h1:ZDjMJVi5g3hta41rGFMRtNSKcbSQnoOSUx9GgJLUDbM=
 github.com/nwaples/rardecode v1.1.0/go.mod h1:5DzqNKiOdpKKBH87u8VlvAnPZMXcGRhxWkRpHbbfGS0=
 github.com/nwaples/rardecode v1.1.2 h1:Cj0yZY6T1Zx1R7AhTbyGSALm44/Mmq+BAPc4B/p/d3M=
