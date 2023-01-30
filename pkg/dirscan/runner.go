@@ -1,7 +1,6 @@
 package dirscan
 
 import (
-	"fmt"
 	"github.com/niudaii/zpscan/internal/utils"
 	"github.com/niudaii/zpscan/pkg/webscan"
 	"strings"
@@ -111,9 +110,6 @@ func (r *Runner) Dirscan(input *Input) (results Results) {
 				if err != nil {
 					gologger.Debug().Msgf("%v", err)
 				} else {
-					if strings.Contains(task, "/login") {
-						fmt.Println(result)
-					}
 					if result.ContentLength != 0 && utils.HasInt(r.options.MatchStatus, result.StatusCode) {
 						flag := true
 						if suffix, ok := utils.SuffixStr(extensions, result.Url); ok {
@@ -122,7 +118,7 @@ func (r *Runner) Dirscan(input *Input) (results Results) {
 							}
 						}
 						if flag {
-							gologger.Silent().Msgf("%v [%v] [%v]", result.Url, result.StatusCode, result.ContentLength)
+							gologger.Silent().Msgf("%v [%v] [%v] [%v]", result.Url, result.StatusCode, result.ContentLength, result.Title)
 							mutex.Lock()
 							respMap[result.ContentLength] += 1
 							tmpResults = append(tmpResults, result)
@@ -165,6 +161,7 @@ func (r *Runner) Req(url string) (result *Result, err error) {
 		StatusCode:    resp.StatusCode,
 		ContentLength: len(resp.String()),
 		ContentType:   resp.GetContentType(),
+		Title:         webscan.GetTitle(resp),
 	}
 	return
 }

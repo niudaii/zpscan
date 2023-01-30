@@ -16,7 +16,7 @@ var (
 	reTitle = regexp.MustCompile(`(?im)<\s*title.*>(.*?)<\s*/\s*title>`)
 )
 
-func getTitle(resp *req.Response) (title string) {
+func GetTitle(resp *req.Response) (title string) {
 	// Try to parse the DOM
 	titleDom, err := getTitleWithDom(resp)
 	// In case of error fallback to regex

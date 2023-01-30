@@ -1,11 +1,11 @@
 package dirscan
 
 type Result struct {
-	Url           string
-	StatusCode    int
-	ContentLength int
-	Suffix        string
-	ContentType   string
+	Url           string `json:"url"`
+	StatusCode    int    `json:"statusCode"`
+	ContentLength int    `json:"contentLength"`
+	ContentType   string `json:"-"`
+	Title         string `json:"title"`
 }
 
 // Results 按照contentLength排序
