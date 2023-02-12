@@ -129,7 +129,7 @@ func (o *DomainscanOptions) run() {
 	for _, result := range results {
 		urls = append(urls, result.Domain)
 	}
-	urls = append(urls, domainweb.Run(urls, 500, webscanOptions.Threads, o.Proxy)...)
+	urls = append(urls, domainweb.Run(urls, 1, webscanOptions.Threads, o.Proxy)...)
 	urls = utils.RemoveDuplicate(urls)
 	gologger.Info().Msgf("domain web: %v", len(urls))
 	options2 := &webscan.Options{
