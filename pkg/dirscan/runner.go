@@ -143,6 +143,7 @@ func (r *Runner) Dirscan(input *Input) (results Results) {
 				Url:           result.Url,
 				StatusCode:    result.StatusCode,
 				ContentLength: result.ContentLength,
+				Title:         result.Title,
 			})
 		}
 	}

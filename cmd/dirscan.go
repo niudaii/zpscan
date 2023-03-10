@@ -161,7 +161,7 @@ func (o *DirscanOptions) run() {
 	sort.Sort(results)
 	gologger.Info().Msgf("结果数量: %v", len(results))
 	for _, result := range results {
-		gologger.Print().Msgf("%v [%v] [%v]", result.Url, result.StatusCode, result.ContentLength)
+		gologger.Print().Msgf("%v [%v] [%v] [%v]", result.Url, result.StatusCode, result.ContentLength, result.Title)
 	}
 	// 保存 dirscan 结果
 	if commonOptions.ResultFile != "" {
