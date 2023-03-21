@@ -44,6 +44,20 @@ func NewRunner(options *Options) (*Runner, error) {
 	}, nil
 }
 
+type Ip struct {
+	Ip      string
+	Ports   string
+	Country string
+	Area    string
+	OS      string
+}
+
+type Service struct {
+	Address  string
+	Protocol string
+	Version  string
+}
+
 func (r *Runner) Run() (results []*portfinger.Result) {
 	start := time.Now()
 	gologger.Info().Msgf("开始端口扫描")

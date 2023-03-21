@@ -120,22 +120,8 @@ func initNmapProbe() error {
 	if err = config.Worker.Ipscan.NmapProbe.Init(nmapData); err != nil {
 		return err
 	}
-	gologger.Info().Msgf("nmap指纹数量: %v个探针,%v条正则", len(config.Worker.Ipscan.NmapProbe.Probes), config.Worker.Ipscan.NmapProbe.Count())
+	gologger.Info().Msgf("nmap指纹: %v个探针,%v条正则", len(config.Worker.Ipscan.NmapProbe.Probes), config.Worker.Ipscan.NmapProbe.Count())
 	return nil
-}
-
-type Ip struct {
-	Ip      string
-	Ports   string
-	Country string
-	Area    string
-	OS      string
-}
-
-type Service struct {
-	Address  string
-	Protocol string
-	Version  string
 }
 
 func (o *IpscanOptions) run() {
@@ -163,10 +149,10 @@ func (o *IpscanOptions) run() {
 		gologger.Error().Msgf("ipscan.NewRunner() err, %v", err)
 		return
 	}
-	var ipResults []*Ip
-	var servResults []*Service
+	var ipResults []*ipscan.Ip
+	var servResults []*ipscan.Service
 	for _, ip := range hosts {
-		ipResult := &Ip{
+		ipResult := &ipscan.Ip{
 			Ip: ip,
 		}
 		// 获取地理位置
@@ -225,7 +211,7 @@ func (o *IpscanOptions) run() {
 		} else if portscanResult.ServiceName == "unknown" {
 			webTargets = append(webTargets, ip+":"+port)
 		} else {
-			servResults = append(servResults, &Service{
+			servResults = append(servResults, &ipscan.Service{
 				Address:  portscanResult.Addr,
 				Protocol: portscanResult.ServiceName,
 				Version:  fmt.Sprintf("%v %v", portscanResult.VendorProduct, portscanResult.Version),
