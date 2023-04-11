@@ -24,6 +24,7 @@ func (r *result) Write(p []byte) (n int, err error) {
 	err = nil
 	return
 }
+
 func (r *result) Output() []string {
 	return r.m
 }

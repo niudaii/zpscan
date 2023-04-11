@@ -1,7 +1,9 @@
 package webscan
 
 import (
+	"fmt"
 	"github.com/imroc/req/v3"
+	"github.com/niudaii/util"
 	"github.com/niudaii/zpscan/internal/utils"
 	"github.com/projectdiscovery/gologger"
 	wappalyzer "github.com/projectdiscovery/wappalyzergo"
@@ -29,9 +31,10 @@ type Runner struct {
 func NewRunner(options *Options) (runner *Runner, err error) {
 	runner = &Runner{
 		options:   options,
-		reqClient: utils.NewReqClient(options.Proxy, options.Timeout, options.Headers),
+		reqClient: util.NewReqClient(options.Proxy, options.Timeout, options.Headers),
 	}
-	runner.reqClient.SetCommonHeader("Cookie", "rememberMe=1") // check shiro
+	rememberMe := fmt.Sprintf("rememberMe=%v", utils.RandLetters(3))
+	runner.reqClient.SetCommonHeader("Cookie", rememberMe) // check shiro
 	if !options.NoWappalyzer {
 		runner.wappalyzerClient, err = wappalyzer.New()
 		if err != nil {

@@ -2,6 +2,7 @@ package ipweb
 
 import (
 	"fmt"
+	"github.com/niudaii/util"
 	"github.com/niudaii/zpscan/internal/utils"
 	"github.com/niudaii/zpscan/pkg/webscan"
 	"regexp"
@@ -11,7 +12,7 @@ import (
 var rePort = regexp.MustCompile(`https?://.*?:(\d+)`)
 
 func Run(host string, timeout, threads int, proxy string) (results []int) {
-	ports, err := utils.ParsePortsList(utils.Webport)
+	ports, err := util.ParsePortsList(utils.Webport)
 	if err != nil {
 		return
 	}

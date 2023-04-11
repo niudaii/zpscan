@@ -2,11 +2,10 @@ package webscan
 
 import (
 	"bytes"
-	"strings"
-
 	"github.com/antchfx/htmlquery"
 	"github.com/imroc/req/v3"
 	"golang.org/x/net/html"
+	"strings"
 )
 
 func (r *Runner) getFavicon(resp *req.Response) (favicon string, iconHash string) {

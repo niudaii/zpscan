@@ -2,6 +2,7 @@ package domainweb
 
 import (
 	"fmt"
+	"github.com/niudaii/util"
 	"github.com/niudaii/zpscan/internal/utils"
 	"github.com/niudaii/zpscan/pkg/webscan"
 )
@@ -16,7 +17,7 @@ import (
 //}
 
 func Run(subdomains []string, timeout, threads int, proxy string) (results []string) {
-	ports, err := utils.ParsePortsList(utils.Webport)
+	ports, err := util.ParsePortsList(utils.Webport)
 	if err != nil {
 		return
 	}
