@@ -1,0 +1,8 @@
+.idea/
+.DS_Store
+ksubdomain.yaml
+result.txt
+resource
+config.yaml
+debug.json
+ossutil_output/

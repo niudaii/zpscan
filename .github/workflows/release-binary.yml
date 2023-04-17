@@ -1,0 +1,63 @@
+name: Release
+on:
+  create:
+    tags:
+      - v*
+  workflow_dispatch:
+
+jobs:
+  release:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os:
+          - ubuntu-18.04
+          - macos-latest
+    steps:
+      - name: Set up Go 1.18.5
+        uses: actions/setup-go@v1
+        with:
+          go-version: 1.18.5
+        id: go
+
+      - name: Set up libpcap-dev
+        if: matrix.os == 'ubuntu-18.04'
+        run: sudo apt-get install libpcap-dev gcc -y
+
+      - name: Get version
+        id: get_version
+        run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
+
+      - name: Check out code into the Go module directory
+        uses: actions/checkout@v2
+
+      - name: Get dependencies
+        run: go mod download
+
+      - name: Build On Linux
+        run: |
+          go build -ldflags "-s -w" -o ./zpscan_linux main.go
+          chmod +x zpscan_linux
+        if: matrix.os == 'ubuntu-18.04'
+        env:
+          GOENABLE: 1
+          CGO_LDFLAGS: "-Wl,-static -L/usr/lib/x86_64-linux-gnu/libpcap.a -lpcap -Wl,-Bdynamic"
+      - name: Build On Darwin
+        run: |
+          go build -ldflags "-s -w" -o ./zpscan_darwin main.go
+          chmod +x zpscan_darwin
+        if: matrix.os == 'macos-latest'
+      - name: Build On Windows
+        run: |
+          go build -ldflags "-s -w" -o ./zpscan_windows.exe main.go
+        if: matrix.os == 'ubuntu-18.04'
+        env:
+          GOOS: windows
+          GOENABLE: 1
+      - name: Release
+        uses: softprops/action-gh-release@master
+        with:
+          files: zpscan_*
+          fail_on_unmatched_files: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+          append_body: true
