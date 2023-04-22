@@ -137,7 +137,11 @@ dirscan
 
 pocscan
 
-![image-20221110171539212](https://nnotes.oss-cn-hangzhou.aliyuncs.com/notes/image-20221110171539212.png)
+![image-20230422192033778](https://nnotes.oss-cn-hangzhou.aliyuncs.com/notes/image-20230422192033778.png)
+
+expscan
+
+![image-20230422192623949](https://nnotes.oss-cn-hangzhou.aliyuncs.com/notes/image-20230422192623949.png)
 
 ## 说明
 
