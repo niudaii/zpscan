@@ -37,7 +37,7 @@ var (
 			window.location.replace("/mymeetings/");
 		</script>
 	*/
-	reg3 = regexp.MustCompile(`(?i)window\.location\.replace\(['"](.*?)['"]\)`)
+	reg3 = regexp.MustCompile(`(?i)[window\.]?location\.replace\(['"](.*?)['"]\)`)
 )
 
 var (

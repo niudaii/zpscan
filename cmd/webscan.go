@@ -22,6 +22,7 @@ type WebscanOptions struct {
 	Proxy        string
 	Headers      []string
 	NoIconhash   bool
+	NoShiro      bool
 	NoWappalyzer bool
 
 	FilterTags []string
@@ -41,6 +42,7 @@ func init() {
 	webscanCmd.Flags().StringSliceVar(&webscanOptions.Headers, "headers", []string{}, "add custom headers(example: --headers 'User-Agent: xxx,Cookie: xxx')")
 
 	webscanCmd.Flags().BoolVar(&webscanOptions.NoIconhash, "no-iconhash", false, "not scan iconhash")
+	webscanCmd.Flags().BoolVar(&webscanOptions.NoShiro, "no-shiro", false, "not scan shiro")
 	webscanCmd.Flags().BoolVar(&webscanOptions.NoWappalyzer, "no-wappalyzer", false, "not scan wappalyzer")
 	webscanCmd.Flags().StringVar(&webscanOptions.FingerFile, "finger-file", "", "use your finger file(example: --finger-file 'fingers.json')")
 
@@ -134,6 +136,7 @@ func (o *WebscanOptions) run() {
 		Timeout:      o.Timeout,
 		Headers:      o.Headers,
 		NoColor:      commonOptions.NoColor,
+		NoShiro:      o.NoShiro,
 		NoIconhash:   o.NoIconhash,
 		NoWappalyzer: o.NoWappalyzer,
 		FingerRules:  config.Worker.Webscan.FingerRules,

@@ -1,12 +1,12 @@
 package webscan
 
 import (
-	"fmt"
 	"github.com/imroc/req/v3"
 	"github.com/niudaii/util"
 	"github.com/niudaii/zpscan/internal/utils"
 	"github.com/projectdiscovery/gologger"
 	wappalyzer "github.com/projectdiscovery/wappalyzergo"
+	"net/http"
 	"strings"
 	"sync"
 )
@@ -17,6 +17,7 @@ type Options struct {
 	Timeout      int
 	Headers      []string
 	NoColor      bool
+	NoShiro      bool
 	NoIconhash   bool
 	NoWappalyzer bool
 	FingerRules  []*FingerRule
@@ -33,8 +34,19 @@ func NewRunner(options *Options) (runner *Runner, err error) {
 		options:   options,
 		reqClient: util.NewReqClient(options.Proxy, options.Timeout, options.Headers),
 	}
-	rememberMe := fmt.Sprintf("rememberMe=%v", utils.RandLetters(3))
-	runner.reqClient.SetCommonHeader("Cookie", rememberMe) // check shiro
+	if !options.NoShiro {
+		rememberMeCookie := utils.RandLetters(3)
+		shiroCookie := &http.Cookie{
+			Name:     "rememberMe",
+			Value:    rememberMeCookie,
+			Path:     "/",
+			Domain:   "/",
+			MaxAge:   36000,
+			HttpOnly: false,
+			Secure:   true,
+		}
+		runner.reqClient.SetCommonCookies(shiroCookie) // check shiro
+	}
 	if !options.NoWappalyzer {
 		runner.wappalyzerClient, err = wappalyzer.New()
 		if err != nil {
