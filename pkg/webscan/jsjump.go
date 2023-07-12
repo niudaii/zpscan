@@ -47,7 +47,7 @@ var (
 func Jsjump(resp *req.Response) (jumpurl string) {
 	res := regexJsjump(resp)
 	if res != "" {
-		gologger.Debug().Msgf("regexJsjump(), %v", res)
+		gologger.Debug().Msgf("regexJsjump(), res: %v", res)
 		res = strings.TrimSpace(res)
 		res = strings.ReplaceAll(res, "\"", "")
 		res = strings.ReplaceAll(res, "'", "")
@@ -74,9 +74,11 @@ func Jsjump(resp *req.Response) (jumpurl string) {
 		} else {
 			// 前缀不存在 / 时拼接相对目录
 			baseUrl := resp.Request.URL.Scheme + "://" + resp.Request.URL.Host + "/" + filepath.Dir(resp.Request.URL.Path) + "/"
+			baseUrl = strings.ReplaceAll(baseUrl, "./", "")
 			jumpurl = baseUrl + res
 		}
 	}
+	gologger.Debug().Msgf("regexJsjump(), jumpurl: %v", jumpurl)
 	return
 }
 

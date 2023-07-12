@@ -56,6 +56,7 @@ require (
 	github.com/quic-go/qtls-go1-19 v0.2.0 // indirect
 	github.com/quic-go/qtls-go1-20 v0.1.0 // indirect
 	github.com/quic-go/quic-go v0.32.0 // indirect
+	github.com/shoenig/go-m1cpu v0.1.4 // indirect
 	github.com/zmap/zcertificate v0.0.0-20180516150559-0e3d58b1bac4 // indirect
 	go.uber.org/ratelimit v0.2.0 // indirect
 	golang.org/x/term v0.4.0 // indirect
