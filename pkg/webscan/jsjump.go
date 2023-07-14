@@ -75,6 +75,7 @@ func Jsjump(resp *req.Response) (jumpurl string) {
 			// 前缀不存在 / 时拼接相对目录
 			baseUrl := resp.Request.URL.Scheme + "://" + resp.Request.URL.Host + "/" + filepath.Dir(resp.Request.URL.Path) + "/"
 			baseUrl = strings.ReplaceAll(baseUrl, "./", "")
+			baseUrl = strings.ReplaceAll(baseUrl, "///", "/")
 			jumpurl = baseUrl + res
 		}
 	}
