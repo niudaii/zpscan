@@ -95,6 +95,7 @@ func regexJsjump(resp *req.Response) string {
 	if len(body) > 700 {
 		body = body[:700]
 	}
+	body = strings.ReplaceAll(body, `"+window.location.host+"`, resp.Request.URL.Host)
 	matches = reg2.FindAllStringSubmatch(body, -1)
 	if len(matches) > 0 {
 		return matches[0][1]
