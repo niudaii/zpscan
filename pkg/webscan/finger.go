@@ -2,8 +2,9 @@ package webscan
 
 import (
 	"fmt"
-	"github.com/niudaii/zpscan/internal/utils"
 	"strings"
+
+	"github.com/niudaii/zpscan/internal/utils"
 
 	"github.com/imroc/req/v3"
 	"github.com/projectdiscovery/gologger"

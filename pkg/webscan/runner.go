@@ -1,14 +1,15 @@
 package webscan
 
 import (
+	"net/http"
+	"sync"
+
 	"github.com/imroc/req/v3"
+	"github.com/niudaii/goutil/httputil"
 	"github.com/niudaii/util"
 	"github.com/niudaii/zpscan/internal/utils"
 	"github.com/projectdiscovery/gologger"
 	wappalyzer "github.com/projectdiscovery/wappalyzergo"
-	"net/http"
-	"strings"
-	"sync"
 )
 
 type Options struct {
@@ -100,13 +101,13 @@ func (r *Runner) Run(urls []string) (results Results) {
 }
 
 func (r *Runner) Webinfo(url string) (result *Result, err error) {
-	resp, err := FirstGet(r.reqClient, url)
+	resp, err := httputil.FirstGet(r.reqClient, url)
 	if err != nil {
 		return
 	}
 	// 处理js跳转, 上限3次
 	for i := 0; i < 3; i++ {
-		jumpurl := Jsjump(resp)
+		jumpurl := httputil.JsJump(resp)
 		if jumpurl == "" {
 			break
 		}
@@ -119,7 +120,7 @@ func (r *Runner) Webinfo(url string) (result *Result, err error) {
 		Url:           resp.Request.URL.Scheme + "://" + resp.Request.URL.Host,
 		StatusCode:    resp.StatusCode,
 		ContentLength: len(resp.String()),
-		Title:         GetTitle(resp),
+		Title:         httputil.GetTitle(resp),
 		Fingers:       r.getFinger(resp),
 	}
 	if !r.options.NoIconhash {
@@ -127,60 +128,6 @@ func (r *Runner) Webinfo(url string) (result *Result, err error) {
 	}
 	if !r.options.NoWappalyzer {
 		result.Wappalyzer = r.wappalyzerClient.Fingerprint(resp.Header, resp.Bytes())
-	}
-	return
-}
-
-var (
-	ToHttps = []string{
-		"sent to HTTPS port",
-		"This combination of host and port requires TLS",
-		"Instead use the HTTPS scheme to",
-		"This web server is running in SSL mode",
-	}
-)
-
-func FirstGet(client *req.Client, url string) (resp *req.Response, err error) {
-	request := client.R()
-	var scheme string
-	var flag bool
-	if !strings.HasPrefix(url, "http") {
-		scheme = "http://"
-		resp, err = request.Get(scheme + url)
-		if err != nil {
-			gologger.Debug().Msgf("request.Get() err, %v", err)
-			scheme = "https://"
-			flag = true
-		} else {
-			for _, str := range ToHttps {
-				if strings.Contains(resp.String(), str) {
-					scheme = "https://"
-					flag = true
-					break
-				}
-			}
-		}
-	} else if strings.HasPrefix(url, "http://") {
-		resp, err = request.Get(url)
-		if err != nil {
-			gologger.Debug().Msgf("request.Get() err, %v", err)
-			scheme = "https://"
-			url = url[7:]
-			flag = true
-		} else {
-			for _, str := range ToHttps {
-				if strings.Contains(resp.String(), str) {
-					scheme = "https://"
-					url = url[7:]
-					flag = true
-				}
-			}
-		}
-	} else {
-		flag = true
-	}
-	if flag {
-		resp, err = request.Get(scheme + url)
 	}
 	return
 }

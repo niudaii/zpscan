@@ -1,10 +1,12 @@
 package dirscan
 
 import (
-	"github.com/niudaii/zpscan/internal/utils"
-	"github.com/niudaii/zpscan/pkg/webscan"
 	"strings"
 	"sync"
+
+	"github.com/niudaii/goutil/httputil"
+	"github.com/niudaii/zpscan/internal/utils"
+	"github.com/niudaii/zpscan/pkg/webscan"
 
 	"github.com/imroc/req/v3"
 	"github.com/projectdiscovery/gologger"
@@ -82,7 +84,7 @@ func (r *Runner) Dirscan(input *Input) (results Results) {
 	gologger.Info().Msgf("开始目录扫描: %v", input.Target)
 	gologger.Info().Msgf("当前扫描字典: %v", len(input.Dirs))
 	// 存活检测
-	resp, err := webscan.FirstGet(r.reqClient, input.Target)
+	resp, err := httputil.FirstGet(r.reqClient, input.Target)
 	if err != nil {
 		gologger.Error().Msgf("%v", err)
 		return
